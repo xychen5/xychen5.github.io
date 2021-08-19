@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css" integrity="sha256-no0c5ccDODBwp+9hSmV5VvPpKwHCpbVzXHexIkupM6U=" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js" integrity="sha256-a5YRB27CcBwBFcT5EF/f3E4vzIqyHrSR878nseNYw64=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="var viewer &#x3D; new Cesium.Viewer(&quot;cesiumContainer&quot;, {     infoBox: false, &#x2F;&#x2F;Disable InfoBox widget     selectionIndicator: false, &#x2F;&#x2F;Disable selection indicator     shouldAnimate: true, &#x2F;&#x2F; Enable animati">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LuftBallon">
+<meta property="og:url" content="https://xychen5.github.io/2021/08/19/groundVehicle/groundVehicle2/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="var viewer &#x3D; new Cesium.Viewer(&quot;cesiumContainer&quot;, {     infoBox: false, &#x2F;&#x2F;Disable InfoBox widget     selectionIndicator: false, &#x2F;&#x2F;Disable selection indicator     shouldAnimate: true, &#x2F;&#x2F; Enable animati">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-08-19T04:24:58.598Z">
+<meta property="article:modified_time" content="2020-12-24T14:01:34.274Z">
+<meta property="article:author" content="xychen5">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/08/19/groundVehicle/groundVehicle2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/08/19/groundVehicle/groundVehicle2/","path":"2021/08/19/groundVehicle/groundVehicle2/","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | LuftBallon</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LuftBallon</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+          </div>
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/08/19/groundVehicle/groundVehicle2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-08-19 12:24:58" itemprop="dateCreated datePublished" datetime="2021-08-19T12:24:58+08:00">2021-08-19</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-12-24 22:01:34" itemprop="dateModified" datetime="2020-12-24T22:01:34+08:00">2020-12-24</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        var viewer = new Cesium.Viewer("cesiumContainer", {
+    infoBox: false, //Disable InfoBox widget
+    selectionIndicator: false, //Disable selection indicator
+    shouldAnimate: true, // Enable animations
+    terrainProvider: Cesium.createWorldTerrain(),
+});
+
+//Enable lighting based on the sun position
+viewer.scene.globe.enableLighting = true;
+
+//Enable depth testing so things behind the terrain disappear.
+viewer.scene.globe.depthTestAgainstTerrain = true;
+
+//Set the random number seed for consistent results.
+Cesium.Math.setRandomNumberSeed(3);
+
+let times = [
+    Cesium.JulianDate.fromIso8601("2018-07-19T15:18:00Z"),
+    Cesium.JulianDate.fromIso8601("2018-07-19T15:24:00Z")
+];
+let stTime = times[0];
+let endTime = times[1];
+var start = stTime.clone();
+var stop = endTime.clone();
+
+//Make sure viewer is at the desired time.
+viewer.clock.startTime = start.clone();
+viewer.clock.stopTime = stop.clone();
+viewer.clock.currentTime = start.clone();
+viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; //Loop at the end
+viewer.clock.multiplier = 30;
+
+//Set timeline to simulation bounds
+viewer.timeline.zoomTo(start, stop);
+
+//Generate a random circular pattern with varying heights.
+function computeCirclularFlight(lon, lat, radius) {
+    var property = new Cesium.SampledPositionProperty();
+    for (var i = 0; i <= 360; i += 45) {
+        var radians = Cesium.Math.toRadians(i);
+        var time = Cesium.JulianDate.addSeconds(start, i, new Cesium.JulianDate());
+        var position = Cesium.Cartesian3.fromDegrees(
+            lon + radius * 1.5 * Math.cos(radians),
+            lat + radius * Math.sin(radians),
+            Cesium.Math.nextRandomNumber() * 500 + 1750
+        );
+        property.addSample(time, position);
+        console.log(time.toString(), " -> ", position.toString());
+
+        //Also create a point for each sample we generate.
+        viewer.entities.add({
+            position: position,
+            point: {
+                pixelSize: 8,
+                color: Cesium.Color.TRANSPARENT,
+                outlineColor: Cesium.Color.YELLOW,
+                outlineWidth: 3,
+            },
+        });
+    }
+    return property;
+}
+
+let positions = [
+    // new Cartesian3(1216348.1632364073, -4736348.958775471, 4081284.5528982095),
+    // new Cartesian3(1216369.1229444197, -4736377.467107148, 4081240.888485707)
+    new Cesium.Cartesian3(
+        -2358138.847340281,
+        -3744072.459541374,
+        4581158.5714175375
+    ),
+    new Cesium.Cartesian3(
+        -2357231.4925370603,
+        -3745103.7886602185,
+        4580702.9757762635
+    ),
+];
+let stPos = positions[0];
+let endPos = positions[1];
+
+// sampled postion's time resolution
+let timeOfResolution = 6;
+
+// using sampled property to get sampled data
+let oriSamples = new Cesium.SampledProperty(Cesium.Cartesian3);
+oriSamples.addSamples(times, positions);
+
+// get sampled data, ervery "distanceOfResolution" we take a sample
+let geodesic = new Cesium.EllipsoidGeodesic(
+    Cesium.Cartographic.fromCartesian(stPos),
+    Cesium.Cartographic.fromCartesian(endPos)
+);
+let lenInMeters = Math.ceil(geodesic.surfaceDistance); // avoid overflow when take samples
+let samplesNum = Math.floor(
+    Cesium.JulianDate.secondsDifference(endTime, stTime) / timeOfResolution
+);
+//let secondsInterval = Math.floor(Cesium.JulianDate.secondsDifference(endTime, stTime) / samplesNum);
+console.log(
+    "len: ",
+    lenInMeters,
+    "samplesNum",
+    samplesNum,
+    "secondsInterval",
+    timeOfResolution
+);
+
+// get sampled data, ervery "timeOfResolution" passed, we take a sample
+let sampledPositions = [];
+let sampledTimes = [];
+for (let i = 0; i < samplesNum + 1; i++) {
+    let sampleTime = Cesium.JulianDate.addSeconds(
+        stTime,
+        i * timeOfResolution,
+        new Cesium.JulianDate()
+    );
+    let tmpPos = oriSamples.getValue(sampleTime);
+    console.log(sampleTime.toString(), " -> || -> ", tmpPos.toString());
+    sampledPositions.push(Cesium.Cartographic.fromCartesian(tmpPos));
+    sampledTimes.push(sampleTime);
+}
+
+let promise = Cesium.sampleTerrainMostDetailed(
+    viewer.terrainProvider,
+    sampledPositions
+).then(() => {
+    console.log(
+        "start adding!",
+        "time and pos size: ",
+        sampledTimes.length,
+        sampledPositions.length
+    );
+
+    let carPositionProperty = new Cesium.SampledPositionProperty();
+
+    // add positions which are clamped to ground to the carPositionProperty
+    for (let i = 0; i < samplesNum + 1; i++) {
+        carPositionProperty.addSample(
+            sampledTimes[i],
+            // new Cesium.Cartesian3.fromDegrees( // this way of changing pos is not right, all should be under WGS84
+            // sampledPositions[i].longitude,
+            // sampledPositions[i].latitude,
+            // sampledPositions[i].height));
+            Cesium.Ellipsoid.WGS84.cartographicToCartesian(sampledPositions[i])
+        );
+        // console.log(sampledTimes[i], " ------->>> ", sampledPositions[i]);
+    }
+
+    // after the clamped to ground data computed, dynamically show the path
+    let isConstant = false;
+    let curSegmentNo = 0; // the polyLine are divided into samplesNum's segements
+    let lastSegementNo = -1;
+    let p2 = Cesium.Ellipsoid.WGS84.cartographicToCartesian(sampledPositions[1]);
+    let curPolyline = [stPos]; // represent the polyline
+    console.log("init 2 points are: ", stPos.toString(), " ", p2.toString());
+    //let timeNow = Cesium.JulianDate.now().clone();
+
+    console.log("starting add entity");
+    viewer.entities.add({
+        polyline: {
+            // This callback updates positions each frame.
+            // Ellipsoid.WGS84.cartographicArrayToCartesianArray(sampledPositions),
+            positions: new Cesium.CallbackProperty(function (time, result) {
+                //console.log("len: ", lenInMeters, "samplesNum", samplesNum, "timeOfResolution", timeOfResolution);
+
+                //let st
+                curSegmentNo = Math.floor(
+                    Cesium.JulianDate.secondsDifference(time, stTime) / timeOfResolution
+                );
+                console.log(curSegmentNo);
+                if (curSegmentNo !== lastSegementNo) {
+                    //console.log("curSegmentNo is: ", curSegmentNo.toString(), "\ncurTime: ", time.toString(), "\nstTime: ", stTime.toString());
+                    // tmmP => curPolyine[lastSegementNo+1 : CurSegmentNo]
+                    let tmpP = Cesium.Ellipsoid.WGS84.cartographicToCartesian(
+                        sampledPositions[curSegmentNo]
+                    );
+                    //console.log("adding new points: ", tmpP.toString(), "\nsize is:", curPolyline.length);
+                    curPolyline.push(tmpP);
+                    lastSegementNo = curSegmentNo;
+                }
+                // if reach the end of sampled positions, clear the polyline's positions
+                if (curSegmentNo === samplesNum - 1) {
+                    curSegmentNo = 0;
+                    curPolyline = [];
+                    console.log("cleared!");
+                }
+
+                return curPolyline;
+            }, isConstant),
+            //clampToGround: true,
+            width: 5,
+            material: Cesium.Color.RED,
+            availability: new Cesium.TimeIntervalCollection([
+                new Cesium.TimeInterval({
+                    start: stTime,
+                    stop: endTime,
+                }),
+            ]),
+        },
+    });
+    console.log("end adding polyline");
+
+    //Compute the entity position property.
+    //var position = computeCirclularFlight(-112.110693, 36.0994841, 0.03);
+    var position = carPositionProperty;
+    //Actually create the entity
+    var entity = viewer.entities.add({
+        //Set the entity availability to the same interval as the simulation time.
+        availability: new Cesium.TimeIntervalCollection([
+            new Cesium.TimeInterval({
+                start: start,
+                stop: stop,
+            }),
+        ]),
+
+        //Use our computed positions
+        position: position,
+
+        //Automatically compute orientation based on position movement.
+        orientation: new Cesium.VelocityOrientationProperty(position),
+
+        //Load the Cesium plane model to represent the entity
+        model: {
+            uri: "../SampleData/models/CesiumAir/Cesium_Air.glb",
+            minimumPixelSize: 64,
+        },
+
+        //Show the path as a pink line sampled in 1 second increments.
+        path: {
+            resolution: 1,
+            material: new Cesium.PolylineGlowMaterialProperty({
+                glowPower: 0.1,
+                color: Cesium.Color.YELLOW,
+            }),
+            width: 1,
+        },
+    });
+
+    //Add button to view the path from the top down
+    Sandcastle.addDefaultToolbarButton("View Top Down", function () {
+        viewer.trackedEntity = undefined;
+        viewer.zoomTo(
+            viewer.entities,
+            new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-90))
+        );
+    });
+
+    //Add button to view the path from the side
+    Sandcastle.addToolbarButton("View Side", function () {
+        viewer.trackedEntity = undefined;
+        viewer.zoomTo(
+            viewer.entities,
+            new Cesium.HeadingPitchRange(
+                Cesium.Math.toRadians(-90),
+                Cesium.Math.toRadians(-15),
+                7500
+            )
+        );
+    });
+
+    //Add button to track the entity as it moves
+    Sandcastle.addToolbarButton("View Aircraft", function () {
+        // viewer.trackedEntity = entity;
+        viewer.zoomTo(
+            viewer.entities,
+            new Cesium.HeadingPitchRange(
+                Cesium.Math.toRadians(15),
+                Cesium.Math.toRadians(-45),
+                2500
+            )
+        );
+    });
+
+    //Add a combo box for selecting each interpolation mode.
+    Sandcastle.addToolbarMenu(
+        [
+            {
+                text: "Interpolation: Linear Approximation",
+                onselect: function () {
+                    entity.position.setInterpolationOptions({
+                        interpolationDegree: 1,
+                        interpolationAlgorithm: Cesium.LinearApproximation,
+                    });
+                },
+            },
+            {
+                text: "Interpolation: Lagrange Polynomial Approximation",
+                onselect: function () {
+                    entity.position.setInterpolationOptions({
+                        interpolationDegree: 5,
+                        interpolationAlgorithm: Cesium.LagrangePolynomialApproximation,
+                    });
+                },
+            },
+            {
+                text: "Interpolation: Hermite Polynomial Approximation",
+                onselect: function () {
+                    entity.position.setInterpolationOptions({
+                        interpolationDegree: 2,
+                        interpolationAlgorithm: Cesium.HermitePolynomialApproximation,
+                    });
+                },
+            },
+        ],
+        "interpolationMenu"
+    );
+});
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/08/19/groundVehicle/groundVehicle2/" title="">https://xychen5.github.io/2021/08/19/groundVehicle/groundVehicle2/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/19/hello-world/" rel="prev" title="Hello World">
+                  <i class="fa fa-chevron-left"></i> Hello World
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+  <script class="next-config" data-name="nprogress" type="application/json">{"enable":true,"spinner":true}</script>
+  <script src="/js/third-party/nprogress.js"></script>
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
