@@ -136,7 +136,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -190,375 +190,6 @@
 
 
     <div class="main-inner index posts-expand">
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/09/12/groundVehicle/groundVehicle2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/09/12/groundVehicle/groundVehicle2/" class="post-title-link" itemprop="url">Untitled</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-09-12 20:41:18" itemprop="dateCreated datePublished" datetime="2021-09-12T20:41:18+08:00">2021-09-12</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          var viewer = new Cesium.Viewer("cesiumContainer", {
-    infoBox: false, //Disable InfoBox widget
-    selectionIndicator: false, //Disable selection indicator
-    shouldAnimate: true, // Enable animations
-    terrainProvider: Cesium.createWorldTerrain(),
-});
-
-//Enable lighting based on the sun position
-viewer.scene.globe.enableLighting = true;
-
-//Enable depth testing so things behind the terrain disappear.
-viewer.scene.globe.depthTestAgainstTerrain = true;
-
-//Set the random number seed for consistent results.
-Cesium.Math.setRandomNumberSeed(3);
-
-let times = [
-    Cesium.JulianDate.fromIso8601("2018-07-19T15:18:00Z"),
-    Cesium.JulianDate.fromIso8601("2018-07-19T15:24:00Z")
-];
-let stTime = times[0];
-let endTime = times[1];
-var start = stTime.clone();
-var stop = endTime.clone();
-
-//Make sure viewer is at the desired time.
-viewer.clock.startTime = start.clone();
-viewer.clock.stopTime = stop.clone();
-viewer.clock.currentTime = start.clone();
-viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; //Loop at the end
-viewer.clock.multiplier = 30;
-
-//Set timeline to simulation bounds
-viewer.timeline.zoomTo(start, stop);
-
-//Generate a random circular pattern with varying heights.
-function computeCirclularFlight(lon, lat, radius) {
-    var property = new Cesium.SampledPositionProperty();
-    for (var i = 0; i <= 360; i += 45) {
-        var radians = Cesium.Math.toRadians(i);
-        var time = Cesium.JulianDate.addSeconds(start, i, new Cesium.JulianDate());
-        var position = Cesium.Cartesian3.fromDegrees(
-            lon + radius * 1.5 * Math.cos(radians),
-            lat + radius * Math.sin(radians),
-            Cesium.Math.nextRandomNumber() * 500 + 1750
-        );
-        property.addSample(time, position);
-        console.log(time.toString(), " -> ", position.toString());
-
-        //Also create a point for each sample we generate.
-        viewer.entities.add({
-            position: position,
-            point: {
-                pixelSize: 8,
-                color: Cesium.Color.TRANSPARENT,
-                outlineColor: Cesium.Color.YELLOW,
-                outlineWidth: 3,
-            },
-        });
-    }
-    return property;
-}
-
-let positions = [
-    // new Cartesian3(1216348.1632364073, -4736348.958775471, 4081284.5528982095),
-    // new Cartesian3(1216369.1229444197, -4736377.467107148, 4081240.888485707)
-    new Cesium.Cartesian3(
-        -2358138.847340281,
-        -3744072.459541374,
-        4581158.5714175375
-    ),
-    new Cesium.Cartesian3(
-        -2357231.4925370603,
-        -3745103.7886602185,
-        4580702.9757762635
-    ),
-];
-let stPos = positions[0];
-let endPos = positions[1];
-
-// sampled postion's time resolution
-let timeOfResolution = 6;
-
-// using sampled property to get sampled data
-let oriSamples = new Cesium.SampledProperty(Cesium.Cartesian3);
-oriSamples.addSamples(times, positions);
-
-// get sampled data, ervery "distanceOfResolution" we take a sample
-let geodesic = new Cesium.EllipsoidGeodesic(
-    Cesium.Cartographic.fromCartesian(stPos),
-    Cesium.Cartographic.fromCartesian(endPos)
-);
-let lenInMeters = Math.ceil(geodesic.surfaceDistance); // avoid overflow when take samples
-let samplesNum = Math.floor(
-    Cesium.JulianDate.secondsDifference(endTime, stTime) / timeOfResolution
-);
-//let secondsInterval = Math.floor(Cesium.JulianDate.secondsDifference(endTime, stTime) / samplesNum);
-console.log(
-    "len: ",
-    lenInMeters,
-    "samplesNum",
-    samplesNum,
-    "secondsInterval",
-    timeOfResolution
-);
-
-// get sampled data, ervery "timeOfResolution" passed, we take a sample
-let sampledPositions = [];
-let sampledTimes = [];
-for (let i = 0; i < samplesNum + 1; i++) {
-    let sampleTime = Cesium.JulianDate.addSeconds(
-        stTime,
-        i * timeOfResolution,
-        new Cesium.JulianDate()
-    );
-    let tmpPos = oriSamples.getValue(sampleTime);
-    console.log(sampleTime.toString(), " -> || -> ", tmpPos.toString());
-    sampledPositions.push(Cesium.Cartographic.fromCartesian(tmpPos));
-    sampledTimes.push(sampleTime);
-}
-
-let promise = Cesium.sampleTerrainMostDetailed(
-    viewer.terrainProvider,
-    sampledPositions
-).then(() => {
-    console.log(
-        "start adding!",
-        "time and pos size: ",
-        sampledTimes.length,
-        sampledPositions.length
-    );
-
-    let carPositionProperty = new Cesium.SampledPositionProperty();
-
-    // add positions which are clamped to ground to the carPositionProperty
-    for (let i = 0; i < samplesNum + 1; i++) {
-        carPositionProperty.addSample(
-            sampledTimes[i],
-            // new Cesium.Cartesian3.fromDegrees( // this way of changing pos is not right, all should be under WGS84
-            // sampledPositions[i].longitude,
-            // sampledPositions[i].latitude,
-            // sampledPositions[i].height));
-            Cesium.Ellipsoid.WGS84.cartographicToCartesian(sampledPositions[i])
-        );
-        // console.log(sampledTimes[i], " ------->>> ", sampledPositions[i]);
-    }
-
-    // after the clamped to ground data computed, dynamically show the path
-    let isConstant = false;
-    let curSegmentNo = 0; // the polyLine are divided into samplesNum's segements
-    let lastSegementNo = -1;
-    let p2 = Cesium.Ellipsoid.WGS84.cartographicToCartesian(sampledPositions[1]);
-    let curPolyline = [stPos]; // represent the polyline
-    console.log("init 2 points are: ", stPos.toString(), " ", p2.toString());
-    //let timeNow = Cesium.JulianDate.now().clone();
-
-    console.log("starting add entity");
-    viewer.entities.add({
-        polyline: {
-            // This callback updates positions each frame.
-            // Ellipsoid.WGS84.cartographicArrayToCartesianArray(sampledPositions),
-            positions: new Cesium.CallbackProperty(function (time, result) {
-                //console.log("len: ", lenInMeters, "samplesNum", samplesNum, "timeOfResolution", timeOfResolution);
-
-                //let st
-                curSegmentNo = Math.floor(
-                    Cesium.JulianDate.secondsDifference(time, stTime) / timeOfResolution
-                );
-                console.log(curSegmentNo);
-                if (curSegmentNo !== lastSegementNo) {
-                    //console.log("curSegmentNo is: ", curSegmentNo.toString(), "\ncurTime: ", time.toString(), "\nstTime: ", stTime.toString());
-                    // tmmP => curPolyine[lastSegementNo+1 : CurSegmentNo]
-                    let tmpP = Cesium.Ellipsoid.WGS84.cartographicToCartesian(
-                        sampledPositions[curSegmentNo]
-                    );
-                    //console.log("adding new points: ", tmpP.toString(), "\nsize is:", curPolyline.length);
-                    curPolyline.push(tmpP);
-                    lastSegementNo = curSegmentNo;
-                }
-                // if reach the end of sampled positions, clear the polyline's positions
-                if (curSegmentNo === samplesNum - 1) {
-                    curSegmentNo = 0;
-                    curPolyline = [];
-                    console.log("cleared!");
-                }
-
-                return curPolyline;
-            }, isConstant),
-            //clampToGround: true,
-            width: 5,
-            material: Cesium.Color.RED,
-            availability: new Cesium.TimeIntervalCollection([
-                new Cesium.TimeInterval({
-                    start: stTime,
-                    stop: endTime,
-                }),
-            ]),
-        },
-    });
-    console.log("end adding polyline");
-
-    //Compute the entity position property.
-    //var position = computeCirclularFlight(-112.110693, 36.0994841, 0.03);
-    var position = carPositionProperty;
-    //Actually create the entity
-    var entity = viewer.entities.add({
-        //Set the entity availability to the same interval as the simulation time.
-        availability: new Cesium.TimeIntervalCollection([
-            new Cesium.TimeInterval({
-                start: start,
-                stop: stop,
-            }),
-        ]),
-
-        //Use our computed positions
-        position: position,
-
-        //Automatically compute orientation based on position movement.
-        orientation: new Cesium.VelocityOrientationProperty(position),
-
-        //Load the Cesium plane model to represent the entity
-        model: {
-            uri: "../SampleData/models/CesiumAir/Cesium_Air.glb",
-            minimumPixelSize: 64,
-        },
-
-        //Show the path as a pink line sampled in 1 second increments.
-        path: {
-            resolution: 1,
-            material: new Cesium.PolylineGlowMaterialProperty({
-                glowPower: 0.1,
-                color: Cesium.Color.YELLOW,
-            }),
-            width: 1,
-        },
-    });
-
-    //Add button to view the path from the top down
-    Sandcastle.addDefaultToolbarButton("View Top Down", function () {
-        viewer.trackedEntity = undefined;
-        viewer.zoomTo(
-            viewer.entities,
-            new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-90))
-        );
-    });
-
-    //Add button to view the path from the side
-    Sandcastle.addToolbarButton("View Side", function () {
-        viewer.trackedEntity = undefined;
-        viewer.zoomTo(
-            viewer.entities,
-            new Cesium.HeadingPitchRange(
-                Cesium.Math.toRadians(-90),
-                Cesium.Math.toRadians(-15),
-                7500
-            )
-        );
-    });
-
-    //Add button to track the entity as it moves
-    Sandcastle.addToolbarButton("View Aircraft", function () {
-        // viewer.trackedEntity = entity;
-        viewer.zoomTo(
-            viewer.entities,
-            new Cesium.HeadingPitchRange(
-                Cesium.Math.toRadians(15),
-                Cesium.Math.toRadians(-45),
-                2500
-            )
-        );
-    });
-
-    //Add a combo box for selecting each interpolation mode.
-    Sandcastle.addToolbarMenu(
-        [
-            {
-                text: "Interpolation: Linear Approximation",
-                onselect: function () {
-                    entity.position.setInterpolationOptions({
-                        interpolationDegree: 1,
-                        interpolationAlgorithm: Cesium.LinearApproximation,
-                    });
-                },
-            },
-            {
-                text: "Interpolation: Lagrange Polynomial Approximation",
-                onselect: function () {
-                    entity.position.setInterpolationOptions({
-                        interpolationDegree: 5,
-                        interpolationAlgorithm: Cesium.LagrangePolynomialApproximation,
-                    });
-                },
-            },
-            {
-                text: "Interpolation: Hermite Polynomial Approximation",
-                onselect: function () {
-                    entity.position.setInterpolationOptions({
-                        interpolationDegree: 2,
-                        interpolationAlgorithm: Cesium.HermitePolynomialApproximation,
-                    });
-                },
-            },
-        ],
-        "interpolationMenu"
-    );
-});
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
 
     
 
@@ -862,7 +493,7 @@ let promise = Cesium.sampleTerrainMostDetailed(
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-09-11 16:11:55" itemprop="dateModified" datetime="2021-09-11T16:11:55+08:00">2021-09-11</time>
+        <time title="Modified: 2021-09-12 20:48:52" itemprop="dateModified" datetime="2021-09-12T20:48:52+08:00">2021-09-12</time>
       </span>
 
   
@@ -1317,6 +948,103 @@ let promise = Cesium.sampleTerrainMostDetailed(
 
 <h2 id="3-动态展示点云的示例："><a href="#3-动态展示点云的示例：" class="headerlink" title="3 动态展示点云的示例："></a>3 动态展示点云的示例：</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">viewThread</span><span class="params">(pangolin::OpenGlMatrix &amp;Twc)</span> </span>&#123;</span><br><span class="line">	pangolin::<span class="built_in">CreateWindowAndBind</span>(<span class="string">&quot;Main&quot;</span>, <span class="number">1024</span>, <span class="number">768</span>);</span><br><span class="line">	<span class="built_in">glEnable</span>(GL_DEPTH_TEST);</span><br><span class="line">	<span class="comment">// Issue specific OpenGl we might need</span></span><br><span class="line">	<span class="built_in">glEnable</span>(GL_BLEND);</span><br><span class="line">	<span class="built_in">glBlendFunc</span>(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Define Projection and initial ModelView matrix</span></span><br><span class="line">	<span class="function">pangolin::OpenGlRenderState <span class="title">s_cam</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">		pangolin::ProjectionMatrix(<span class="number">1024</span>, <span class="number">768</span>, <span class="number">500</span>, <span class="number">500</span>, <span class="number">512</span>, <span class="number">389</span>, <span class="number">0.1</span>, <span class="number">1000</span>),</span></span></span><br><span class="line"><span class="params"><span class="function">		pangolin::ModelViewLookAt(<span class="number">50</span>, <span class="number">50</span>, <span class="number">50</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, pangolin::AxisY)</span></span></span><br><span class="line"><span class="params"><span class="function">	)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">glClear</span>(GL_COLOR_BUFFER_BIT);</span><br><span class="line">	<span class="built_in">glClearColor</span>(<span class="number">1.0f</span>, <span class="number">1.0f</span>, <span class="number">1.0f</span>, <span class="number">1.0f</span>);</span><br><span class="line"></span><br><span class="line">	 <span class="comment">// Add named OpenGL viewport to window and provide 3D Handler</span></span><br><span class="line">	 pangolin::View&amp; d_cam = pangolin::<span class="built_in">CreateDisplay</span>()</span><br><span class="line">	 	.<span class="built_in">SetBounds</span>(<span class="number">0.0</span>, <span class="number">1.0</span>, pangolin::Attach::<span class="built_in">Pix</span>(<span class="number">175</span>), <span class="number">1.0</span>, <span class="number">-1024.0f</span> / <span class="number">768.0f</span>)</span><br><span class="line">	 	.<span class="built_in">SetHandler</span>(<span class="keyword">new</span> pangolin::<span class="built_in">Handler3D</span>(s_cam));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">size_t</span> frame = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>( !pangolin::<span class="built_in">ShouldQuit</span>() ) &#123;</span><br><span class="line">        <span class="comment">// Clear screen and activate view to render into</span></span><br><span class="line">        <span class="built_in">glClear</span>(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);</span><br><span class="line">		<span class="built_in">glClearColor</span>(<span class="number">1.0f</span>,<span class="number">1.0f</span>,<span class="number">1.0f</span>,<span class="number">1.0f</span>);</span><br><span class="line">        <span class="comment">//! Activate Displays and set State Matrices</span></span><br><span class="line">        d_cam.<span class="built_in">Activate</span>(s_cam);</span><br><span class="line">		<span class="comment">// draw camera</span></span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">float</span> w = <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">float</span> h = w*<span class="number">0.75</span>;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">float</span> z = w*<span class="number">0.6</span>;</span><br><span class="line">        <span class="built_in">glPushMatrix</span>();</span><br><span class="line">		<span class="built_in">glMultMatrixd</span>(Twc.m);</span><br><span class="line">        <span class="built_in">glLineWidth</span>(<span class="number">1</span>);</span><br><span class="line">        <span class="built_in">glColor3f</span>(<span class="number">0.0f</span>,<span class="number">1.0f</span>,<span class="number">0.0f</span>);</span><br><span class="line">        <span class="built_in">glBegin</span>(GL_LINES);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line">        <span class="built_in">glEnd</span>();</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glPopMatrix</span>();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// draw points</span></span><br><span class="line">		<span class="built_in">glPointSize</span>(<span class="number">2</span>);</span><br><span class="line">		<span class="built_in">glBegin</span>(GL_POINTS);</span><br><span class="line">		<span class="built_in">glColor3f</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">// get all points to m_pos.m_ppatches</span></span><br><span class="line">		updatePointsMutex.<span class="built_in">lock</span>();</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">size_t</span> p = <span class="number">0</span>; p &lt; (<span class="keyword">size_t</span>)allPPatchesRender.<span class="built_in">size</span>(); ++p)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">auto</span> patch = *allPPatchesRender[p];</span><br><span class="line">			<span class="built_in">glVertex3f</span>(</span><br><span class="line">				patch.m_coord[<span class="number">0</span>],</span><br><span class="line">				patch.m_coord[<span class="number">1</span>],</span><br><span class="line">				patch.m_coord[<span class="number">2</span>]</span><br><span class="line">			);</span><br><span class="line">		&#125;</span><br><span class="line">        updatePointsMutex.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="built_in">glEnd</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Swap frames and Process Events</span></span><br><span class="line">        pangolin::<span class="built_in">FinishFrame</span>();</span><br><span class="line">        </span><br><span class="line">		std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">100</span>)); <span class="comment">// ms</span></span><br><span class="line">		<span class="comment">// std::cout &lt;&lt; &quot;frame��&quot; &lt;&lt; ++frame &lt;&lt; std::endl;</span></span><br><span class="line">		<span class="comment">// std::cout &lt;&lt; &quot;point nums are: &quot; &lt;&lt; findMatch-&gt;m_pos.m_ppatches.size() &lt;&lt; std::endl;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	pangolin::OpenGlMatrix Twc, Twr;</span><br><span class="line">	Twc.<span class="built_in">SetIdentity</span>();</span><br><span class="line">	<span class="function">std::thread <span class="title">viewThd</span><span class="params">(viewThread, Twc)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">...&lt;省略&gt;</span><br><span class="line">        <span class="comment">// update render points</span></span><br><span class="line">        updatePointsMutex.<span class="built_in">lock</span>();</span><br><span class="line">        allPPatchesRender = findMatch-&gt;m_pos.m_ppatches; <span class="comment">// to get the newest points</span></span><br><span class="line">        updatePointsMutex.<span class="built_in">unlock</span>();</span><br><span class="line">...&lt;省略&gt;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	viewThd.<span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">	<span class="comment">//writePointCloundPly(prefix);</span></span><br><span class="line">	<span class="built_in">releasePMVS</span>();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/06/15/osgPtr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/06/15/osgPtr/" class="post-title-link" itemprop="url">osg智能指针错误 - Warning deleting still referenced object</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-06-15 18:24:49" itemprop="dateCreated datePublished" datetime="2021-06-15T18:24:49+08:00">2021-06-15</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/errors/" itemprop="url" rel="index"><span itemprop="name">errors</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="1-osg智能指针错误-Warning-deleting-still-referenced-object"><a href="#1-osg智能指针错误-Warning-deleting-still-referenced-object" class="headerlink" title="1 osg智能指针错误 - Warning: deleting still referenced object"></a>1 osg智能指针错误 - Warning: deleting still referenced object</h2><h3 id="1-1-问题描述"><a href="#1-1-问题描述" class="headerlink" title="1.1 问题描述"></a>1.1 问题描述</h3><p>类的定义如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QOsgWidget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">///&lt; essential widget, use this ptr to be the real widget</span></span><br><span class="line">    osgQOpenGLWidget* pWidget = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="comment">// QOsgWidget(QWidget* parent = nullptr);</span></span><br><span class="line">    <span class="built_in">QOsgWidget</span>(<span class="keyword">const</span> std::string&amp; modelPath, QWidget* parent = <span class="literal">nullptr</span>);</span><br><span class="line">    ~<span class="built_in">QOsgWidget</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">///&lt; osg base vars</span></span><br><span class="line">    osg::ref_ptr&lt;osg::Group&gt;                        mRoot                = <span class="literal">nullptr</span>; <span class="comment">// root node of the osg scene</span></span><br><span class="line">    osg::ref_ptr&lt;osg::Camera&gt;                       camera               = <span class="literal">nullptr</span>; <span class="comment">// osg camera</span></span><br><span class="line">    osg::ref_ptr&lt;osgViewer::Viewer&gt;                 mViewer              = <span class="literal">nullptr</span>; <span class="comment">// osg viewer</span></span><br><span class="line">    osg::ref_ptr&lt;osgGA::TrackballManipulator&gt;       trackball            = <span class="literal">nullptr</span>;</span><br><span class="line">    osg::ref_ptr&lt;osgGA::KeySwitchMatrixManipulator&gt; keyswitchManipulator = <span class="literal">nullptr</span>;</span><br><span class="line">    osg::ref_ptr&lt;osgViewer::StatsHandler&gt;           stats                = <span class="literal">nullptr</span>;</span><br><span class="line">    &lt;被省略&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>类的析构函数如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">QOsgWidget::~<span class="built_in">QOsgWidget</span>() &#123;</span><br><span class="line">    <span class="comment">// end the render thread and destroy the osgOpenglWidget</span></span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">microseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    mViewer-&gt;<span class="built_in">setDone</span>(<span class="literal">true</span>);</span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">microseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    mViewer-&gt;<span class="built_in">stopThreading</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//////////////////////////////////////////////////////////////////////////</span></span><br><span class="line">    <span class="comment">/// without folowing post process, u will crash with the bellowing warning when: delete pWidget</span></span><br><span class="line">    <span class="comment">/// Warning: deleting still referenced object 000002433CA59BB0 of type &#x27;class osg::Referenced * __ptr64&#x27;</span></span><br><span class="line">    <span class="comment">///     the final reference count was 1, memory corruption possible.</span></span><br><span class="line">    <span class="comment">///</span></span><br><span class="line">    <span class="comment">/// the reason i guess is:</span></span><br><span class="line">    <span class="comment">/// the bellowing vars can not be automatically set to null when delete pWidget, because they does</span></span><br><span class="line">    <span class="comment">/// not belong to the pWidget, so u need to set them to null manually, otherwise when delete pWidget,</span></span><br><span class="line">    <span class="comment">/// the destructor of pWidget will try to free the bellowing vars, but their ref != 0</span></span><br><span class="line">    <span class="comment">///////////////////////////////// PART 1 /////////////////////////////////</span></span><br><span class="line">        mRoot = <span class="literal">nullptr</span>;</span><br><span class="line">        mViewer = <span class="literal">nullptr</span>;</span><br><span class="line">        camera = <span class="literal">nullptr</span>;</span><br><span class="line">        trackball = <span class="literal">nullptr</span>;</span><br><span class="line">        keyswitchManipulator = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="comment">//////////////////////////////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">delete</span> pWidget; <span class="comment">// call the destructor of the osgOpenglWidge</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>问题描述，在执行类的析构的时候：<br>当没有PART1的时候，直接执行pWidget会出错</p>
+<h3 id="1-2-原因推测："><a href="#1-2-原因推测：" class="headerlink" title="1.2 原因推测："></a>1.2 原因推测：</h3><ul>
+<li>1 osg::ref_ptr&lt;&gt; 是一种智能指针，自动计算指针的引用个数，当引用个数为0的时候，自动回收其指向的对象。</li>
+<li>2 于是出现一个大问题，当pWidget这个类指针所指向的类，里面很多组件（比如 camera，mViewer）是在QOsgWidget类中申明的，那么当析构pWidget的时候，它会去析构自己的组件，然后当它析构了自己类里面的那些指针后，发现QOsgWidget里面的智能指针不是null（这些指针很可能在被别的模块访问），所以引用计数不为0，所以无法删除，或者删除会crash</li>
+</ul>
+<h3 id="1-3-得出结论："><a href="#1-3-得出结论：" class="headerlink" title="1.3 得出结论："></a>1.3 得出结论：</h3><ul>
+<li>1 如果类mon里面嵌套了类son，那么当mon的析构的时候，要注意如下两点：<ul>
+<li>1.1 将son析构</li>
+<li>1.2 执行son的析构前，对son的析构可能产生影响的内存，指针，都要释放掉和置空</li>
+</ul>
+</li>
+</ul>
 
       
     </div>
