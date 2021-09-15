@@ -136,7 +136,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -190,6 +190,87 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/09/15/maxFlowMinCut/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/09/15/maxFlowMinCut/" class="post-title-link" itemprop="url">maxFlowMinCut && 最大流最小割求法</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-09-15 14:50:23 / Modified: 19:41:33" itemprop="dateCreated datePublished" datetime="2021-09-15T14:50:23+08:00">2021-09-15</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="1-最大流-最小割本身含义"><a href="#1-最大流-最小割本身含义" class="headerlink" title="1 最大流-最小割本身含义"></a>1 最大流-最小割本身含义</h2><p>首先 起始点 s, 终止点 t, 从s-&gt;t的所有通路中，能够流过来的最大流量就是最大流，这里举个例子：<br>比如有如下的图：<br>1 -&gt; 2 管道是5的容量，<br>2 -&gt; 4 管道是4的容量，<br>1 -&gt; 3 管道是3的容量，<br>3 -&gt; 4 管道是6的容量，<br>那么从1-&gt;4的最大流，就是4 + 3 = 7</p>
+<p>最小割：<br>最小割是指，从图中移除一些边的集合以达到隔断从s到t的目的，成为一个图割，然后最小割，就是所有图割中，边权(管道的流量)之和最小的一个图割，最小割的值和最大流的值是相等的</p>
+<h2 id="2-最大流最小割算法"><a href="#2-最大流最小割算法" class="headerlink" title="2 最大流最小割算法"></a>2 最大流最小割算法</h2><p><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/MinCutMaximumFlowAlgorithm.png" alt="MinCutMaximumFlowAlgorithm"></p>
+<p>其过程就是：</p>
+<ul>
+<li>1 对于G中的每一个顶点，先将f(u, v)和f(v, u)都置为0</li>
+<li>2 当存在从s-&gt;t的一条路径(这样的一条路径称之为增广路径):<ul>
+<li>2.1 找出这个路径上的最小边权，称为tmpC</li>
+<li>2.2 对增广路径上的每一条边，都做: f(u, v) += tmpC, f(v, u) = -f(u, v)</li>
+</ul>
+</li>
+<li>3 G中的更改过后的图，称之为残余图(residual graph)<br>上面过程的tmpC之和就是最大流的值</li>
+</ul>
+<h2 id="3-例子"><a href="#3-例子" class="headerlink" title="3 例子"></a>3 例子</h2><p>引用自: <a target="_blank" rel="noopener" href="https://www.baeldung.com/cs/minimum-cut-graphs">https://www.baeldung.com/cs/minimum-cut-graphs</a><br><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/minCutEg.iwlkn8ciyfk.png" alt="minCutEg"></p>
+<p>在上述例子里的残余图中：<br>可以看出： 最大流为: 4 + 4 + 3 + 2 = 13</p>
+<h2 id="4-最小割"><a href="#4-最小割" class="headerlink" title="4 最小割"></a>4 最小割</h2><p>在上述例子里的残余图中：<br>首先按照从s能够到达的点和不能到达的点分成2个集合set1(reaching by s)和set2(not reaching by s)，这两个set在残余图中的连线构成的那些边成为最小割</p>
+<p>那么set1是： (a, b, c, e)<br>set2是：(d, f)]<br>残余图中，set1和set2相关连的边为： b-&gt;d, c-&gt;f, e-&gt;f,最小割值为： 4 + 3 + 6 = 13</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -396,7 +477,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/09/02/pmvsPaper/" class="post-title-link" itemprop="url">pmvsPaper</a>
+          <a href="/2021/09/02/pmvsPaper/" class="post-title-link" itemprop="url">pmvsPaper pmvs稠密重建论文阅读</a>
         </h2>
 
         <div class="post-meta-container">
@@ -414,7 +495,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-09-12 20:38:00" itemprop="dateModified" datetime="2021-09-12T20:38:00+08:00">2021-09-12</time>
+        <time title="Modified: 2021-09-15 17:32:39" itemprop="dateModified" datetime="2021-09-15T17:32:39+08:00">2021-09-15</time>
       </span>
 
   
@@ -438,15 +519,20 @@
 <li>2 优化c(p)和n(p), 将c(p)固定在一个ray上，这样就将自由度由3减少到1，然后n(p)由欧拉角来决定即可，yaw和pitch即可，那么就成为一个无约束最优化问题，则采用共轭梯度法(conjugate gradient)来解即可优化c(p)和n(p)</li>
 </ul>
 <h3 id="2-4-image"><a href="#2-4-image" class="headerlink" title="2.4 image"></a>2.4 image</h3><p>基于patch去做表面展示的最大优点是很灵活，然而缺少patch与patch之间的链接信息，就不容易获取相邻的patch，解决办法如下：<br>对于每一张图片，划分成 &beta;<em>&beta;(&beta;=2在文中)的cell，然后对于每一个patch，它在每个可见图片上都有映射过去的cell，然后上述过程做完以后，每张图片的每个cell都记录了该cell可见的那些个patch，我们记作$Q_i(x, y)$, 同样的，如果是在每个可见图片而且满足<a href="#2-3">#2-3</a>定义的光学差异进行上述步骤，那么就得到$Q_i^</em>(x, y)$</p>
-<h2 id="3-patch重建过程"><a href="#3-patch重建过程" class="headerlink" title="3 patch重建过程"></a>3 patch重建过程</h2><h3 id="3-1-初始化feature-match"><a href="#3-1-初始化feature-match" class="headerlink" title="3.1 初始化feature match"></a>3.1 初始化feature match</h3><h4 id="3-1-1-采用高斯查分和harris角点来做特征提取"><a href="#3-1-1-采用高斯查分和harris角点来做特征提取" class="headerlink" title="3.1.1 采用高斯查分和harris角点来做特征提取"></a>3.1.1 采用高斯查分和harris角点来做特征提取</h4><h4 id="3-1-2-特正匹配"><a href="#3-1-2-特正匹配" class="headerlink" title="3.1.2 特正匹配"></a>3.1.2 特正匹配</h4><ul>
+<h2 id="3-patch重建过程"><a href="#3-patch重建过程" class="headerlink" title="3 patch重建过程"></a>3 patch重建过程</h2><h3 id="3-1-初始化feature-match"><a href="#3-1-初始化feature-match" class="headerlink" title="3.1 初始化feature match"></a>3.1 初始化feature match</h3><h4 id="3-1-1-采用高斯查分和harris角点来做特征提取"><a href="#3-1-1-采用高斯查分和harris角点来做特征提取" class="headerlink" title="3.1.1 采用高斯查分和harris角点来做特征提取"></a>3.1.1 采用高斯查分和harris角点来做特征提取</h4><h4 id="3-1-2-特正匹配和生成atch"><a href="#3-1-2-特正匹配和生成atch" class="headerlink" title="3.1.2 特正匹配和生成atch"></a>3.1.2 特正匹配和生成atch</h4><ul>
 <li>1 对于图片$I_i$有光心$O(I_i)$，它里面的每个特征点f，在其它图片中有很多其他对应的特征点$f’$，对于每一个$(f, f’)$点对，那些在他们极线上的特征点，我们组成一个集合F，我们把F中的特征点三角化可以得到对应的3d点，对于这个点的集合，按照其与$O(I_i)$的距离升序排序，一个一个点的尝试去生成patch，生成patch在，直到成功</li>
-<li>2 生成patch的过程是在<a href="#23-patch%E4%BC%98%E5%8C%96">2.3 patch优化</a>阐释的，这里简单复述一下，生成patch就是优化patch的c(p)和o(p)然后使得光学差异函数最小，一旦一个cell生成了一个patch，那么改cell的其他特征点就直接删除不需要了</li>
+<li>2 生成patch的过程是在<a href="#23-patch%E4%BC%98%E5%8C%96">2.3 patch优化</a>阐释的，这里简单复述一下，生成patch就是优化patch的c(p)和o(p)然后使得光学差异函数最小，一旦一个cell生成了一个patch，那么改cell的其他特征点就直接删除不需要了<br>生成patch的算法如下：<br><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/pmvs_feature_matching.jcug6r54jqo.png" alt="pmvs_feature_matching"><h3 id="3-2-扩展patch"><a href="#3-2-扩展patch" class="headerlink" title="3.2 扩展patch"></a>3.2 扩展patch</h3>目的: 对于每一个image的cell $C_i(x, y)$, 至少建出来一个patch，过程如下：</li>
 </ul>
-<h3 id="3-2-expansion-扩展patch"><a href="#3-2-expansion-扩展patch" class="headerlink" title="3.2 expansion 扩展patch"></a>3.2 expansion 扩展patch</h3><p>目的: 对于每一个image的cell $C_i(x, y)$, 至少建出来一个patch，过程如下：</p>
-<h4 id="3-2-1-找出相邻的cells来扩展"><a href="#3-2-1-找出相邻的cells来扩展" class="headerlink" title="3.2.1 找出相邻的cells来扩展"></a>3.2.1 找出相邻的cells来扩展</h4><p>对于一个p，其在它的第i张可见图片中，而且被$C_i(x, y)$格子记住的patch集合$Q_i(x, y)$中，然后相邻的cells如下获得：<br>$$C(p) = {C_i(x’, y’) | p in Q_i(x, y), |x - x’| + |y - y’| = 1}$$<br>C(p)中需要移除两种类型的cell</p>
+<h4 id="3-2-1-找出相邻的cells来扩展"><a href="#3-2-1-找出相邻的cells来扩展" class="headerlink" title="3.2.1 找出相邻的cells来扩展"></a>3.2.1 找出相邻的cells来扩展</h4><p><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/pmvs_patch_expansion.t8atxse2wbk.png" alt="pmvs_patch_expansion"><br>对于一个p，其在它的第i张可见图片中，而且被$C_i(x, y)$格子记住的patch集合$Q_i(x, y)$中，然后相邻的cells如下获得：</p>
+<h4 id="3-1"><a href="#3-1" class="headerlink" title="3-1"></a>3-1</h4><p>$$C(p) = {C_i(x’, y’) | p in Q_i(x, y), |x - x’| + |y - y’| = 1}$$<br>C(p)中需要移除两种类型的cell</p>
 <ul>
-<li>1 移除已有patch的邻居cell，具体的： 若，$C_i(x’, y’)$ 包含了一个patch $p’$, 这个p’和p是邻居，那么这个$C_i(x’, y’)$则会被从C(p)移除</li>
+<li>1 移除已有patch的邻居cell，具体的： 若，$C_i(x’, y’)$ 包含了一个patch $p’$, 这个p’和p是邻居，那么这个$C_i(x’, y’)$则会被从C(p)移除，具体判断方式见下面的公式：<h4 id="3-2"><a href="#3-2" class="headerlink" title="3-2"></a>3-2</h4>$$|(c(p) - c(p’))*n(p)| + |(c(p)-c(p’))*n(p’)| &lt; 2\rho_1$$<br>$\rho_1$是对应于参考图像R(p)在c(p)和c(p’)的深度时，图像移动$\beta_1$个pixels需要的距离</li>
 <li>2*(这一步可以不要，因为图片光学差异的图片过滤过程可以消除这个错误，主要是为了计算效率) 移除深度不连续的邻居cell，从已有的相机去看$C_i(x’, y’)$，得到的深度和从相机去看p的慎独过大，则放弃这种邻居cell，然而实际中构建surface之前，这些个p和$C_i(x’, y’)$可能真实对应的表面间的深度不连续很难判断，所以简单化，也就是若$Q_i^*(x’, y’)$的size大于0，也就证明不连续，也就是当这个$C_i(x’, y’)$这个格子，至少有一个patch是在满足了光学差异达到目标的情况下被他记录，那么它就不需要别的patch来帮他expand，我个人如此理解</li>
+</ul>
+<h3 id="3-3-滤除错误的patch"><a href="#3-3-滤除错误的patch" class="headerlink" title="3.3 滤除错误的patch"></a>3.3 滤除错误的patch</h3><ul>
+<li>1 过滤可见性不一致的patch，去除深度值不一致且一致性较低的点，意思是如果扩散的点云在其他图特征点的点云前面了，通过比较各自的一致性来剔除；如果扩散点云跑到后边去了，也比较一致性<h4 id="3-3"><a href="#3-3" class="headerlink" title="3-3"></a>3-3</h4>$$|V^*(p)|(1-g^*(p)) &lt; \sum_{p_i \in U(p)}{1-g^*(p)}$$</li>
+<li>2 对于每一个patch，用深度图计算出在$V^*(p)$中可以看到它的图像的个数，如果比$\gamma$要小，那么认为可见图片太少，滤除</li>
+<li>3 保证了一个弱正则化，对于每一个patch，收集它所有的可见图片的相邻cells中的所有patches，若这些patches中是邻居patch的比例小于0.25，那么也滤除(考虑到它的相邻patch都不是邻居说明这个patch空间上和邻居不太连续)</li>
 </ul>
 <p>&lt;未完待续&gt;</p>
 
@@ -961,103 +1047,6 @@
 
 <h2 id="3-动态展示点云的示例："><a href="#3-动态展示点云的示例：" class="headerlink" title="3 动态展示点云的示例："></a>3 动态展示点云的示例：</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">viewThread</span><span class="params">(pangolin::OpenGlMatrix &amp;Twc)</span> </span>&#123;</span><br><span class="line">	pangolin::<span class="built_in">CreateWindowAndBind</span>(<span class="string">&quot;Main&quot;</span>, <span class="number">1024</span>, <span class="number">768</span>);</span><br><span class="line">	<span class="built_in">glEnable</span>(GL_DEPTH_TEST);</span><br><span class="line">	<span class="comment">// Issue specific OpenGl we might need</span></span><br><span class="line">	<span class="built_in">glEnable</span>(GL_BLEND);</span><br><span class="line">	<span class="built_in">glBlendFunc</span>(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Define Projection and initial ModelView matrix</span></span><br><span class="line">	<span class="function">pangolin::OpenGlRenderState <span class="title">s_cam</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">		pangolin::ProjectionMatrix(<span class="number">1024</span>, <span class="number">768</span>, <span class="number">500</span>, <span class="number">500</span>, <span class="number">512</span>, <span class="number">389</span>, <span class="number">0.1</span>, <span class="number">1000</span>),</span></span></span><br><span class="line"><span class="params"><span class="function">		pangolin::ModelViewLookAt(<span class="number">50</span>, <span class="number">50</span>, <span class="number">50</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, pangolin::AxisY)</span></span></span><br><span class="line"><span class="params"><span class="function">	)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">glClear</span>(GL_COLOR_BUFFER_BIT);</span><br><span class="line">	<span class="built_in">glClearColor</span>(<span class="number">1.0f</span>, <span class="number">1.0f</span>, <span class="number">1.0f</span>, <span class="number">1.0f</span>);</span><br><span class="line"></span><br><span class="line">	 <span class="comment">// Add named OpenGL viewport to window and provide 3D Handler</span></span><br><span class="line">	 pangolin::View&amp; d_cam = pangolin::<span class="built_in">CreateDisplay</span>()</span><br><span class="line">	 	.<span class="built_in">SetBounds</span>(<span class="number">0.0</span>, <span class="number">1.0</span>, pangolin::Attach::<span class="built_in">Pix</span>(<span class="number">175</span>), <span class="number">1.0</span>, <span class="number">-1024.0f</span> / <span class="number">768.0f</span>)</span><br><span class="line">	 	.<span class="built_in">SetHandler</span>(<span class="keyword">new</span> pangolin::<span class="built_in">Handler3D</span>(s_cam));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">size_t</span> frame = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>( !pangolin::<span class="built_in">ShouldQuit</span>() ) &#123;</span><br><span class="line">        <span class="comment">// Clear screen and activate view to render into</span></span><br><span class="line">        <span class="built_in">glClear</span>(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);</span><br><span class="line">		<span class="built_in">glClearColor</span>(<span class="number">1.0f</span>,<span class="number">1.0f</span>,<span class="number">1.0f</span>,<span class="number">1.0f</span>);</span><br><span class="line">        <span class="comment">//! Activate Displays and set State Matrices</span></span><br><span class="line">        d_cam.<span class="built_in">Activate</span>(s_cam);</span><br><span class="line">		<span class="comment">// draw camera</span></span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">float</span> w = <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">float</span> h = w*<span class="number">0.75</span>;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">float</span> z = w*<span class="number">0.6</span>;</span><br><span class="line">        <span class="built_in">glPushMatrix</span>();</span><br><span class="line">		<span class="built_in">glMultMatrixd</span>(Twc.m);</span><br><span class="line">        <span class="built_in">glLineWidth</span>(<span class="number">1</span>);</span><br><span class="line">        <span class="built_in">glColor3f</span>(<span class="number">0.0f</span>,<span class="number">1.0f</span>,<span class="number">0.0f</span>);</span><br><span class="line">        <span class="built_in">glBegin</span>(GL_LINES);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line">        <span class="built_in">glEnd</span>();</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glPopMatrix</span>();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// draw points</span></span><br><span class="line">		<span class="built_in">glPointSize</span>(<span class="number">2</span>);</span><br><span class="line">		<span class="built_in">glBegin</span>(GL_POINTS);</span><br><span class="line">		<span class="built_in">glColor3f</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">// get all points to m_pos.m_ppatches</span></span><br><span class="line">		updatePointsMutex.<span class="built_in">lock</span>();</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">size_t</span> p = <span class="number">0</span>; p &lt; (<span class="keyword">size_t</span>)allPPatchesRender.<span class="built_in">size</span>(); ++p)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">auto</span> patch = *allPPatchesRender[p];</span><br><span class="line">			<span class="built_in">glVertex3f</span>(</span><br><span class="line">				patch.m_coord[<span class="number">0</span>],</span><br><span class="line">				patch.m_coord[<span class="number">1</span>],</span><br><span class="line">				patch.m_coord[<span class="number">2</span>]</span><br><span class="line">			);</span><br><span class="line">		&#125;</span><br><span class="line">        updatePointsMutex.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="built_in">glEnd</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Swap frames and Process Events</span></span><br><span class="line">        pangolin::<span class="built_in">FinishFrame</span>();</span><br><span class="line">        </span><br><span class="line">		std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">100</span>)); <span class="comment">// ms</span></span><br><span class="line">		<span class="comment">// std::cout &lt;&lt; &quot;frame��&quot; &lt;&lt; ++frame &lt;&lt; std::endl;</span></span><br><span class="line">		<span class="comment">// std::cout &lt;&lt; &quot;point nums are: &quot; &lt;&lt; findMatch-&gt;m_pos.m_ppatches.size() &lt;&lt; std::endl;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	pangolin::OpenGlMatrix Twc, Twr;</span><br><span class="line">	Twc.<span class="built_in">SetIdentity</span>();</span><br><span class="line">	<span class="function">std::thread <span class="title">viewThd</span><span class="params">(viewThread, Twc)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">...&lt;省略&gt;</span><br><span class="line">        <span class="comment">// update render points</span></span><br><span class="line">        updatePointsMutex.<span class="built_in">lock</span>();</span><br><span class="line">        allPPatchesRender = findMatch-&gt;m_pos.m_ppatches; <span class="comment">// to get the newest points</span></span><br><span class="line">        updatePointsMutex.<span class="built_in">unlock</span>();</span><br><span class="line">...&lt;省略&gt;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	viewThd.<span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">	<span class="comment">//writePointCloundPly(prefix);</span></span><br><span class="line">	<span class="built_in">releasePMVS</span>();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/06/15/osgPtr/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/06/15/osgPtr/" class="post-title-link" itemprop="url">osg智能指针错误 - Warning deleting still referenced object</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-06-15 18:24:49" itemprop="dateCreated datePublished" datetime="2021-06-15T18:24:49+08:00">2021-06-15</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/errors/" itemprop="url" rel="index"><span itemprop="name">errors</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="1-osg智能指针错误-Warning-deleting-still-referenced-object"><a href="#1-osg智能指针错误-Warning-deleting-still-referenced-object" class="headerlink" title="1 osg智能指针错误 - Warning: deleting still referenced object"></a>1 osg智能指针错误 - Warning: deleting still referenced object</h2><h3 id="1-1-问题描述"><a href="#1-1-问题描述" class="headerlink" title="1.1 问题描述"></a>1.1 问题描述</h3><p>类的定义如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QOsgWidget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">///&lt; essential widget, use this ptr to be the real widget</span></span><br><span class="line">    osgQOpenGLWidget* pWidget = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="comment">// QOsgWidget(QWidget* parent = nullptr);</span></span><br><span class="line">    <span class="built_in">QOsgWidget</span>(<span class="keyword">const</span> std::string&amp; modelPath, QWidget* parent = <span class="literal">nullptr</span>);</span><br><span class="line">    ~<span class="built_in">QOsgWidget</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">///&lt; osg base vars</span></span><br><span class="line">    osg::ref_ptr&lt;osg::Group&gt;                        mRoot                = <span class="literal">nullptr</span>; <span class="comment">// root node of the osg scene</span></span><br><span class="line">    osg::ref_ptr&lt;osg::Camera&gt;                       camera               = <span class="literal">nullptr</span>; <span class="comment">// osg camera</span></span><br><span class="line">    osg::ref_ptr&lt;osgViewer::Viewer&gt;                 mViewer              = <span class="literal">nullptr</span>; <span class="comment">// osg viewer</span></span><br><span class="line">    osg::ref_ptr&lt;osgGA::TrackballManipulator&gt;       trackball            = <span class="literal">nullptr</span>;</span><br><span class="line">    osg::ref_ptr&lt;osgGA::KeySwitchMatrixManipulator&gt; keyswitchManipulator = <span class="literal">nullptr</span>;</span><br><span class="line">    osg::ref_ptr&lt;osgViewer::StatsHandler&gt;           stats                = <span class="literal">nullptr</span>;</span><br><span class="line">    &lt;被省略&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>类的析构函数如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">QOsgWidget::~<span class="built_in">QOsgWidget</span>() &#123;</span><br><span class="line">    <span class="comment">// end the render thread and destroy the osgOpenglWidget</span></span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">microseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    mViewer-&gt;<span class="built_in">setDone</span>(<span class="literal">true</span>);</span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">microseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    mViewer-&gt;<span class="built_in">stopThreading</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//////////////////////////////////////////////////////////////////////////</span></span><br><span class="line">    <span class="comment">/// without folowing post process, u will crash with the bellowing warning when: delete pWidget</span></span><br><span class="line">    <span class="comment">/// Warning: deleting still referenced object 000002433CA59BB0 of type &#x27;class osg::Referenced * __ptr64&#x27;</span></span><br><span class="line">    <span class="comment">///     the final reference count was 1, memory corruption possible.</span></span><br><span class="line">    <span class="comment">///</span></span><br><span class="line">    <span class="comment">/// the reason i guess is:</span></span><br><span class="line">    <span class="comment">/// the bellowing vars can not be automatically set to null when delete pWidget, because they does</span></span><br><span class="line">    <span class="comment">/// not belong to the pWidget, so u need to set them to null manually, otherwise when delete pWidget,</span></span><br><span class="line">    <span class="comment">/// the destructor of pWidget will try to free the bellowing vars, but their ref != 0</span></span><br><span class="line">    <span class="comment">///////////////////////////////// PART 1 /////////////////////////////////</span></span><br><span class="line">        mRoot = <span class="literal">nullptr</span>;</span><br><span class="line">        mViewer = <span class="literal">nullptr</span>;</span><br><span class="line">        camera = <span class="literal">nullptr</span>;</span><br><span class="line">        trackball = <span class="literal">nullptr</span>;</span><br><span class="line">        keyswitchManipulator = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="comment">//////////////////////////////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">delete</span> pWidget; <span class="comment">// call the destructor of the osgOpenglWidge</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>问题描述，在执行类的析构的时候：<br>当没有PART1的时候，直接执行pWidget会出错</p>
-<h3 id="1-2-原因推测："><a href="#1-2-原因推测：" class="headerlink" title="1.2 原因推测："></a>1.2 原因推测：</h3><ul>
-<li>1 osg::ref_ptr&lt;&gt; 是一种智能指针，自动计算指针的引用个数，当引用个数为0的时候，自动回收其指向的对象。</li>
-<li>2 于是出现一个大问题，当pWidget这个类指针所指向的类，里面很多组件（比如 camera，mViewer）是在QOsgWidget类中申明的，那么当析构pWidget的时候，它会去析构自己的组件，然后当它析构了自己类里面的那些指针后，发现QOsgWidget里面的智能指针不是null（这些指针很可能在被别的模块访问），所以引用计数不为0，所以无法删除，或者删除会crash</li>
-</ul>
-<h3 id="1-3-得出结论："><a href="#1-3-得出结论：" class="headerlink" title="1.3 得出结论："></a>1.3 得出结论：</h3><ul>
-<li>1 如果类mon里面嵌套了类son，那么当mon的析构的时候，要注意如下两点：<ul>
-<li>1.1 将son析构</li>
-<li>1.2 执行son的析构前，对son的析构可能产生影响的内存，指针，都要释放掉和置空</li>
-</ul>
-</li>
-</ul>
 
       
     </div>
