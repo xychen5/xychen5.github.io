@@ -330,7 +330,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-12-20 09:53:02" itemprop="dateModified" datetime="2021-12-20T09:53:02+08:00">2021-12-20</time>
+        <time title="Modified: 2021-12-20 09:55:41" itemprop="dateModified" datetime="2021-12-20T09:55:41+08:00">2021-12-20</time>
       </span>
 
   
@@ -343,7 +343,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="BITree-详解"><a href="#BITree-详解" class="headerlink" title="BITree 详解"></a>BITree 详解</h1><h2 id="1-Binary-Indexed-Tree-二元索引数-树状数组"><a href="#1-Binary-Indexed-Tree-二元索引数-树状数组" class="headerlink" title="1 Binary Indexed Tree(二元索引数)(树状数组)"></a>1 Binary Indexed Tree(二元索引数)(树状数组)</h2><ul>
+          <h1 id="BITree-详解"><a href="#BITree-详解" class="headerlink" title="BITree 详解"></a>BITree 详解</h1><h2 id="1-Binary-Indexed-Tree-二元索引树-树状数组"><a href="#1-Binary-Indexed-Tree-二元索引树-树状数组" class="headerlink" title="1 Binary Indexed Tree(二元索引树)(树状数组)"></a>1 Binary Indexed Tree(二元索引树)(树状数组)</h2><ul>
 <li>1 用途：以O(log n)时间复杂度得到任意区间和。同时支持在O(log n)时间内支持动态单点值的修改。空间复杂度O(n)。</li>
 <li>2 出处：Peter M. Fenwick. A new data structure for cumulative frequency tables. Software: Practice and Experience. 1994, 24 (3): 327–336. doi:10.1002/spe.4380240306.</li>
 <li>3 原理：按照Peter M. Fenwick的说法，正如所有的整数都可以表示成2的幂和，我们也可以把一串序列表示成一系列子序列的和。采用这个想法，我们可将一个前缀和划分成多个子序列的和，而划分的方法与数的2的幂和具有极其相似的方式。一方面，<strong>子序列的个数是其二进制表示中1的个数</strong>，另一方面，<strong>子序列代表的f[i]的个数也是2的幂</strong>。<br>如下说明也很贴切：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">How does Binary Indexed Tree work? </span><br><span class="line">The idea is based on the fact that all positive integers can be represented as the sum of powers of 2. For example 19 can be represented as 16 + 2 + 1. Every node of the BITree stores the sum of n elements where n is a power of 2. For example, in the first diagram above (the diagram for getSum()), the sum of the first 12 elements can be obtained by the sum of the last 4 elements (from 9 to 12) plus the sum of 8 elements (from 1 to 8). The number of set bits in the binary representation of a number n is O(Logn). Therefore, we traverse at-most O(Logn) nodes in both getSum() and update() operations. The time complexity of the construction is O(nLogn) as it calls update() for all n elements. </span><br></pre></td></tr></table></figure>
