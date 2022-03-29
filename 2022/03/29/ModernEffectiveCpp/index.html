@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css" integrity="sha256-no0c5ccDODBwp+9hSmV5VvPpKwHCpbVzXHexIkupM6U=" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js" integrity="sha256-a5YRB27CcBwBFcT5EF/f3E4vzIqyHrSR878nseNYw64=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","version":"8.7.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="item 1 理解模板类型推断rem 对于引用(模板参数类型是引用)推导时，有引⽤的实参会被视为⽆引⽤，他们的引⽤会被忽略(之后拼接上模板类型的&amp;(若有的话)) 对于通⽤引⽤的推导，左值实参会被特殊对待  对于传值类型推导，实参如果具有常量性和易变性会被忽略  在模板类型推导时，数组或者函数实参会退化为指针，除⾮它们被⽤于初始化引⽤  item 2 理解auto推断对于花括号的处理是aut">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ModernEffectiveCpp 阅读笔记">
+<meta property="og:url" content="https://xychen5.github.io/2022/03/29/ModernEffectiveCpp/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="item 1 理解模板类型推断rem 对于引用(模板参数类型是引用)推导时，有引⽤的实参会被视为⽆引⽤，他们的引⽤会被忽略(之后拼接上模板类型的&amp;(若有的话)) 对于通⽤引⽤的推导，左值实参会被特殊对待  对于传值类型推导，实参如果具有常量性和易变性会被忽略  在模板类型推导时，数组或者函数实参会退化为指针，除⾮它们被⽤于初始化引⽤  item 2 理解auto推断对于花括号的处理是aut">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-03-29T07:14:15.000Z">
+<meta property="article:modified_time" content="2022-03-29T09:29:48.116Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="cpp">
+<meta property="article:tag" content="base">
+<meta property="article:tag" content="book">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2022/03/29/ModernEffectiveCpp/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2022/03/29/ModernEffectiveCpp/","path":"2022/03/29/ModernEffectiveCpp/","title":"ModernEffectiveCpp 阅读笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ModernEffectiveCpp 阅读笔记 | LuftBallon</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LuftBallon</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#item-1-%E7%90%86%E8%A7%A3%E6%A8%A1%E6%9D%BF%E7%B1%BB%E5%9E%8B%E6%8E%A8%E6%96%AD"><span class="nav-number">1.</span> <span class="nav-text">item 1 理解模板类型推断</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rem"><span class="nav-number">1.1.</span> <span class="nav-text">rem</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#item-2-%E7%90%86%E8%A7%A3auto%E6%8E%A8%E6%96%AD"><span class="nav-number">2.</span> <span class="nav-text">item 2 理解auto推断</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rem-1"><span class="nav-number">2.1.</span> <span class="nav-text">rem</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#item-3-%E7%90%86%E8%A7%A3decltype"><span class="nav-number">3.</span> <span class="nav-text">item 3 理解decltype</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BD%BF%E7%94%A8%E5%AE%83%E8%8E%B7%E5%8F%96%E4%BD%A0%E6%83%B3%E8%A6%81%E7%9A%84%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.1.</span> <span class="nav-text">1 使用它获取你想要的的类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%94%AF%E4%B8%80%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9"><span class="nav-number">3.2.</span> <span class="nav-text">2 唯一需要注意的点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rem-2"><span class="nav-number">3.3.</span> <span class="nav-text">rem</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#item-4-%E5%AD%A6%E4%BC%9A%E7%9C%8B%E6%8E%A8%E5%AF%BC%E5%87%BA%E6%9D%A5%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">item 4 学会看推导出来的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rem-3"><span class="nav-number">4.1.</span> <span class="nav-text">rem</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#item-5-%E4%BC%98%E5%85%88%E8%80%83%E8%99%91auto%E8%80%8C%E4%B8%8D%E6%98%AF%E6%98%BE%E5%BC%8F%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.</span> <span class="nav-text">item 5 优先考虑auto而不是显式类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rem-4"><span class="nav-number">5.1.</span> <span class="nav-text">rem</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#item-6-%E8%8B%A5%E9%9D%9E%E5%B7%B1%E6%84%BF%EF%BC%8C%E7%94%A8%E6%98%BE%E7%A4%BA%E7%B1%BB%E5%9E%8B%E8%80%8C%E4%B8%8D%E6%98%AFauto"><span class="nav-number">6.</span> <span class="nav-text">item 6 若非己愿，用显示类型而不是auto</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rem-5"><span class="nav-number">6.1.</span> <span class="nav-text">rem</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#item"><span class="nav-number">7.</span> <span class="nav-text">item</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rem-6"><span class="nav-number">7.1.</span> <span class="nav-text">rem</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#item-1"><span class="nav-number">8.</span> <span class="nav-text">item</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rem-7"><span class="nav-number">8.1.</span> <span class="nav-text">rem</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#item-2"><span class="nav-number">9.</span> <span class="nav-text">item</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rem-8"><span class="nav-number">9.1.</span> <span class="nav-text">rem</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#item-3"><span class="nav-number">10.</span> <span class="nav-text">item</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">10.1.</span> <span class="nav-text"></span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#-1"><span class="nav-number">10.1.1.</span> <span class="nav-text"></span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+          </div>
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2022/03/29/ModernEffectiveCpp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ModernEffectiveCpp 阅读笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2022-03-29 15:14:15 / Modified: 17:29:48" itemprop="dateCreated datePublished" datetime="2022-03-29T15:14:15+08:00">2022-03-29</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="item-1-理解模板类型推断"><a href="#item-1-理解模板类型推断" class="headerlink" title="item 1 理解模板类型推断"></a>item 1 理解模板类型推断</h1><h2 id="rem"><a href="#rem" class="headerlink" title="rem"></a>rem</h2><ul>
+<li>对于引用(模板参数类型是引用)推导时，有引⽤的实参会被视为⽆引⽤，他们的引⽤会被忽略(之后拼接上模板类型的&amp;(若有的话))</li>
+<li>对于通⽤引⽤的推导，左值实参会被特殊对待 </li>
+<li>对于传值类型推导，实参如果具有常量性和易变性会被忽略 </li>
+<li>在模板类型推导时，数组或者函数实参会退化为指针，除⾮它们被⽤于初始化引⽤</li>
+</ul>
+<h1 id="item-2-理解auto推断"><a href="#item-2-理解auto推断" class="headerlink" title="item 2 理解auto推断"></a>item 2 理解auto推断</h1><p>对于花括号的处理是auto类型推导和模板类型推导唯⼀不同的地⽅。当使⽤auto的变量使⽤花括号的语，<br>法进⾏初始化的时候，会推导出std::initializer_list的实例化，但是对于模板类型推导这样就⾏不通：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> x=&#123;<span class="number">11</span>,<span class="number">23</span>,<span class="number">9</span>&#125;; <span class="comment">//x的类型是std::initializer_list&lt;int&gt; </span></span><br><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(T param)</span></span>; </span><br><span class="line"></span><br><span class="line"><span class="built_in">f</span>(&#123;<span class="number">11</span>,<span class="number">23</span>,<span class="number">9</span>&#125;); <span class="comment">//错误！不能推导出T</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ----------</span></span><br><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(std::initializer_list&lt;T&gt; initList)</span></span>; </span><br><span class="line"><span class="built_in">f</span>(&#123;<span class="number">11</span>,<span class="number">23</span>,<span class="number">9</span>&#125;); <span class="comment">//T被推导为int，initList的类型被推导为std::initializer_list&lt;int&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>以上是cpp11的，但是cpp14中允许函数的形参和返回值都为auto，但是推断还是模板推断那一套：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="keyword">int</span>&gt; v;</span><br><span class="line"><span class="keyword">auto</span> resetV = [&amp;v](<span class="keyword">const</span> <span class="keyword">auto</span> &amp; newValue)&#123;v=newValue;&#125;; <span class="comment">//C++14 ... </span></span><br><span class="line"><span class="built_in">reset</span>(&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;); <span class="comment">//错误！推导失败</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="rem-1"><a href="#rem-1" class="headerlink" title="rem"></a>rem</h2><ul>
+<li>auto类型推导通常和模板类型推导相同，但是auto类型推导假定花括号初始化代表</li>
+<li>std::initializer_list而模板类型推导不这样做 在C++14中auto允许出现在函数返回值或者lambda函数形参中，但是它的⼯作机制是模板类型推 导那⼀套⽅案。</li>
+</ul>
+<h1 id="item-3-理解decltype"><a href="#item-3-理解decltype" class="headerlink" title="item 3 理解decltype"></a>item 3 理解decltype</h1><h2 id="1-使用它获取你想要的的类型"><a href="#1-使用它获取你想要的的类型" class="headerlink" title="1 使用它获取你想要的的类型"></a>1 使用它获取你想要的的类型</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Container,<span class="keyword">typename</span> Index&gt; <span class="comment">//C++ 14版本 </span></span><br><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">authAndAccess</span><span class="params">(Container&amp; c,Index i)</span> </span></span><br><span class="line"><span class="function"></span>&#123; <span class="built_in">authenticateUser</span>(); <span class="keyword">return</span> c[i]; &#125;</span><br><span class="line"></span><br><span class="line">std::deque&lt;<span class="keyword">int</span>&gt; d; </span><br><span class="line">... </span><br><span class="line"><span class="built_in">authAndAccess</span>(d,<span class="number">5</span>)=<span class="number">10</span>; <span class="comment">//认证⽤⼾，返回d[5]，然后把10赋值给它，⽆法通过编译器！</span></span><br><span class="line"><span class="comment">// --------------------</span></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Container,<span class="keyword">typename</span> Index&gt; <span class="comment">//最终的C++14版本 </span></span><br><span class="line"><span class="function"><span class="keyword">decltype</span>(<span class="keyword">auto</span>) <span class="title">authAndAccess</span><span class="params">(Container&amp;&amp; c,Index i)</span></span></span><br><span class="line"><span class="function"></span>&#123; <span class="built_in">authenticateUser</span>(); <span class="keyword">return</span> std::forward&lt;Container&gt;(c)[i]; &#125;</span><br></pre></td></tr></table></figure>
+<p>上⾯的代码尝试把10赋值给右值，C++11禁⽌这样做，所以代码⽆法编译。<br>下面的改进版本，同时使用万能引用传入左值和右值的功能。</p>
+<h2 id="2-唯一需要注意的点"><a href="#2-唯一需要注意的点" class="headerlink" title="2 唯一需要注意的点"></a>2 唯一需要注意的点</h2><p>当使⽤decltype(auto) 的时候⼀定要加倍的小⼼，在表达式中看起来⽆⾜轻重的细节将会影响到类型的 推导。为了确认类型推导是否产出了你想要的结果，请参⻅Item4描述的那些技术。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> x;</span><br><span class="line"><span class="comment">// x是⼀个变量的名字，所以decltype(x) 是int。但是如果⽤⼀个小括号包覆这个名字，⽐如这样(x)，</span></span><br><span class="line"><span class="comment">// 就会产⽣⼀个⽐名字更复杂的表达式。对于名字来说，x是⼀个左值，C++11定义了表达式(x) 则是⼀个左值。因此decltype((x)) 是int&amp;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//decltype(x）是int，所以f1返回int</span></span><br><span class="line"><span class="function"><span class="keyword">decltype</span>(<span class="keyword">auto</span>) <span class="title">f1</span><span class="params">()</span> </span>&#123; <span class="keyword">int</span> x = <span class="number">0</span>; ... <span class="keyword">return</span> x; &#125;</span><br><span class="line"><span class="comment">//decltype((x))是int&amp;，所以f2返回int&amp;</span></span><br><span class="line"><span class="function"><span class="keyword">decltype</span>(<span class="keyword">auto</span>) <span class="title">f2</span><span class="params">()</span> </span>&#123; <span class="keyword">int</span> x =<span class="number">0l</span>; <span class="keyword">return</span> (x); &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="rem-2"><a href="#rem-2" class="headerlink" title="rem"></a>rem</h2><ul>
+<li>decltype总是不加修改的产⽣变量或者表达式的类型。 </li>
+<li>对于T类型的左值表达式，decltype总是产出T的引⽤即T&amp;。</li>
+<li>C++14⽀持decltype(auto) ，就像auto⼀样，推导出类型，但是它使⽤⾃⼰的独特规则进⾏推 导。</li>
+</ul>
+<h1 id="item-4-学会看推导出来的类型"><a href="#item-4-学会看推导出来的类型" class="headerlink" title="item 4 学会看推导出来的类型"></a>item 4 学会看推导出来的类型</h1><h2 id="rem-3"><a href="#rem-3" class="headerlink" title="rem"></a>rem</h2><ul>
+<li>类型推断可以从IDE看出，从编译器报错看出，从⼀些库的使⽤看出 </li>
+<li>这些⼯具可能既不准确也⽆帮助，所以理解C++类型推导规则才是最重要的</li>
+</ul>
+<hr>
+<h1 id="item-5-优先考虑auto而不是显式类型"><a href="#item-5-优先考虑auto而不是显式类型" class="headerlink" title="item 5 优先考虑auto而不是显式类型"></a>item 5 优先考虑auto而不是显式类型</h1><p>⾸先，深呼吸，放松，auto是可选项，不是命令，在某些情况下如果你的专业判断告诉你使⽤显式类型 声明⽐auto要更清晰更易维护，那你就不必再坚持使⽤auto。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">std::unordered_map&lt;std::string,<span class="keyword">int</span>&gt; m;</span><br><span class="line"> ... </span><br><span class="line"><span class="comment">// 所以 std::pair 的类型不是 std::pair&lt;std::string,int&gt; 而是 std::pair&lt;const std::string,int&gt; 。</span></span><br><span class="line"><span class="comment">// 编译器会努⼒的找到⼀ 种⽅法把前者转换为后者。它会成功的，因为它会创建⼀个临时对象，这个临时对象的类</span></span><br><span class="line"><span class="comment">// 型是p想绑定到 的对象的类型，即m中元素的类型，然后把p的引⽤绑定到这个临时对象上。在每个循环迭代结束时，</span></span><br><span class="line"><span class="comment">// 临 时对象将会销毁，如果你写了这样的⼀个循环，你可能会对它的⼀些⾏为感到⾮常惊讶，因为你确信你 只是让</span></span><br><span class="line"><span class="comment">// 成为p指向m中各个元素的引⽤而已。</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">const</span> std::pair&lt;std::string,<span class="keyword">int</span>&gt;&amp; p : m) &#123; ... &#125;</span><br><span class="line"><span class="comment">// 使⽤auto可以避免这些很难被意识到的类型不匹配的错误：</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp; p : m) &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="rem-4"><a href="#rem-4" class="headerlink" title="rem"></a>rem</h2><ul>
+<li>auto变量必须初始化，通常它可以避免⼀些移植性和效率性的问题，也使得重构更⽅便，还能让你 少打⼏个字。 </li>
+<li>正如Item2和6讨论的，auto类型的变量可能会踩到⼀些陷阱。</li>
+</ul>
+<h1 id="item-6-若非己愿，用显示类型而不是auto"><a href="#item-6-若非己愿，用显示类型而不是auto" class="headerlink" title="item 6 若非己愿，用显示类型而不是auto"></a>item 6 若非己愿，用显示类型而不是auto</h1><p>auto错误推到：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> highPriority = <span class="built_in">features</span>(w)[<span class="number">5</span>]; <span class="comment">//显式的声明highPriority的类型，√</span></span><br><span class="line"><span class="keyword">auto</span> highPriority = <span class="built_in">features</span>(w)[<span class="number">5</span>]; <span class="comment">//推导highPriority的类型，×</span></span><br><span class="line"><span class="comment">// 调⽤feature将返回⼀个std::vector，这个对象没有名字，为了⽅便我们的讨论，我这⾥叫他temp， </span></span><br><span class="line"><span class="comment">// operator[] 被temp调⽤，然后然后的 std::vector&lt;bool&gt;::reference 包含⼀个指针，这个指针指 </span></span><br><span class="line"><span class="comment">// 向⼀个temp⾥⾯的word，加上相应的偏移,。highPriority是⼀个 std::vector&lt;bool&gt;::reference </span></span><br><span class="line"><span class="comment">// 的拷⻉，所以highPriority也包含⼀个指针，指向temp中的⼀个word，加上合适的偏移，这⾥是5.在这个 </span></span><br><span class="line"><span class="comment">// 语句解释的时候temp将会被销毁，因为它是⼀个临时变量。因此highPriority包含⼀个悬置的指针，</span></span><br><span class="line"><span class="comment">// 如 果⽤于processWidget调⽤中将会造成未定义⾏为：</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">processWidget</span>(w,highPriority); <span class="comment">//未定义⾏为！ //highPriority包含⼀个悬置指针</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>作为⼀个通则，不可⻅的代理类通常不适⽤于auto。</strong></p>
+<p>当你不知道这个类型有没有被代理还想使⽤auto时你就不能单单只⽤⼀ 个auto。auto本⾝没什么问题，问题是auto不会推导出你想要的类型。<br>解决⽅案是强制使⽤⼀个不同的 类型推导形式，这种⽅法我通常称之为显式类型初始器惯⽤法（the explicitly typed initialized idiom)</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> highPriority = <span class="keyword">static_cast</span>&lt;<span class="keyword">bool</span>&gt;(<span class="built_in">features</span>(w)[<span class="number">5</span>]);</span><br></pre></td></tr></table></figure>
+
+<h2 id="rem-5"><a href="#rem-5" class="headerlink" title="rem"></a>rem</h2><ul>
+<li>不可⻅的代理类可能会使auto从表达式中推导出“错误的”类型 </li>
+<li>显式类型初始器惯⽤法强制auto推导出你想要的结果</li>
+</ul>
+<h1 id="item"><a href="#item" class="headerlink" title="item"></a>item</h1><h2 id="rem-6"><a href="#rem-6" class="headerlink" title="rem"></a>rem</h2><h1 id="item-1"><a href="#item-1" class="headerlink" title="item"></a>item</h1><h2 id="rem-7"><a href="#rem-7" class="headerlink" title="rem"></a>rem</h2><h1 id="item-2"><a href="#item-2" class="headerlink" title="item"></a>item</h1><h2 id="rem-8"><a href="#rem-8" class="headerlink" title="rem"></a>rem</h2><h1 id="item-3"><a href="#item-3" class="headerlink" title="item"></a>item</h1><h2 id=""><a href="#" class="headerlink" title=""></a></h2><h3 id="-1"><a href="#-1" class="headerlink" title=""></a></h3>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2022/03/29/ModernEffectiveCpp/" title="ModernEffectiveCpp 阅读笔记">https://xychen5.github.io/2022/03/29/ModernEffectiveCpp/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/cpp/" rel="tag"># cpp</a>
+              <a href="/tags/base/" rel="tag"># base</a>
+              <a href="/tags/book/" rel="tag"># book</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/20/lcDP1/" rel="prev" title="lcDP1 - 动态规划1">
+                  <i class="fa fa-chevron-left"></i> lcDP1 - 动态规划1
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+  <script class="next-config" data-name="nprogress" type="application/json">{"enable":true,"spinner":true}</script>
+  <script src="/js/third-party/nprogress.js"></script>
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

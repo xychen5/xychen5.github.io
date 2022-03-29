@@ -136,7 +136,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-count">50</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -147,7 +147,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-count">28</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -190,6 +190,422 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/08/05/reinterpretCast/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/08/05/reinterpretCast/" class="post-title-link" itemprop="url">reinterpretCast</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-08-05 10:17:50" itemprop="dateCreated datePublished" datetime="2021-08-05T10:17:50+08:00">2021-08-05</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/cpp/" itemprop="url" rel="index"><span itemprop="name">cpp</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="1-ffmpeg-解帧"><a href="#1-ffmpeg-解帧" class="headerlink" title="1 ffmpeg 解帧"></a>1 ffmpeg 解帧</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i DJI_20210615164633_0003_W.MP4 -r 3 images/%4d.jpg</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-reinterpret-cast-lt-gt-理解以及典型应用："><a href="#2-reinterpret-cast-lt-gt-理解以及典型应用：" class="headerlink" title="2 reinterpret_cast&lt;&gt; 理解以及典型应用："></a>2 reinterpret_cast&lt;&gt; 理解以及典型应用：</h2><p>对于其他的例如static_cast&lt;&gt;等的应用，参考：<a target="_blank" rel="noopener" href="http://www.cplusplus.com/doc/tutorial/typecasting/">http://www.cplusplus.com/doc/tutorial/typecasting/</a><br><br>以下引用自: <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/573294/when-to-use-reinterpret-cast">https://stackoverflow.com/questions/573294/when-to-use-reinterpret-cast</a><br><br>Here is a variant of Avi Ginsburg’s program which clearly illustrates the property of reinterpret_cast mentioned by Chris Luengo, flodin, and cmdLP: that the compiler treats the pointed-to memory location as if it were an object of the new type:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> :</span> <span class="keyword">public</span> A</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    string s;</span><br><span class="line">    B b;</span><br><span class="line">    b.i = <span class="number">0</span>;</span><br><span class="line">    A* as = <span class="keyword">static_cast</span>&lt;A*&gt;(&amp;b);</span><br><span class="line">    A* ar = <span class="keyword">reinterpret_cast</span>&lt;A*&gt;(&amp;b);</span><br><span class="line">    B* c = <span class="keyword">reinterpret_cast</span>&lt;B*&gt;(ar);</span><br><span class="line">    </span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;as-&gt;i = &quot;</span> &lt;&lt; hex &lt;&lt; <span class="built_in">setfill</span>(<span class="string">&#x27;0&#x27;</span>)  &lt;&lt; as-&gt;i &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;ar-&gt;i = &quot;</span> &lt;&lt; ar-&gt;i &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;b.i   = &quot;</span> &lt;&lt; b.i &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;c-&gt;i  = &quot;</span> &lt;&lt; c-&gt;i &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;(as-&gt;i) = &quot;</span> &lt;&lt; &amp;(as-&gt;i) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;(ar-&gt;i) = &quot;</span> &lt;&lt; &amp;(ar-&gt;i) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;(b.i) = &quot;</span> &lt;&lt; &amp;(b.i) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;(c-&gt;i) = &quot;</span> &lt;&lt; &amp;(c-&gt;i) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;b = &quot;</span> &lt;&lt; &amp;b &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;as = &quot;</span> &lt;&lt; as &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;ar = &quot;</span> &lt;&lt; ar &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;c  = &quot;</span> &lt;&lt; c  &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    </span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;Press ENTER to exit.\n&quot;</span>;</span><br><span class="line">    <span class="built_in">getline</span>(cin,s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Which results in output like this:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">as-&gt;i = 0</span><br><span class="line">ar-&gt;i = 50ee64</span><br><span class="line">b.i   = 0</span><br><span class="line">c-&gt;i  = 0</span><br><span class="line"></span><br><span class="line">&amp;(as-&gt;i) = 00EFF978</span><br><span class="line">&amp;(ar-&gt;i) = 00EFF974</span><br><span class="line">&amp;(b.i)   = 00EFF978</span><br><span class="line">&amp;(c-&gt;i)  = 00EFF978</span><br><span class="line"></span><br><span class="line">&amp;b = 00EFF974</span><br><span class="line">as = 00EFF978</span><br><span class="line">ar = 00EFF974</span><br><span class="line">c  = 00EFF974</span><br><span class="line">Press ENTER to exit.</span><br></pre></td></tr></table></figure>
+<p>It can be seen that the B object is built in memory as B-specific data first, followed by the embedded A object. The static_cast correctly returns the address of the embedded A object, and the pointer created by static_cast correctly gives the value of the data field. The pointer generated by reinterpret_cast treats b’s memory location as if it were a plain A object, and so when the pointer tries to get the data field it returns some B-specific data as if it were the contents of this field.</p>
+<p>应用如下：<br>下面的应用根据输入的类型T判断后使用了reinterpret_cast去转换；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">OptionManager::RegisterOption</span><span class="params">(<span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> T* option)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (std::is_same&lt;T, <span class="keyword">bool</span>&gt;::value) &#123;</span><br><span class="line">    options_bool_.<span class="built_in">emplace_back</span>(name, <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">bool</span>*&gt;(option));</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (std::is_same&lt;T, <span class="keyword">int</span>&gt;::value) &#123;</span><br><span class="line">    options_int_.<span class="built_in">emplace_back</span>(name, <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">int</span>*&gt;(option));</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (std::is_same&lt;T, <span class="keyword">double</span>&gt;::value) &#123;</span><br><span class="line">    options_double_.<span class="built_in">emplace_back</span>(name, <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">double</span>*&gt;(option));</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (std::is_same&lt;T, std::string&gt;::value) &#123;</span><br><span class="line">    options_string_.<span class="built_in">emplace_back</span>(name,</span><br><span class="line">                                 <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> std::string*&gt;(option));</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">LOG</span>(FATAL) &lt;&lt; <span class="string">&quot;Unsupported option type&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/07/18/glogUse/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/07/18/glogUse/" class="post-title-link" itemprop="url">glogUse</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-07-18 16:18:43" itemprop="dateCreated datePublished" datetime="2021-07-18T16:18:43+08:00">2021-07-18</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="glog使用："><a href="#glog使用：" class="headerlink" title="glog使用："></a>glog使用：</h2><p>项目地址：<br><a href="git@github.com:xychen5/tryGlog.git">git@github.com:xychen5/tryGlog.git</a><br>推荐使用类似于clion的ide，然后打开该项目，即可编译运行。</p>
+<h3 id="1-主要作用："><a href="#1-主要作用：" class="headerlink" title="1 主要作用："></a>1 主要作用：</h3><p><strong>能够将glog的日志在cmd中打印</strong><br>主要调用了函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">google::<span class="built_in">SetStderrLogging</span>(google::INFO); <span class="comment">// print the logs whose severity &gt; [info]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-output："><a href="#2-output：" class="headerlink" title="2 output："></a>2 output：</h3><p>样例输出代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">I0718 16:09:07.626883 18628 main.cpp:13] glog used in cmd!!</span><br><span class="line"></span><br><span class="line">W0718 16:09:07.627887 18628 main.cpp:14] glog used in cmd!!</span><br><span class="line"></span><br><span class="line">E0718 16:09:07.628882 18628 main.cpp:15] glog used in cmd!!</span><br><span class="line"></span><br><span class="line">F0718 16:09:07.628882 18628 main.cpp:16] glog used in cmd!!</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-使用clion需要注意编译器的版本得和库对应"><a href="#3-使用clion需要注意编译器的版本得和库对应" class="headerlink" title="3 使用clion需要注意编译器的版本得和库对应"></a>3 使用clion需要注意编译器的版本得和库对应</h3><p>如果使用x86版本的toolchain，会报错如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">====================[ Build | tryGlogLion | Debug ]=============================</span><br><span class="line">&quot;Z:\softwares\CLion 2021.1.3\bin\cmake\win\bin\cmake.exe&quot; --build F:\cppTry\tryGlogLion\cmake-build-debug --target tryGlogLion</span><br><span class="line">Scanning dependencies of target tryGlogLion</span><br><span class="line">[ 50%] Building CXX object CMakeFiles/tryGlogLion.dir/main.cpp.obj</span><br><span class="line">main.cpp</span><br><span class="line">[100%] Linking CXX executable tryGlogLion.exe</span><br><span class="line">NMAKE : fatal error U1077: “&quot;Z:\softwares\CLion 2021.1.3\bin\cmake\win\bin\cmake.exe&quot;”: 返回代码“0xffffffff”</span><br><span class="line">Stop.</span><br><span class="line">NMAKE : fatal error U1077: “&quot;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\bin\HostX86\x86\nmake.exe&quot;”: 返回代码“0x2”</span><br><span class="line">Stop.</span><br><span class="line">NMAKE : fatal error U1077: “&quot;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\bin\HostX86\x86\nmake.exe&quot;”: 返回代码“0x2”</span><br><span class="line">Stop.</span><br><span class="line">NMAKE : fatal error U1077: “&quot;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\bin\HostX86\x86\nmake.exe&quot;”: 返回代码“0x2”</span><br><span class="line">Stop.</span><br><span class="line">LINK Pass 1: command &quot;C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1429~1.300\bin\Hostx86\x86\link.exe /nologo @CMakeFiles\tryGlogLion.dir\objects1.rsp /out:tryGlogLion.exe /implib:tryGlogLion.lib /pdb:F:\cppTry\tryGlogLion\cmake-build-debug\tryGlogLion.pdb /version:0.0 /machine:X86 /debug /INCREMENTAL /subsystem:console -LIBPATH:F:\prjs\ThirdParty\glog\lib -LIBPATH:F:\prjs\ThirdParty\gflags\lib glog.lib gflags_static.lib glog.lib gflags_static.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTFILE:CMakeFiles\tryGlogLion.dir/intermediate.manifest CMakeFiles\tryGlogLion.dir/manifest.res&quot; failed (exit code 1120) with the following output:</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) void __cdecl google::InitGoogleLogging(char const *)&quot; (__imp_?InitGoogleLogging@google@@YAXPBD@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessage::LogMessage(char const *,int)&quot; (__imp_??0LogMessage@google@@QAE@PBDH@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessage::LogMessage(char const *,int,int)&quot; (__imp_??0LogMessage@google@@QAE@PBDHH@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessage::~LogMessage(void)&quot; (__imp_??1LogMessage@google@@QAE@XZ)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: class std::basic_ostream&lt;char,struct std::char_traits&lt;char&gt; &gt; &amp; __thiscall google::LogMessage::stream(void)&quot; (__imp_?stream@LogMessage@google@@QAEAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@XZ)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessageFatal::LogMessageFatal(char const *,int)&quot; (__imp_??0LogMessageFatal@google@@QAE@PBDH@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessageFatal::~LogMessageFatal(void)&quot; (__imp_??1LogMessageFatal@google@@QAE@XZ)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) void __cdecl google::SetStderrLogging(int)&quot; (__imp_?SetStderrLogging@google@@YAXH@Z)，函数 _main 中引用了该符号</span><br><span class="line">F:\prjs\ThirdParty\glog\lib\glog.lib : warning LNK4272:库计算机类型“x64”与目标计算机类型“x86”冲突</span><br><span class="line">F:\prjs\ThirdParty\gflags\lib\gflags_static.lib : warning LNK4272:库计算机类型“x64”与目标计算机类型“x86”冲突</span><br><span class="line">tryGlogLion.exe : fatal error LNK1120: 8 个无法解析的外部命令</span><br></pre></td></tr></table></figure>
+<p><strong>解决方案：</strong><br>将files-&gt;settings-&gt;buidl,execut,deploy-&gt;toolchains-&gt;enviroment-&gt;architecture设置为<strong>x86_amd64</strong></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/07/17/freeImageTocvMat/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/07/17/freeImageTocvMat/" class="post-title-link" itemprop="url">freeImageTocvMat&1channelTo3channes - freeimage转到cvmat & 单通道图像转到3通道</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-07-17 18:51:52" itemprop="dateCreated datePublished" datetime="2021-07-17T18:51:52+08:00">2021-07-17</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="0-结果"><a href="#0-结果" class="headerlink" title="0 结果"></a>0 结果</h2><p><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/freeImg2cvMat.7hbdeyhx4n80.PNG" alt="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/freeImg2cvMat.7hbdeyhx4n80.PNG"></p>
+<h2 id="1-代码"><a href="#1-代码" class="headerlink" title="1 代码"></a>1 代码</h2><p>将freeImage转为cv::mat，代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;FreeImage.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2\opencv.hpp&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</span><br><span class="line"></span><br><span class="line"><span class="comment">// #define _CRT_SECURE_NO_WARNINGS</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> <span class="meta-keyword">warning</span>(disable : 4996)</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FI2MAT</span><span class="params">(FIBITMAP* src, Mat&amp; dst)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//FIT_BITMAP    //standard image : 1 - , 4 - , 8 - , 16 - , 24 - , 32 - bit</span></span><br><span class="line">    <span class="comment">//FIT_UINT16    //array of unsigned short : unsigned 16 - bit</span></span><br><span class="line">    <span class="comment">//FIT_INT16     //array of short : signed 16 - bit</span></span><br><span class="line">    <span class="comment">//FIT_UINT32    //array of unsigned long : unsigned 32 - bit</span></span><br><span class="line">    <span class="comment">//FIT_INT32     //array of long : signed 32 - bit</span></span><br><span class="line">    <span class="comment">//FIT_FLOAT     //array of float : 32 - bit IEEE floating point</span></span><br><span class="line">    <span class="comment">//FIT_DOUBLE    //array of double : 64 - bit IEEE floating point</span></span><br><span class="line">    <span class="comment">//FIT_COMPLEX   //array of FICOMPLEX : 2 x 64 - bit IEEE floating point</span></span><br><span class="line">    <span class="comment">//FIT_RGB16     //48 - bit RGB image : 3 x 16 - bit</span></span><br><span class="line">    <span class="comment">//FIT_RGBA16    //64 - bit RGBA image : 4 x 16 - bit</span></span><br><span class="line">    <span class="comment">//FIT_RGBF      //96 - bit RGB float image : 3 x 32 - bit IEEE floating point</span></span><br><span class="line">    <span class="comment">//FIT_RGBAF     //128 - bit RGBA float image : 4 x 32 - bit IEEE floating point</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> bpp = <span class="built_in">FreeImage_GetBPP</span>(src);</span><br><span class="line">    FREE_IMAGE_TYPE fit = <span class="built_in">FreeImage_GetImageType</span>(src);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> cv_type = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">int</span> cv_cvt = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in"><span class="keyword">switch</span></span> (fit)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> FIT_UINT16: cv_type = DataType&lt;ushort&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_INT16: cv_type = DataType&lt;<span class="keyword">short</span>&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_UINT32: cv_type = DataType&lt;<span class="keyword">unsigned</span>&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_INT32: cv_type = DataType&lt;<span class="keyword">int</span>&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_FLOAT: cv_type = DataType&lt;<span class="keyword">float</span>&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_DOUBLE: cv_type = DataType&lt;<span class="keyword">double</span>&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_COMPLEX: cv_type = DataType&lt;Complex&lt;<span class="keyword">double</span>&gt;&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_RGB16: cv_type = DataType&lt;Vec&lt;ushort, <span class="number">3</span>&gt;&gt;::type; cv_cvt = COLOR_RGB2BGR; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_RGBA16: cv_type = DataType&lt;Vec&lt;ushort, <span class="number">4</span>&gt;&gt;::type; cv_cvt = COLOR_RGBA2BGRA; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_RGBF: cv_type = DataType&lt;Vec&lt;<span class="keyword">float</span>, <span class="number">3</span>&gt;&gt;::type; cv_cvt = COLOR_RGB2BGR; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_RGBAF: cv_type = DataType&lt;Vec&lt;<span class="keyword">float</span>, <span class="number">4</span>&gt;&gt;::type; cv_cvt = COLOR_RGBA2BGRA; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_BITMAP:</span><br><span class="line">        <span class="built_in"><span class="keyword">switch</span></span> (bpp) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">8</span>: cv_type = DataType&lt;Vec&lt;uchar, <span class="number">1</span>&gt;&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">16</span>: cv_type = DataType&lt;Vec&lt;uchar, <span class="number">2</span>&gt;&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">24</span>: cv_type = DataType&lt;Vec&lt;uchar, <span class="number">3</span>&gt;&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">32</span>: cv_type = DataType&lt;Vec&lt;uchar, <span class="number">4</span>&gt;&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="comment">// 1, 4 // Unsupported natively</span></span><br><span class="line">            cv_type = <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="comment">// FIT_UNKNOWN // unknown type</span></span><br><span class="line">        dst = <span class="built_in">Mat</span>(); <span class="comment">// return empty Mat</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> width = <span class="built_in">FreeImage_GetWidth</span>(src);</span><br><span class="line">    <span class="keyword">int</span> height = <span class="built_in">FreeImage_GetHeight</span>(src);</span><br><span class="line">    <span class="keyword">int</span> step = <span class="built_in">FreeImage_GetPitch</span>(src);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (cv_type &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        dst = <span class="built_in">Mat</span>(height, width, cv_type, <span class="built_in">FreeImage_GetBits</span>(src), step);</span><br><span class="line">        <span class="keyword">if</span> (cv_cvt &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">cvtColor</span>(dst, dst, cv_cvt);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">        std::vector&lt;uchar&gt; lut;</span><br><span class="line">        <span class="keyword">int</span> n = <span class="built_in">pow</span>(<span class="number">2</span>, bpp);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i)</span><br><span class="line">        &#123;</span><br><span class="line">            lut.<span class="built_in">push_back</span>(<span class="keyword">static_cast</span>&lt;uchar&gt;((<span class="number">255</span> / (n - <span class="number">1</span>))*i));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        FIBITMAP* palletized = <span class="built_in">FreeImage_ConvertTo8Bits</span>(src);</span><br><span class="line">        BYTE* data = <span class="built_in">FreeImage_GetBits</span>(src);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> r = <span class="number">0</span>; r &lt; height; ++r) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> c = <span class="number">0</span>; c &lt; width; ++c) &#123;</span><br><span class="line">                dst.at&lt;uchar&gt;(r, c) = saturate_cast&lt;uchar&gt;(lut[data[r*step + c]]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">flip</span>(dst, dst, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">FreeImage_Initialise</span>();</span><br><span class="line">    <span class="comment">// std::string imgPath = &quot;F:/cppTry/index3.png&quot;;</span></span><br><span class="line">    std::string imgPath = <span class="string">&quot;F:/cppTry/ger.JPG&quot;</span>;</span><br><span class="line">    FREE_IMAGE_FORMAT format = <span class="built_in">FreeImage_GetFileType</span>(imgPath.<span class="built_in">c_str</span>(), <span class="number">0</span>);</span><br><span class="line">    FIBITMAP* fi_image = <span class="built_in">FreeImage_Load</span>(format, imgPath.<span class="built_in">c_str</span>());</span><br><span class="line"></span><br><span class="line">    Mat cvImg2;</span><br><span class="line">    <span class="built_in">FI2MAT</span>(fi_image, cvImg2);</span><br><span class="line">    <span class="built_in">cvNamedWindow</span>(<span class="string">&quot;Image1:&quot;</span>,<span class="number">1</span>);</span><br><span class="line">    cv::<span class="built_in">imshow</span>(<span class="string">&quot;Image1:&quot;</span>,cvImg2);</span><br><span class="line">    <span class="comment">// imshow(cv_img);</span></span><br><span class="line"></span><br><span class="line">    IplImage *img = <span class="built_in">cvLoadImage</span>(imgPath.<span class="built_in">c_str</span>());</span><br><span class="line">    <span class="built_in">cvNamedWindow</span>(<span class="string">&quot;Image2:&quot;</span>,<span class="number">1</span>);</span><br><span class="line">    <span class="built_in">cvShowImage</span>(<span class="string">&quot;Image2:&quot;</span>, img);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;[free&#x27;s conv]: type is: &quot;</span>    &lt;&lt; <span class="built_in">FreeImage_GetColorType</span>(fi_image) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;[free&#x27;s conv]: depth is: &quot;</span>   &lt;&lt; <span class="built_in">FreeImage_GetBPP</span>(fi_image) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;[free&#x27;s conv]: pitch is: &quot;</span>   &lt;&lt; <span class="built_in">FreeImage_GetPitch</span>(fi_image) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;[cv2 conv]: type is: &quot;</span> &lt;&lt;  <span class="string">&quot;/&quot;</span> &lt;&lt; cvImg2.<span class="built_in">type</span>() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;[cv2 conv]: depth is: &quot;</span> &lt;&lt; <span class="string">&quot;/&quot;</span> &lt;&lt; cvImg2.<span class="built_in">depth</span>() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;[cv2 conv]: channel is: &quot;</span> &lt;&lt; <span class="string">&quot;/&quot;</span> &lt;&lt; cvImg2.<span class="built_in">channels</span>() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;[cv2 conv]: elem size is: &quot;</span> &lt;&lt; <span class="string">&quot;/&quot;</span> &lt;&lt; cvImg2.<span class="built_in">elemSize</span>() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cvWaitKey</span>();</span><br><span class="line">    <span class="built_in">cvDestroyWindow</span>(<span class="string">&quot;Image:&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-将1通道转为3通道"><a href="#2-将1通道转为3通道" class="headerlink" title="2 将1通道转为3通道"></a>2 将1通道转为3通道</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">convert1to3Channel</span><span class="params">(cv::Mat&amp; src, cv::Mat&amp; dst)</span> </span>&#123;</span><br><span class="line">    vector&lt;cv::Mat&gt; channels;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123;</span><br><span class="line">        channels.<span class="built_in">push_back</span>(src);</span><br><span class="line">    &#125;</span><br><span class="line">    cv::<span class="built_in">merge</span>(&amp;channels[<span class="number">0</span>], channels.<span class="built_in">size</span>(), dst);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/07/17/pangolinDynamicPly/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/07/17/pangolinDynamicPly/" class="post-title-link" itemprop="url">pangolinDynamicPly.md</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-07-17 17:44:13" itemprop="dateCreated datePublished" datetime="2021-07-17T17:44:13+08:00">2021-07-17</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="0-结果展示"><a href="#0-结果展示" class="headerlink" title="0 结果展示"></a>0 结果展示</h2><p><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/dynamicPly.4903brhv6b00.gif" alt="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/dynamicPly.4903brhv6b00.gif"></p>
+<h2 id="1-下载编译pangolin的库"><a href="#1-下载编译pangolin的库" class="headerlink" title="1 下载编译pangolin的库"></a>1 下载编译pangolin的库</h2><p><a target="_blank" rel="noopener" href="https://github.com/stevenlovegrove/Pangolin.git">https://github.com/stevenlovegrove/Pangolin.git</a><br>该库中本身含有libpng, libjpg, libzip</p>
+<h2 id="2-当需要调用该库时："><a href="#2-当需要调用该库时：" class="headerlink" title="2 当需要调用该库时："></a>2 当需要调用该库时：</h2><p>调用时依赖如下：(本项目并未上传所有依赖，部分依赖需要单独下载然后放到thirdparty目录里)</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># include</span></span><br><span class="line">F:\prjs\ORB_SLAM3_Fix\ORB_SLAM3\Thirdparty\Pangolin\include;F:\prjs\ORB_SLAM3_Fix\ORB_SLAM3\Thirdparty\Pangolin\build\src\include;F:\prjs\ORB_SLAM3_Fix\ORB_SLAM3\Thirdparty\Pangolin\build\external\glew\include;F:\BASE_ENV\forOpenMVS\eigen;%(AdditionalIncludeDirectories)</span><br><span class="line"></span><br><span class="line"><span class="comment"># lib</span></span><br><span class="line">..\..\..\lib\Release\pangolin.lib;opengl32.lib;glu32.lib;..\..\external\glew\lib\glew.lib;..\..\external\libpng\lib\libpng16_static.lib;..\..\external\zlib\lib\zlibstatic.lib;..\..\external\libjpeg\lib\jpeg.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-动态展示点云的示例："><a href="#3-动态展示点云的示例：" class="headerlink" title="3 动态展示点云的示例："></a>3 动态展示点云的示例：</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">viewThread</span><span class="params">(pangolin::OpenGlMatrix &amp;Twc)</span> </span>&#123;</span><br><span class="line">	pangolin::<span class="built_in">CreateWindowAndBind</span>(<span class="string">&quot;Main&quot;</span>, <span class="number">1024</span>, <span class="number">768</span>);</span><br><span class="line">	<span class="built_in">glEnable</span>(GL_DEPTH_TEST);</span><br><span class="line">	<span class="comment">// Issue specific OpenGl we might need</span></span><br><span class="line">	<span class="built_in">glEnable</span>(GL_BLEND);</span><br><span class="line">	<span class="built_in">glBlendFunc</span>(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Define Projection and initial ModelView matrix</span></span><br><span class="line">	<span class="function">pangolin::OpenGlRenderState <span class="title">s_cam</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">		pangolin::ProjectionMatrix(<span class="number">1024</span>, <span class="number">768</span>, <span class="number">500</span>, <span class="number">500</span>, <span class="number">512</span>, <span class="number">389</span>, <span class="number">0.1</span>, <span class="number">1000</span>),</span></span></span><br><span class="line"><span class="params"><span class="function">		pangolin::ModelViewLookAt(<span class="number">50</span>, <span class="number">50</span>, <span class="number">50</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, pangolin::AxisY)</span></span></span><br><span class="line"><span class="params"><span class="function">	)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">glClear</span>(GL_COLOR_BUFFER_BIT);</span><br><span class="line">	<span class="built_in">glClearColor</span>(<span class="number">1.0f</span>, <span class="number">1.0f</span>, <span class="number">1.0f</span>, <span class="number">1.0f</span>);</span><br><span class="line"></span><br><span class="line">	 <span class="comment">// Add named OpenGL viewport to window and provide 3D Handler</span></span><br><span class="line">	 pangolin::View&amp; d_cam = pangolin::<span class="built_in">CreateDisplay</span>()</span><br><span class="line">	 	.<span class="built_in">SetBounds</span>(<span class="number">0.0</span>, <span class="number">1.0</span>, pangolin::Attach::<span class="built_in">Pix</span>(<span class="number">175</span>), <span class="number">1.0</span>, <span class="number">-1024.0f</span> / <span class="number">768.0f</span>)</span><br><span class="line">	 	.<span class="built_in">SetHandler</span>(<span class="keyword">new</span> pangolin::<span class="built_in">Handler3D</span>(s_cam));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">size_t</span> frame = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>( !pangolin::<span class="built_in">ShouldQuit</span>() ) &#123;</span><br><span class="line">        <span class="comment">// Clear screen and activate view to render into</span></span><br><span class="line">        <span class="built_in">glClear</span>(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);</span><br><span class="line">		<span class="built_in">glClearColor</span>(<span class="number">1.0f</span>,<span class="number">1.0f</span>,<span class="number">1.0f</span>,<span class="number">1.0f</span>);</span><br><span class="line">        <span class="comment">//! Activate Displays and set State Matrices</span></span><br><span class="line">        d_cam.<span class="built_in">Activate</span>(s_cam);</span><br><span class="line">		<span class="comment">// draw camera</span></span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">float</span> w = <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">float</span> h = w*<span class="number">0.75</span>;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">float</span> z = w*<span class="number">0.6</span>;</span><br><span class="line">        <span class="built_in">glPushMatrix</span>();</span><br><span class="line">		<span class="built_in">glMultMatrixd</span>(Twc.m);</span><br><span class="line">        <span class="built_in">glLineWidth</span>(<span class="number">1</span>);</span><br><span class="line">        <span class="built_in">glColor3f</span>(<span class="number">0.0f</span>,<span class="number">1.0f</span>,<span class="number">0.0f</span>);</span><br><span class="line">        <span class="built_in">glBegin</span>(GL_LINES);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line">        <span class="built_in">glEnd</span>();</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glPopMatrix</span>();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// draw points</span></span><br><span class="line">		<span class="built_in">glPointSize</span>(<span class="number">2</span>);</span><br><span class="line">		<span class="built_in">glBegin</span>(GL_POINTS);</span><br><span class="line">		<span class="built_in">glColor3f</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">// get all points to m_pos.m_ppatches</span></span><br><span class="line">		updatePointsMutex.<span class="built_in">lock</span>();</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">size_t</span> p = <span class="number">0</span>; p &lt; (<span class="keyword">size_t</span>)allPPatchesRender.<span class="built_in">size</span>(); ++p)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">auto</span> patch = *allPPatchesRender[p];</span><br><span class="line">			<span class="built_in">glVertex3f</span>(</span><br><span class="line">				patch.m_coord[<span class="number">0</span>],</span><br><span class="line">				patch.m_coord[<span class="number">1</span>],</span><br><span class="line">				patch.m_coord[<span class="number">2</span>]</span><br><span class="line">			);</span><br><span class="line">		&#125;</span><br><span class="line">        updatePointsMutex.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="built_in">glEnd</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Swap frames and Process Events</span></span><br><span class="line">        pangolin::<span class="built_in">FinishFrame</span>();</span><br><span class="line">        </span><br><span class="line">		std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">100</span>)); <span class="comment">// ms</span></span><br><span class="line">		<span class="comment">// std::cout &lt;&lt; &quot;frame��&quot; &lt;&lt; ++frame &lt;&lt; std::endl;</span></span><br><span class="line">		<span class="comment">// std::cout &lt;&lt; &quot;point nums are: &quot; &lt;&lt; findMatch-&gt;m_pos.m_ppatches.size() &lt;&lt; std::endl;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	pangolin::OpenGlMatrix Twc, Twr;</span><br><span class="line">	Twc.<span class="built_in">SetIdentity</span>();</span><br><span class="line">	<span class="function">std::thread <span class="title">viewThd</span><span class="params">(viewThread, Twc)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">...&lt;省略&gt;</span><br><span class="line">        <span class="comment">// update render points</span></span><br><span class="line">        updatePointsMutex.<span class="built_in">lock</span>();</span><br><span class="line">        allPPatchesRender = findMatch-&gt;m_pos.m_ppatches; <span class="comment">// to get the newest points</span></span><br><span class="line">        updatePointsMutex.<span class="built_in">unlock</span>();</span><br><span class="line">...&lt;省略&gt;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	viewThd.<span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">	<span class="comment">//writePointCloundPly(prefix);</span></span><br><span class="line">	<span class="built_in">releasePMVS</span>();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/06/15/osgPtr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/06/15/osgPtr/" class="post-title-link" itemprop="url">osg智能指针错误 - Warning deleting still referenced object</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-06-15 18:24:49" itemprop="dateCreated datePublished" datetime="2021-06-15T18:24:49+08:00">2021-06-15</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/errors/" itemprop="url" rel="index"><span itemprop="name">errors</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="1-osg智能指针错误-Warning-deleting-still-referenced-object"><a href="#1-osg智能指针错误-Warning-deleting-still-referenced-object" class="headerlink" title="1 osg智能指针错误 - Warning: deleting still referenced object"></a>1 osg智能指针错误 - Warning: deleting still referenced object</h2><h3 id="1-1-问题描述"><a href="#1-1-问题描述" class="headerlink" title="1.1 问题描述"></a>1.1 问题描述</h3><p>类的定义如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QOsgWidget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">///&lt; essential widget, use this ptr to be the real widget</span></span><br><span class="line">    osgQOpenGLWidget* pWidget = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="comment">// QOsgWidget(QWidget* parent = nullptr);</span></span><br><span class="line">    <span class="built_in">QOsgWidget</span>(<span class="keyword">const</span> std::string&amp; modelPath, QWidget* parent = <span class="literal">nullptr</span>);</span><br><span class="line">    ~<span class="built_in">QOsgWidget</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">///&lt; osg base vars</span></span><br><span class="line">    osg::ref_ptr&lt;osg::Group&gt;                        mRoot                = <span class="literal">nullptr</span>; <span class="comment">// root node of the osg scene</span></span><br><span class="line">    osg::ref_ptr&lt;osg::Camera&gt;                       camera               = <span class="literal">nullptr</span>; <span class="comment">// osg camera</span></span><br><span class="line">    osg::ref_ptr&lt;osgViewer::Viewer&gt;                 mViewer              = <span class="literal">nullptr</span>; <span class="comment">// osg viewer</span></span><br><span class="line">    osg::ref_ptr&lt;osgGA::TrackballManipulator&gt;       trackball            = <span class="literal">nullptr</span>;</span><br><span class="line">    osg::ref_ptr&lt;osgGA::KeySwitchMatrixManipulator&gt; keyswitchManipulator = <span class="literal">nullptr</span>;</span><br><span class="line">    osg::ref_ptr&lt;osgViewer::StatsHandler&gt;           stats                = <span class="literal">nullptr</span>;</span><br><span class="line">    &lt;被省略&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>类的析构函数如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">QOsgWidget::~<span class="built_in">QOsgWidget</span>() &#123;</span><br><span class="line">    <span class="comment">// end the render thread and destroy the osgOpenglWidget</span></span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">microseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    mViewer-&gt;<span class="built_in">setDone</span>(<span class="literal">true</span>);</span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">microseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    mViewer-&gt;<span class="built_in">stopThreading</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//////////////////////////////////////////////////////////////////////////</span></span><br><span class="line">    <span class="comment">/// without folowing post process, u will crash with the bellowing warning when: delete pWidget</span></span><br><span class="line">    <span class="comment">/// Warning: deleting still referenced object 000002433CA59BB0 of type &#x27;class osg::Referenced * __ptr64&#x27;</span></span><br><span class="line">    <span class="comment">///     the final reference count was 1, memory corruption possible.</span></span><br><span class="line">    <span class="comment">///</span></span><br><span class="line">    <span class="comment">/// the reason i guess is:</span></span><br><span class="line">    <span class="comment">/// the bellowing vars can not be automatically set to null when delete pWidget, because they does</span></span><br><span class="line">    <span class="comment">/// not belong to the pWidget, so u need to set them to null manually, otherwise when delete pWidget,</span></span><br><span class="line">    <span class="comment">/// the destructor of pWidget will try to free the bellowing vars, but their ref != 0</span></span><br><span class="line">    <span class="comment">///////////////////////////////// PART 1 /////////////////////////////////</span></span><br><span class="line">        mRoot = <span class="literal">nullptr</span>;</span><br><span class="line">        mViewer = <span class="literal">nullptr</span>;</span><br><span class="line">        camera = <span class="literal">nullptr</span>;</span><br><span class="line">        trackball = <span class="literal">nullptr</span>;</span><br><span class="line">        keyswitchManipulator = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="comment">//////////////////////////////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">delete</span> pWidget; <span class="comment">// call the destructor of the osgOpenglWidge</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>问题描述，在执行类的析构的时候：<br>当没有PART1的时候，直接执行pWidget会出错</p>
+<h3 id="1-2-原因推测："><a href="#1-2-原因推测：" class="headerlink" title="1.2 原因推测："></a>1.2 原因推测：</h3><ul>
+<li>1 osg::ref_ptr&lt;&gt; 是一种智能指针，自动计算指针的引用个数，当引用个数为0的时候，自动回收其指向的对象。</li>
+<li>2 于是出现一个大问题，当pWidget这个类指针所指向的类，里面很多组件（比如 camera，mViewer）是在QOsgWidget类中申明的，那么当析构pWidget的时候，它会去析构自己的组件，然后当它析构了自己类里面的那些指针后，发现QOsgWidget里面的智能指针不是null（这些指针很可能在被别的模块访问），所以引用计数不为0，所以无法删除，或者删除会crash</li>
+</ul>
+<h3 id="1-3-得出结论："><a href="#1-3-得出结论：" class="headerlink" title="1.3 得出结论："></a>1.3 得出结论：</h3><ul>
+<li>1 如果类mon里面嵌套了类son，那么当mon的析构的时候，要注意如下两点：<ul>
+<li>1.1 将son析构</li>
+<li>1.2 执行son的析构前，对son的析构可能产生影响的内存，指针，都要释放掉和置空</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -710,486 +1126,6 @@
 
 
 <h2 id="3-参考"><a href="#3-参考" class="headerlink" title="3 参考"></a>3 参考</h2><p>[1] <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Paxos_(computer_science)#Byzantine_Paxos">https://en.wikipedia.org/wiki/Paxos_(computer_science)#Byzantine_Paxos</a><br>[2] <a target="_blank" rel="noopener" href="https://www.cs.rutgers.edu/~pxk/417/notes/paxos.html">https://www.cs.rutgers.edu/~pxk/417/notes/paxos.html</a><br>[3] <a target="_blank" rel="noopener" href="https://github.com/HaHaJeff/Paxos/blob/master/basic_paxos.md">https://github.com/HaHaJeff/Paxos/blob/master/basic_paxos.md</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/05/24/fittingUsingParabolaCurve/fittedUsingParabolaCurve/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/05/24/fittingUsingParabolaCurve/fittedUsingParabolaCurve/" class="post-title-link" itemprop="url">parabola fitting - 使用抛物线拟合离散点</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-05-24 15:24:18" itemprop="dateCreated datePublished" datetime="2021-05-24T15:24:18+08:00">2021-05-24</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-08-19 10:45:05" itemprop="dateModified" datetime="2021-08-19T10:45:05+08:00">2021-08-19</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/math/" itemprop="url" rel="index"><span itemprop="name">math</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>给定<strong>地对空导弹</strong>发射起始点和终止点（3维坐标），拟合导弹轨迹</p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><ul>
-<li>1 首先简单化问题，假定导弹轨迹位于同一个平面内，则可以将轨迹投影到x-O-z平面，先求出x-z的关系，求一系列的散点，<br>然后根据x,y的关系求出y的散点值即可</li>
-<li>2 之所以选取抛物线，因为导弹轨迹需要垂直发射的过程，存在斜率不存在的点常见的曲线为抛物线和圆，由于圆显然不合适，我们选取抛物线</li>
-</ul>
-<h2 id="实现的数学逻辑"><a href="#实现的数学逻辑" class="headerlink" title="实现的数学逻辑"></a>实现的数学逻辑</h2><ul>
-<li>1 起始点和终止点的定义：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># startPos and endPos in [lon, lat, height]</span><br><span class="line">stPos = [117.9844565, 24.1658956, 1.597]</span><br><span class="line">edPos = [118.1167438, 24.5656241, 5211.73]</span><br></pre></td></tr></table></figure></li>
-<li>2 数学关系<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 由于整个轨迹位于一个平面内，则可以考虑x，y存在线性关系</span><br><span class="line">y1 = k * x1 + b</span><br><span class="line">y2 = k * x2 + b</span><br><span class="line">则y可以由x得到</span><br><span class="line"></span><br><span class="line"># [x1, y1, z1]为起始点，则有如下抛物线，根据终止点[x2, y2, z2]求出p</span><br><span class="line">(z-z1)**2 = p*(x-x1)</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># set figure</span></span><br><span class="line">fig = plt.figure()</span><br><span class="line">ax = fig.gca(projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">################################################## input args #############################################</span></span><br><span class="line"><span class="comment"># startPos and endPos in [lon, lat, height]</span></span><br><span class="line">stPos = [<span class="number">117.9844565</span>, <span class="number">24.1658956</span>, <span class="number">1.597</span>]</span><br><span class="line">edPos = [<span class="number">118.1167438</span>, <span class="number">24.5656241</span>, <span class="number">5211.73</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># # stTime, endTime, in seconds, assume it take 1 minute for missile from emit to explode</span></span><br><span class="line"><span class="comment"># stTime = 0</span></span><br><span class="line"><span class="comment"># endTime = 10</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># step number</span></span><br><span class="line">stepNumber = <span class="number">30</span></span><br><span class="line"><span class="comment">################################################## input args #############################################</span></span><br><span class="line"></span><br><span class="line"><span class="comment">################################################## output     #############################################</span></span><br><span class="line"><span class="comment"># res</span></span><br><span class="line">resX = []</span><br><span class="line">resY = []</span><br><span class="line">resZ = []</span><br><span class="line"><span class="comment">################################################## output     #############################################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># land defend air means, should satisfy: st.z &lt; ed.z</span></span><br><span class="line"><span class="comment"># (z-z1)**2 = p*(x-x1)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">computeLnadDefendAirParabolaWithSteps</span>(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="function">    st,     <span class="comment"># start point: [x, y, z]</span></span></span></span><br><span class="line"><span class="params"><span class="function">    ed,     <span class="comment"># end point: [x, y, z]</span></span></span></span><br><span class="line"><span class="params"><span class="function">    resX,   <span class="comment"># x-axis&#x27;s result</span></span></span></span><br><span class="line"><span class="params"><span class="function">    resY,   <span class="comment"># y-axis&#x27;s result</span></span></span></span><br><span class="line"><span class="params"><span class="function">    resZ,   <span class="comment"># z-axis&#x27;s result</span></span></span></span><br><span class="line"><span class="params"><span class="function">    stepNum <span class="comment"># how may fitted points you want</span></span></span></span><br><span class="line"><span class="params"><span class="function">    </span>):</span></span><br><span class="line">    resX.append(st[<span class="number">0</span>])</span><br><span class="line">    resY.append(st[<span class="number">1</span>])</span><br><span class="line">    resZ.append(st[<span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">    p = (ed[<span class="number">2</span>] - st[<span class="number">2</span>])**<span class="number">2</span> / (ed[<span class="number">0</span>] - st[<span class="number">0</span>])</span><br><span class="line">    step = (ed[<span class="number">0</span>] - st[<span class="number">0</span>]) / stepNum</span><br><span class="line">    <span class="keyword">for</span> stepCnt <span class="keyword">in</span> <span class="built_in">range</span>(stepNum)[<span class="number">1</span>:]:</span><br><span class="line">        curX = st[<span class="number">0</span>] + stepCnt * step</span><br><span class="line">        curZ = (p * (curX - st[<span class="number">0</span>])) ** <span class="number">0.5</span> + st[<span class="number">2</span>]</span><br><span class="line">        resZ.append(curZ)</span><br><span class="line">        <span class="comment"># compute projection from x to y: x = k*y + b</span></span><br><span class="line">        <span class="keyword">if</span> st[<span class="number">1</span>] != ed[<span class="number">1</span>]:</span><br><span class="line">            k = (st[<span class="number">0</span>] - ed[<span class="number">0</span>]) / (st[<span class="number">1</span>] - ed[<span class="number">1</span>])</span><br><span class="line">            b = st[<span class="number">0</span>] - k * st[<span class="number">1</span>]</span><br><span class="line">            curY = (curX - b) / k</span><br><span class="line">            resY.append(curY)</span><br><span class="line">            resX.append(curX)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># all the y is the same</span></span><br><span class="line">            resY.append(curY)</span><br><span class="line">            resX.append(curX)</span><br><span class="line">    resX.append(ed[<span class="number">0</span>])</span><br><span class="line">    resY.append(ed[<span class="number">1</span>])</span><br><span class="line">    resZ.append(ed[<span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># print</span></span><br><span class="line">    <span class="keyword">for</span> idx <span class="keyword">in</span> <span class="built_in">range</span>(stepNum + <span class="number">1</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;%10.6f, %10.6f, %10.3f&quot;</span>%(resX[idx], resY[idx], resZ[idx]))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">computeLnadDefendAirParabolaWithSteps(stPos, edPos, resX, resY, resZ, stepNumber)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制图形</span></span><br><span class="line">ax.plot(resX, resY, resZ, label=<span class="string">&#x27;fitted curve&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示图例</span></span><br><span class="line">ax.legend()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示图形</span></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/05/24/lagrangeInterpolation/lagrangeInterpolation/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/05/24/lagrangeInterpolation/lagrangeInterpolation/" class="post-title-link" itemprop="url">pagrangeInterpolation for curve fitting - 使用拉格朗日插值平滑曲线</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-05-24 15:24:18" itemprop="dateCreated datePublished" datetime="2021-05-24T15:24:18+08:00">2021-05-24</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-08-19 10:49:52" itemprop="dateModified" datetime="2021-08-19T10:49:52+08:00">2021-08-19</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/math/" itemprop="url" rel="index"><span itemprop="name">math</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="使用拉格朗日插值平滑曲线"><a href="#使用拉格朗日插值平滑曲线" class="headerlink" title="使用拉格朗日插值平滑曲线"></a>使用拉格朗日插值平滑曲线</h2><h3 id="1-平滑前后效果对比："><a href="#1-平滑前后效果对比：" class="headerlink" title="1 平滑前后效果对比："></a>1 平滑前后效果对比：</h3><h4 id="平滑前"><a href="#平滑前" class="headerlink" title="平滑前"></a>平滑前</h4><p><img src="./before.gif" alt="./before.gif"></p>
-<h4 id="平滑后"><a href="#平滑后" class="headerlink" title="平滑后"></a>平滑后</h4><p><img src="./after.gif" alt="./after.gif"></p>
-<h3 id="2-拉格朗日插值代码-参考cesium源码"><a href="#2-拉格朗日插值代码-参考cesium源码" class="headerlink" title="2 拉格朗日插值代码:(参考cesium源码)"></a>2 拉格朗日插值代码:(参考cesium源码)</h3><p>结合拉格朗日原理：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/135229305">https://zhuanlan.zhihu.com/p/135229305</a></p>
-<p>源码如下：<a target="_blank" rel="noopener" href="https://github.com/CesiumGS/cesium/blob/b30/Source/Core/LagrangePolynomialApproximation.js#L39">https://github.com/CesiumGS/cesium/blob/b30/Source/Core/LagrangePolynomialApproximation.js#L39</a></p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Interpolates values using Lagrange Polynomial Approximation.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;Number&#125;</span> </span>x The independent variable for which the dependent variables will be interpolated.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;Number[]&#125;</span> </span>xTable The array of independent variables to use to interpolate.  The values</span></span><br><span class="line"><span class="comment"> * in this array must be in increasing order and the same value must not occur twice in the array.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;Number[]&#125;</span> </span>yTable The array of dependent variables to use to interpolate.  For a set of three</span></span><br><span class="line"><span class="comment"> * dependent values (p,q,w) at time 1 and time 2 this should be as follows: &#123;p1, q1, w1, p2, q2, w2&#125;.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;Number&#125;</span> </span>yStride The number of dependent variable values in yTable corresponding to</span></span><br><span class="line"><span class="comment"> * each independent variable value in xTable.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;Number[]&#125;</span> </span>[result] An existing array into which to store the result.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns <span class="type">&#123;Number[]&#125;</span> </span>The array of interpolated values, or the result parameter if one was provided.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">LagrangePolynomialApproximation.interpolateOrderZero = <span class="function"><span class="keyword">function</span>(<span class="params">x, xTable, yTable, yStride, result</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!defined(result)) &#123;</span><br><span class="line">        result = <span class="keyword">new</span> <span class="built_in">Array</span>(yStride);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> i;</span><br><span class="line">    <span class="keyword">var</span> j;</span><br><span class="line">    <span class="keyword">var</span> length = xTable.length;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; yStride; i++) &#123;</span><br><span class="line">        result[i] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; length; i++) &#123;</span><br><span class="line">        <span class="keyword">var</span> coefficient = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (j !== i) &#123;</span><br><span class="line">                <span class="keyword">var</span> diffX = xTable[i] - xTable[j];</span><br><span class="line">                coefficient *= (x - xTable[j]) / diffX;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; yStride; j++) &#123;</span><br><span class="line">            result[j] += coefficient * yTable[i * yStride + j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="3-cesium中实现代码"><a href="#3-cesium中实现代码" class="headerlink" title="3 cesium中实现代码"></a>3 cesium中实现代码</h3><p>放入<a target="_blank" rel="noopener" href="https://sandcastle.cesium.com/index.html?src=Callback%20Property.html">https://sandcastle.cesium.com/index.html?src=Callback%20Property.html</a>运行即可</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// This example illustrates a Callback Property, a property whose</span></span><br><span class="line"><span class="comment">// value is lazily evaluated by a callback function.</span></span><br><span class="line"><span class="comment">// Use a CallbackProperty when your data can&#x27;t be pre-computed</span></span><br><span class="line"><span class="comment">// or needs to be derived from other properties at runtime.</span></span><br><span class="line"><span class="keyword">var</span> viewer = <span class="keyword">new</span> Cesium.Viewer(<span class="string">&quot;cesiumContainer&quot;</span>);</span><br><span class="line">viewer.clock.shouldAnimate = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> startLatitude = <span class="number">35</span>;</span><br><span class="line"><span class="keyword">var</span> startLongitude = -<span class="number">120</span>;</span><br><span class="line"><span class="keyword">var</span> endLongitude;</span><br><span class="line"><span class="keyword">var</span> startTime = Cesium.JulianDate.now();</span><br><span class="line"><span class="keyword">var</span> stTime = startTime;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// Add a polyline to the scene. Positions are dynamic.</span></span><br><span class="line"><span class="keyword">var</span> isConstant = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">var</span> redLine = viewer.entities.add(&#123;</span><br><span class="line">  <span class="attr">polyline</span>: &#123;</span><br><span class="line">    <span class="comment">// This callback updates positions each frame.</span></span><br><span class="line">    <span class="attr">positions</span>: <span class="keyword">new</span> Cesium.CallbackProperty(<span class="function"><span class="keyword">function</span> (<span class="params">time, result</span>) </span>&#123;</span><br><span class="line">      endLongitude =</span><br><span class="line">        startLongitude +</span><br><span class="line">        <span class="number">0.001</span> * Cesium.JulianDate.secondsDifference(time, startTime);</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 平滑前效果</span></span><br><span class="line">      <span class="comment">// return computeCirclularFlight(-112.110693, 36.0994841, 0.03, time);</span></span><br><span class="line">      <span class="comment">// 平滑后效果</span></span><br><span class="line">      <span class="keyword">return</span> computeCirclularFlightSmoothly(-<span class="number">112.110693</span>, <span class="number">36.0994841</span>, <span class="number">0.03</span>, <span class="number">500</span>, stTime, time);</span><br><span class="line">      <span class="comment">/*</span></span><br><span class="line"><span class="comment">      return Cesium.Cartesian3.fromDegreesArray(</span></span><br><span class="line"><span class="comment">        [startLongitude, startLatitude, endLongitude, startLatitude],</span></span><br><span class="line"><span class="comment">        Cesium.Ellipsoid.WGS84,</span></span><br><span class="line"><span class="comment">        result</span></span><br><span class="line"><span class="comment">      );</span></span><br><span class="line"><span class="comment">      */</span></span><br><span class="line">    &#125;, isConstant),</span><br><span class="line">    <span class="attr">width</span>: <span class="number">5</span>,</span><br><span class="line">    <span class="attr">material</span>: Cesium.Color.RED,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//Generate a random circular pattern with varying heights.</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">computeCirclularFlight</span>(<span class="params">lon, lat, radius, curTime</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// let a = JulianDate.secondsDifference(JulianDate.now(), stTime);</span></span><br><span class="line">         <span class="keyword">let</span> positions = [];</span><br><span class="line">        <span class="comment">// Generate a random circular pattern with letying heights.</span></span><br><span class="line">        <span class="keyword">let</span> property = <span class="keyword">new</span> Cesium.SampledPositionProperty();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= <span class="number">360</span>; i += <span class="number">45</span>) &#123;</span><br><span class="line">            <span class="keyword">let</span> radians = Cesium.Math.toRadians(i);</span><br><span class="line">            <span class="keyword">let</span> time = Cesium.JulianDate.addSeconds(</span><br><span class="line">                stTime,</span><br><span class="line">                i,</span><br><span class="line">                <span class="keyword">new</span> Cesium.JulianDate()</span><br><span class="line">            );</span><br><span class="line">        </span><br><span class="line">            <span class="keyword">let</span> position = Cesium.Cartesian3.fromDegrees(</span><br><span class="line">                lon + radius * <span class="number">1.5</span> * <span class="built_in">Math</span>.cos(radians),</span><br><span class="line">                lat + radius * <span class="built_in">Math</span>.sin(radians),</span><br><span class="line">                Cesium.Math.nextRandomNumber() * <span class="number">500</span> + </span><br><span class="line">                    <span class="built_in">Math</span>.random() * <span class="number">20</span> * Cesium.JulianDate.secondsDifference(curTime, stTime)</span><br><span class="line">            );</span><br><span class="line">        </span><br><span class="line">            positions.push(position);</span><br><span class="line">            property.addSample(time, position);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> positions;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Generate a random circular pattern with varying heights.</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">computeCirclularFlightSmoothly</span>(<span class="params">lon, lat, radius, levelHeight, stTime, curTime</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// let a = JulianDate.secondsDifference(JulianDate.now(), stTime);</span></span><br><span class="line">        <span class="keyword">let</span> positions = [];</span><br><span class="line">        <span class="keyword">let</span> llhPositions = [];</span><br><span class="line">        <span class="comment">// let property = new PositionProperty();</span></span><br><span class="line">        <span class="comment">// Generate a random circular pattern with letying heights.</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= <span class="number">360</span>; i += <span class="number">45</span>) &#123;</span><br><span class="line">            <span class="keyword">let</span> radians = Cesium.Math.toRadians(i);</span><br><span class="line">            <span class="keyword">let</span> time = Cesium.JulianDate.addSeconds(</span><br><span class="line">                stTime,</span><br><span class="line">                i,</span><br><span class="line">                <span class="keyword">new</span> Cesium.JulianDate()</span><br><span class="line">            );</span><br><span class="line"></span><br><span class="line">            <span class="keyword">let</span> tmpPoint = <span class="keyword">new</span> Cesium.Cartographic(</span><br><span class="line">                lon + radius * <span class="number">1.5</span> * <span class="built_in">Math</span>.cos(radians),</span><br><span class="line">                lat + radius * <span class="built_in">Math</span>.sin(radians),</span><br><span class="line">                Cesium.Math.nextRandomNumber() * <span class="number">0.1</span> * levelHeight + levelHeight +</span><br><span class="line">                    Cesium.Math.random() * <span class="number">20</span> * Cesium.JulianDate.secondsDifference(curTime, stTime)</span><br><span class="line">            );</span><br><span class="line">            llhPositions.push(tmpPoint);</span><br><span class="line">            positions.push(</span><br><span class="line">                Cesium.Cartesian3.fromDegrees(</span><br><span class="line">                    tmpPoint.longitude,</span><br><span class="line">                    tmpPoint.latitude,</span><br><span class="line">                    tmpPoint.height</span><br><span class="line">            ));</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// let iptPositions = Array&lt;Cartographic&gt;();</span></span><br><span class="line">        <span class="keyword">let</span> iptPositions = [];</span><br><span class="line">        <span class="keyword">let</span> xRes = [];</span><br><span class="line">        <span class="keyword">let</span> xTable = [];        <span class="comment">// interpolate at xTable[i]</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> ix = <span class="number">0</span>; ix &lt; positions.length; ++ix) &#123;</span><br><span class="line">            xTable.push(ix * <span class="number">100</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> yTable = [];        <span class="comment">// used to interpolate, in &#123;la1, lon1, h1, l2, lon2, h2&#125;</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> iy = <span class="number">0</span>; iy &lt; positions.length; ++iy) &#123;</span><br><span class="line">            yTable.push(llhPositions[iy].longitude);</span><br><span class="line">            yTable.push(llhPositions[iy].latitude);</span><br><span class="line">            yTable.push(llhPositions[iy].height);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> yStride = <span class="number">3</span>;        <span class="comment">// 3 dependent vaule in yTable is viewed as one item</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> ix = <span class="number">0</span>; ix &lt; xTable[positions.length - <span class="number">1</span>]; ++ix) &#123;</span><br><span class="line">            <span class="keyword">let</span> iptRes = [];</span><br><span class="line">            Cesium.LagrangePolynomialApproximation.interpolateOrderZero(</span><br><span class="line">                ix,</span><br><span class="line">                xTable,</span><br><span class="line">                yTable,</span><br><span class="line">                yStride,</span><br><span class="line">                iptRes</span><br><span class="line">            );</span><br><span class="line"></span><br><span class="line">            iptPositions.push(</span><br><span class="line">                Cesium.Cartesian3.fromDegrees(</span><br><span class="line">                iptRes[<span class="number">0</span>],</span><br><span class="line">                iptRes[<span class="number">1</span>],</span><br><span class="line">                iptRes[<span class="number">2</span>]</span><br><span class="line">            ));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span>  iptPositions;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Keep the view centered.</span></span><br><span class="line">viewer.trackedEntity = redLine;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/05/24/headingPitchRollInCesium/HPRInCesium/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/05/24/headingPitchRollInCesium/HPRInCesium/" class="post-title-link" itemprop="url">hpr in cesium - 在cesium中实现HPR</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-05-24 15:24:01" itemprop="dateCreated datePublished" datetime="2021-05-24T15:24:01+08:00">2021-05-24</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-08-19 10:50:54" itemprop="dateModified" datetime="2021-08-19T10:50:54+08:00">2021-08-19</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/cesium/" itemprop="url" rel="index"><span itemprop="name">cesium</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/cesium/webDev/" itemprop="url" rel="index"><span itemprop="name">webDev</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="在cesium中实现HPR"><a href="#在cesium中实现HPR" class="headerlink" title="在cesium中实现HPR"></a>在cesium中实现HPR</h2><h2 id="主要参考例子："><a href="#主要参考例子：" class="headerlink" title="主要参考例子："></a>主要参考例子：</h2><p><a target="_blank" rel="noopener" href="https://sandcastle.cesium.com/index.html?src=HeadingPitchRoll.html">https://sandcastle.cesium.com/index.html?src=HeadingPitchRoll.html</a></p>
-<h2 id="上述例子中的第一人称视角处理有纰漏，改进后的效果和实现的代码如下："><a href="#上述例子中的第一人称视角处理有纰漏，改进后的效果和实现的代码如下：" class="headerlink" title="上述例子中的第一人称视角处理有纰漏，改进后的效果和实现的代码如下："></a>上述例子中的第一人称视角处理有纰漏，改进后的效果和实现的代码如下：</h2><p><img src="./roll.gif" alt="roll.gif"></p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br></pre></td><td class="code"><pre><span class="line">        <span class="keyword">let</span> canvas = viewer.canvas;</span><br><span class="line">        canvas.setAttribute(<span class="string">&quot;tabindex&quot;</span>, <span class="string">&quot;0&quot;</span>); <span class="comment">// needed to put focus on the canvas</span></span><br><span class="line">        canvas.addEventListener(<span class="string">&quot;click&quot;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            canvas.focus();</span><br><span class="line">        &#125;);</span><br><span class="line">        canvas.focus();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> scene = viewer.scene;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> pathPosition = <span class="keyword">new</span> SampledPositionProperty();</span><br><span class="line">        <span class="built_in">this</span>.planePath = viewer.entities.add(&#123;</span><br><span class="line">            <span class="attr">id</span>: <span class="string">&quot;keyboardDemoPlanePath&quot;</span>,</span><br><span class="line">            <span class="attr">position</span>: pathPosition,</span><br><span class="line">            <span class="comment">// name: &quot;path&quot;,</span></span><br><span class="line">            <span class="attr">path</span>: &#123;</span><br><span class="line">                <span class="attr">show</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="attr">leadTime</span>: <span class="number">0</span>,</span><br><span class="line">                <span class="attr">trailTime</span>: <span class="number">60</span>,</span><br><span class="line">                <span class="attr">width</span>: <span class="number">10</span>,</span><br><span class="line">                <span class="attr">resolution</span>: <span class="number">1</span>,</span><br><span class="line">                <span class="attr">material</span>: <span class="keyword">new</span> PolylineGlowMaterialProperty(&#123;</span><br><span class="line">                    <span class="attr">glowPower</span>: <span class="number">0.3</span>,</span><br><span class="line">                    <span class="attr">taperPower</span>: <span class="number">0.3</span>,</span><br><span class="line">                    <span class="attr">color</span>: Color.PALEGOLDENROD</span><br><span class="line">                &#125;)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> camera = viewer.camera;</span><br><span class="line">        <span class="keyword">let</span> controller = scene.screenSpaceCameraController;</span><br><span class="line">        <span class="keyword">let</span> r = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> center = <span class="keyword">new</span> Cartesian3();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> hpRoll = <span class="keyword">new</span> HeadingPitchRoll();</span><br><span class="line">        <span class="keyword">let</span> hpRange = <span class="keyword">new</span> HeadingPitchRange();</span><br><span class="line">        <span class="keyword">let</span> speed = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">let</span> deltaRadians = _Math.toRadians(<span class="number">3.0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> position = Cartesian3.fromDegrees(</span><br><span class="line">            <span class="number">114.4152843</span>,</span><br><span class="line">            <span class="number">30.512368</span>,</span><br><span class="line">            <span class="number">5000.0</span></span><br><span class="line">        );</span><br><span class="line">        <span class="keyword">let</span> speedVector = <span class="keyword">new</span> Cartesian3();</span><br><span class="line">        <span class="keyword">let</span> fixedFrameTransform = Transforms.localFrameToFixedFrameGenerator(</span><br><span class="line">            <span class="string">&quot;north&quot;</span>,</span><br><span class="line">            <span class="string">&quot;west&quot;</span></span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> planePrimitive = scene.primitives.add(</span><br><span class="line">            Model.fromGltf(&#123;</span><br><span class="line">                <span class="attr">url</span>: <span class="string">`<span class="subst">$&#123;webSetting.assetsUrl&#125;</span>/map/su30.gltf`</span>,</span><br><span class="line">                <span class="comment">// url: `$&#123;webSetting.assetsUrl&#125;/map/apaqi_x-90_y180.glb`,</span></span><br><span class="line">                <span class="attr">modelMatrix</span>: Transforms.headingPitchRollToFixedFrame(</span><br><span class="line">                    position,</span><br><span class="line">                    hpRoll,</span><br><span class="line">                    Ellipsoid.WGS84,</span><br><span class="line">                    fixedFrameTransform</span><br><span class="line">                ),</span><br><span class="line">                <span class="attr">minimumPixelSize</span>: <span class="number">256</span></span><br><span class="line">            &#125;)</span><br><span class="line">        );</span><br><span class="line">        <span class="built_in">this</span>.plane = planePrimitive;</span><br><span class="line"></span><br><span class="line">        planePrimitive.readyPromise.then(<span class="function"><span class="keyword">function</span> (<span class="params">model</span>) </span>&#123;</span><br><span class="line">            <span class="comment">// Play and loop all animations at half-speed</span></span><br><span class="line">            model.activeAnimations.addAll(&#123;</span><br><span class="line">                <span class="attr">multiplier</span>: <span class="number">0.5</span>,</span><br><span class="line">                <span class="attr">loop</span>: ModelAnimationLoop.REPEAT</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Zoom to model</span></span><br><span class="line">            r = <span class="number">2.0</span> * <span class="built_in">Math</span>.max(model.boundingSphere.radius, camera.frustum.near);</span><br><span class="line">            controller.minimumZoomDistance = r * <span class="number">0.5</span>;</span><br><span class="line">            Matrix4.multiplyByPoint(</span><br><span class="line">                model.modelMatrix,</span><br><span class="line">                model.boundingSphere.center,</span><br><span class="line">                center</span><br><span class="line">            );</span><br><span class="line">            <span class="keyword">let</span> heading = _Math.toRadians(<span class="number">230.0</span>);</span><br><span class="line">            <span class="keyword">let</span> pitch = _Math.toRadians(-<span class="number">20.0</span>);</span><br><span class="line">            hpRange.heading = heading;</span><br><span class="line">            hpRange.pitch = pitch;</span><br><span class="line">            hpRange.range = r * <span class="number">50.0</span>;</span><br><span class="line">            camera.lookAt(center, hpRange);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">this</span>.keyBoardListener = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">switch</span> (e.keyCode) &#123;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">40</span>:</span><br><span class="line">                    <span class="keyword">if</span> (e.shiftKey) &#123;</span><br><span class="line">                        <span class="comment">// speed down</span></span><br><span class="line">                        speed -= <span class="number">10</span>;</span><br><span class="line">                        speed = <span class="built_in">Math</span>.max(speed, <span class="number">1</span>);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="comment">// pitch down</span></span><br><span class="line">                        hpRoll.pitch -= deltaRadians;</span><br><span class="line">                        <span class="keyword">if</span> (hpRoll.pitch &lt; -_Math.TWO_PI) &#123;</span><br><span class="line">                            hpRoll.pitch += _Math.TWO_PI;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">38</span>:</span><br><span class="line">                    <span class="keyword">if</span> (e.shiftKey) &#123;</span><br><span class="line">                        <span class="comment">// speed up</span></span><br><span class="line">                        speed += <span class="number">10</span>;</span><br><span class="line">                        speed = <span class="built_in">Math</span>.min(speed, <span class="number">1000</span>);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="comment">// pitch up</span></span><br><span class="line">                        hpRoll.pitch += deltaRadians;</span><br><span class="line">                        <span class="keyword">if</span> (hpRoll.pitch &gt; _Math.TWO_PI) &#123;</span><br><span class="line">                            hpRoll.pitch -= _Math.TWO_PI;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">39</span>:</span><br><span class="line">                    <span class="keyword">if</span> (e.shiftKey) &#123;</span><br><span class="line">                        <span class="comment">// roll right</span></span><br><span class="line">                        hpRoll.roll += deltaRadians;</span><br><span class="line">                        <span class="keyword">if</span> (hpRoll.roll &gt; _Math.TWO_PI) &#123;</span><br><span class="line">                            hpRoll.roll -= _Math.TWO_PI;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="comment">// turn right</span></span><br><span class="line">                        hpRoll.heading += deltaRadians;</span><br><span class="line">                        <span class="keyword">if</span> (hpRoll.heading &gt; _Math.TWO_PI) &#123;</span><br><span class="line">                            hpRoll.heading -= _Math.TWO_PI;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">37</span>:</span><br><span class="line">                    <span class="keyword">if</span> (e.shiftKey) &#123;</span><br><span class="line">                        <span class="comment">// roll left until</span></span><br><span class="line">                        hpRoll.roll -= deltaRadians;</span><br><span class="line">                        <span class="keyword">if</span> (hpRoll.roll &lt; <span class="number">0.0</span>) &#123;</span><br><span class="line">                            hpRoll.roll += _Math.TWO_PI;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="comment">// turn left</span></span><br><span class="line">                        hpRoll.heading -= deltaRadians;</span><br><span class="line">                        <span class="keyword">if</span> (hpRoll.heading &lt; <span class="number">0.0</span>) &#123;</span><br><span class="line">                            hpRoll.heading += _Math.TWO_PI;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">default</span>:</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="built_in">document</span>.addEventListener(<span class="string">&quot;keydown&quot;</span>, <span class="built_in">this</span>.keyBoardListener);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> headingSpan = <span class="built_in">document</span>.getElementById(<span class="string">&quot;heading&quot;</span>);</span><br><span class="line">        <span class="keyword">let</span> pitchSpan = <span class="built_in">document</span>.getElementById(<span class="string">&quot;pitch&quot;</span>);</span><br><span class="line">        <span class="keyword">let</span> rollSpan = <span class="built_in">document</span>.getElementById(<span class="string">&quot;roll&quot;</span>);</span><br><span class="line">        <span class="keyword">let</span> speedSpan = <span class="built_in">document</span>.getElementById(<span class="string">&quot;speed&quot;</span>);</span><br><span class="line">        <span class="keyword">let</span> fromBehind = <span class="built_in">document</span>.getElementById(<span class="string">&quot;fromBehind&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">this</span>.preUpateSpeedViewFunc = <span class="function">(<span class="params">scene, time</span>) =&gt;</span> &#123;</span><br><span class="line">            speedVector = Cartesian3.multiplyByScalar(</span><br><span class="line">                Cartesian3.UNIT_X,</span><br><span class="line">                speed / <span class="number">10</span>,</span><br><span class="line">                speedVector</span><br><span class="line">            );</span><br><span class="line"></span><br><span class="line">            <span class="comment">// let lastPosition = position.clone();</span></span><br><span class="line">            position = Matrix4.multiplyByPoint(</span><br><span class="line">                planePrimitive.modelMatrix,</span><br><span class="line">                speedVector,</span><br><span class="line">                position</span><br><span class="line">            );</span><br><span class="line">            <span class="built_in">this</span>.center = position;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="comment">// pathPosition.addSample(JulianDate.now(), position);</span></span><br><span class="line">            pathPosition.addSample(time, position);</span><br><span class="line">            <span class="comment">// console.log(&quot;adding: t-&gt;p: &quot;, JulianDate.now().toString(), &quot; -&gt; &quot;,position.toString());</span></span><br><span class="line">            Transforms.headingPitchRollToFixedFrame(</span><br><span class="line">                position,</span><br><span class="line">                hpRoll,</span><br><span class="line">                Ellipsoid.WGS84,</span><br><span class="line">                fixedFrameTransform,</span><br><span class="line">                planePrimitive.modelMatrix</span><br><span class="line">            );</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// view at fisrt player </span></span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">this</span>.fpsFlag) &#123;</span><br><span class="line">                <span class="comment">// Zoom to model</span></span><br><span class="line">                Matrix4.multiplyByPoint(</span><br><span class="line">                    planePrimitive.modelMatrix,</span><br><span class="line">                    planePrimitive.boundingSphere.center,</span><br><span class="line">                    center</span><br><span class="line">                );</span><br><span class="line"></span><br><span class="line">                hpRange.heading = hpRoll.heading;</span><br><span class="line">                hpRange.pitch = hpRoll.pitch;</span><br><span class="line">                hpRange.range =  camera.frustum.near * <span class="number">0.05</span>;</span><br><span class="line">                <span class="comment">// mainly using this to set the camera position relatively to the plane</span></span><br><span class="line">                camera.lookAt(center, hpRange);</span><br><span class="line">                camera.moveForward(<span class="number">8.2</span>);</span><br><span class="line">                camera.moveLeft(<span class="number">2.65</span>);</span><br><span class="line">                camera.moveUp(<span class="number">0.7</span>);</span><br><span class="line">                <span class="comment">// console.log(&quot;cur camera hpr is: &quot;,camera.heading, &quot; &quot;, camera.pitch, &quot; &quot;, camera.roll,</span></span><br><span class="line">                <span class="comment">// &quot;hpRoll&#x27;s hpr is &quot;, hpRoll.heading, &quot; &quot;, hpRoll.pitch, &quot; &quot;, hpRoll.roll, &quot; &quot;);</span></span><br><span class="line">                </span><br><span class="line">                <span class="comment">// set the hpr according to the hpr of the plane</span></span><br><span class="line">                camera.setView(&#123;</span><br><span class="line">                    <span class="attr">orientation</span>: &#123;</span><br><span class="line">                        <span class="attr">heading</span> : hpRoll.heading, <span class="comment">// east, default value is 0.0 (north)</span></span><br><span class="line">                        <span class="attr">pitch</span> : hpRoll.pitch,    <span class="comment">// default value (looking down)</span></span><br><span class="line">                        <span class="attr">roll</span> : hpRoll.roll                             <span class="comment">// default value</span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        viewer.scene.preUpdate.addEventListener(<span class="built_in">this</span>.preUpateSpeedViewFunc, <span class="built_in">this</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">this</span>.preUpateHPRFunc = <span class="function">(<span class="params">scene, time</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.headingShow = _Math.toDegrees(hpRoll.heading).toFixed(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">            <span class="built_in">this</span>.pitchShow = _Math.toDegrees(hpRoll.pitch).toFixed(<span class="number">2</span>);</span><br><span class="line">            <span class="built_in">this</span>.rollShow = _Math.toDegrees(hpRoll.roll).toFixed(<span class="number">2</span>);</span><br><span class="line">            <span class="built_in">this</span>.speedShow = speed.toFixed(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">let</span> tmp = Cartographic.fromCartesian(<span class="built_in">this</span>.center, Ellipsoid.WGS84);</span><br><span class="line">            <span class="built_in">this</span>.planeLon = tmp.longitude.toFixed(<span class="number">2</span>);</span><br><span class="line">            <span class="built_in">this</span>.planeLat = tmp.latitude.toFixed(<span class="number">2</span>);</span><br><span class="line">            <span class="built_in">this</span>.planeHei = tmp.height.toFixed(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// headingSpan.innerHTML = _Math.toDegrees(hpRoll.heading).toFixed(</span></span><br><span class="line">            <span class="comment">//     1</span></span><br><span class="line">            <span class="comment">// );</span></span><br><span class="line">            <span class="comment">// pitchSpan.innerHTML = _Math.toDegrees(hpRoll.pitch).toFixed(1);</span></span><br><span class="line">            <span class="comment">// rollSpan.innerHTML = _Math.toDegrees(hpRoll.roll).toFixed(1);</span></span><br><span class="line">            <span class="comment">// speedSpan.innerHTML = speed.toFixed(1);</span></span><br><span class="line">        &#125;;</span><br><span class="line">        viewer.scene.preRender.addEventListener(<span class="built_in">this</span>.preUpateHPRFunc, <span class="built_in">this</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/05/22/4wayCache/4wayCache/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/05/22/4wayCache/4wayCache/" class="post-title-link" itemprop="url">4way cache - 4路组相连cache</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-05-22 15:24:18" itemprop="dateCreated datePublished" datetime="2021-05-22T15:24:18+08:00">2021-05-22</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-08-19 10:43:09" itemprop="dateModified" datetime="2021-08-19T10:43:09+08:00">2021-08-19</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/ca/" itemprop="url" rel="index"><span itemprop="name">ca</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="1-物理地址tag-set-block-offset说明："><a href="#1-物理地址tag-set-block-offset说明：" class="headerlink" title="1 物理地址tag/set/block_offset说明："></a>1 物理地址tag/set/block_offset说明：</h1><h2 id="1-1-以-2路组相连cache为例子介绍cache行和物理地址行的构成"><a href="#1-1-以-2路组相连cache为例子介绍cache行和物理地址行的构成" class="headerlink" title="1.1 以 2路组相连cache为例子介绍cache行和物理地址行的构成"></a>1.1 以 2路组相连cache为例子介绍cache行和物理地址行的构成</h2><p><img src="https://img-blog.csdnimg.cn/20210107112341461.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2N4eV9odXN0,size_16,color_FFFFFF,t_70#pic_center" alt="2wayCache"><br>上图是2路组相连的cache（引自<a target="_blank" rel="noopener" href="https://www.sciencedirect.com/topics/computer-science/set-associative-cache">https://www.sciencedirect.com/topics/computer-science/set-associative-cache</a>）。<br>（直接映射cache也被称为单路cache的原因就是因为只有1路。）</p>
-<h3 id="1-1-1-cache的一行构成"><a href="#1-1-1-cache的一行构成" class="headerlink" title="1.1.1 cache的一行构成"></a>1.1.1 cache的一行构成</h3><table style="width:30%; text-align:center" border="5"><tbody><tr>
-<td>tag</td>
-<td>data block</td>
-<td>flag bits</td>
-</tr></tbody></table>
-
-<ul>
-<li><strong>tag：</strong> <strong>标签位</strong>用于比较在way1和way0两路中，哪一个cache块存了我们的目的数据（可以看到图中的两个等号的用硬件实现的比较器，就是用来比较way1 and way0中的两个tag的）</li>
-<li><strong>data block：</strong> <strong>数据位</strong>用来存储（内存和cache交换的数据块）目标tag的数据块。</li>
-<li><strong>v：</strong> <strong>有效位</strong>用来 表示该cache块是否有效。（复杂的cache设计可能有更多位）（比如当一开始cache里面一个数据块都没有为空的时候，所有的v标记都为0，然后当该数据块载入了，代表该块有效了，那么将其置为1即可。）       </li>
-</ul>
-<h3 id="1-1-2-要去cache中找数据的内存地址"><a href="#1-1-2-要去cache中找数据的内存地址" class="headerlink" title="1.1.2 要去cache中找数据的内存地址"></a>1.1.2 要去cache中找数据的内存地址</h3><p>一个地址构成如下图： 左侧为MSB，右侧为LSB（lowest significant bits）：</p>
-<table style="width:30%; text-align:center" border="5"><tbody><tr>
-<td>tag</td>
-<td>index</td>
-<td>block offset</td>
-</tr></tbody></table>
-
-<ul>
-<li><strong>block offset：</strong> 说的是对于内存地址来说，其后block offset个字节的数据会构成一个和cache做数据交换的块，故就是cache块的大小；</li>
-<li><strong>index：</strong> 说的是对于内存地址来说，其应该被映射到cache里的哪一组，故该部分的位数代表的是整个cache能hold住多少组，而组数目又由每个cache块大小和（4路组相连那路数就是4）“路数”有关的，其计算方式为：<br>$$<br>setNums = \frac{cacheWholeSize}{(numOfWays) * (blockSize))}<br>$$<br>拿最开始的2路组相连来说，其中的MemoryAddress里的set我们看到了是2位，那么这个内存地址就可以根据set的两位去找到自己在cache中对应的组是哪一组，拿图中来说，当set的两位为<strong>10</strong>时，那么对应到第3组<strong>set2</strong>。</li>
-<li><strong>tag：</strong> 用来在使用index选出cache位于哪一组后去比较具体的cache块位于哪一路。<h1 id="2-结合实际例子"><a href="#2-结合实际例子" class="headerlink" title="2 结合实际例子"></a>2 结合实际例子</h1><h2 id="2-1-example1"><a href="#2-1-example1" class="headerlink" title="2.1 example1"></a>2.1 example1</h2>一个四路相联cache，CPU字长为4字节，内存和cache都是以字节编址，cache和内存交换单位为块，每个块大小为512字节，cache能够容纳1024个块。如果物理内存为32位地址：</li>
-<li> q1: 画出cache和内存的地址格式，标明块内偏移地址、组号和标签位置；</li>
-<li> q2: 请计算内存地址FAB12389（16进制）在cache中可能的位置块号；</li>
-</ul>
-<p><strong><em>answer</em> q1：</strong><br>根据1.1.2的计算方式：<br>$$<br>setNums = \frac{cacheWholeSize}{(numOfWays) * (blockSize))} = \frac{1024<em>512 Byte}{4</em>512Byte} = 2^{8}<br>$$<br>故，最后的结果如下：</p>
-<table style="width:30%; text-align:center" border="5">
-<tbody><tr>
-<td>tag(32-8-9=17bit)</td>
-<td>index（8bit）</td>
-<td>block offset(9bit)
-</td></tr></tbody></table>
-
-<p><strong><em>answer</em> q2：</strong><br>其内存地址分成4个Byte分别是：</p>
-<table style="width:30%; text-align:center" border="5">
-<tbody><tr>
-<td>FA(1111 1010)</td>
-<td>B1(1011 0001)</td>
-<td>23(0010 0011)</td>
-<td>89(1000 1001)</td>
-</tr></tbody></table>
-
-<p>根据q1的结果，我们容易得出其tag，index和blockoffset对应的值分别如下：</p>
-<table style="width:30%; text-align:center" border="5">
-<tbody><tr>
-<td>tag(32-8-9=17bit) = (don't care)</td>
-<td><b>index（8bit）= 1001 0001(B) = 128+16+1=145(D) </b></td>
-<td>block offset(9bit) = 1 1000 1001(B)
-</td></tr></tbody></table>
-则其位于第145组，那么由于块号从左上角从左到右从上到下块号递增，那么位于145组的那几块的块号就是答案：
-
-<p>145*4 + （0,1,2,3） = 580,581,582,583块</p>
-<h2 id="2-2-example2-2"><a href="#2-2-example2-2" class="headerlink" title="2.2 example2 [2]"></a>2.2 example2 <a target="_blank" rel="noopener" href="https://www.d.umn.edu/~gshute/arch/cache-addressing.xhtml">[2]</a></h2><p>An Example<br>A computer uses 32-bit byte addressing. The computer uses a 2-way associative cache with a capacity of 32KB. Each cache block contains 16 bytes. Calculate the number of bits in the TAG, SET, and OFFSET fields of a main memory address.</p>
-<p>Answer<br>Since there are 16 bytes in a cache block, the OFFSET field must contain 4 bits (24 = 16). To determine the number of bits in the SET field, we need to determine the number of sets. Each set contains 2 cache blocks (2-way associative) so a set contains 32 bytes. There are 32KB bytes in the entire cache, so there are 32KB/32B = 1K sets. Thus the set field contains 10 bits (210 = 1K).</p>
-<p>Finally, the TAG field contains the remaining 18 bits (32 - 4 - 10). Thus a main memory address is decomposed as shown below.<br>  <table id="example-addressing" class="bar" border='5'><br>      <tr class="label"><br>        <td class="center">18</td><br>        <td class="center">10</td><br>        <td class="center">4</td><br>      </tr><br>      <tr class="bar"><br>        <td style="width: 56.25%;">TAG</td><br>        <td style="width: 31.25%;">SET</td><br>        <td style="width: 12.5%;">OFFSET</td><br>      </tr><br>    </table></p>
-<h1 id="3-ref"><a href="#3-ref" class="headerlink" title="3 ref:"></a>3 ref:</h1><ul>
-<li>[1] <a target="_blank" rel="noopener" href="https://www.sciencedirect.com/topics/computer-science/set-associative-cache">https://www.sciencedirect.com/topics/computer-science/set-associative-cache</a></li>
-<li>[2] <a target="_blank" rel="noopener" href="https://www.d.umn.edu/~gshute/arch/cache-addressing.xhtml">https://www.d.umn.edu/~gshute/arch/cache-addressing.xhtml</a></li>
-<li>[3] <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/CPU_cache">https://en.wikipedia.org/wiki/CPU_cache</a> </li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/05/20/osgModelLightZ-Lighting/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/05/20/osgModelLightZ-Lighting/" class="post-title-link" itemprop="url">osgModelLightZ-Lighting - osg模型调整光照以及模型闪烁问题[z-lighting]</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-05-20 10:29:11" itemprop="dateCreated datePublished" datetime="2021-05-20T10:29:11+08:00">2021-05-20</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="osg模型调整光照以及模型闪烁问题-z-lighting"><a href="#osg模型调整光照以及模型闪烁问题-z-lighting" class="headerlink" title="osg模型调整光照以及模型闪烁问题[z-lighting]"></a>osg模型调整光照以及模型闪烁问题[z-lighting]</h2><h3 id="0-模型闪烁原因推测"><a href="#0-模型闪烁原因推测" class="headerlink" title="0 模型闪烁原因推测"></a>0 模型闪烁原因推测</h3><ul>
-<li>1 关于模型闪烁的问题，很可能是由于坐标的值的有效位数超过了7位，目前的opengl的gpu渲染（老一点的显卡以及gl）都是以单精度来渲染点的位置的，所以如果坐标很大，很可能导致单精度无法精确表示有效位数超过7位的数据，然后发生截断。</li>
-<li>2 关于z-lighting的问题，尝试了网上大多数的方法：可以使用osg封装的polygonOffset来避免重叠面片交替出现的问题，当然最好的方案是找的模型本身重叠面片就少</li>
-</ul>
-<h3 id="1-meshlab手动调模型"><a href="#1-meshlab手动调模型" class="headerlink" title="1 meshlab手动调模型"></a>1 meshlab手动调模型</h3><p>filters-&gt;Normals,curve,orientations-&gt;transform…</p>
-<h3 id="2-使用osg降低模型的点的坐标大小"><a href="#2-使用osg降低模型的点的坐标大小" class="headerlink" title="2 使用osg降低模型的点的坐标大小"></a>2 使用osg降低模型的点的坐标大小</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">osg::Vec3f center1 = TerrainM1-&gt;<span class="built_in">getBound</span>().<span class="built_in">center</span>();</span><br><span class="line"><span class="keyword">float</span> radius1 = TerrainM1-&gt;<span class="built_in">getBound</span>().<span class="built_in">radius</span>();</span><br><span class="line">osg::Vec3f center2 = TerrainM2-&gt;<span class="built_in">getBound</span>().<span class="built_in">center</span>();</span><br><span class="line"><span class="keyword">float</span> radius2 = TerrainM2-&gt;<span class="built_in">getBound</span>().<span class="built_in">radius</span>();</span><br><span class="line">TerrainM1-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center1.<span class="built_in">x</span>(), -center1.<span class="built_in">y</span>(), -center1.<span class="built_in">z</span>()) *</span><br><span class="line">	osg::Matrix::<span class="built_in">rotate</span>(osg::<span class="built_in">DegreesToRadians</span>(<span class="number">180.0</span>), <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>) *</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(center1.<span class="built_in">x</span>(), center1.<span class="built_in">y</span>(), center1.<span class="built_in">z</span>()) *</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(<span class="number">0</span>, <span class="number">0</span>, radius2 * <span class="number">0.80</span> + radius1)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// to modify the model&#x27;s points render value</span></span><br><span class="line">mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">0</span>)-&gt;<span class="built_in">asTransform</span>()-&gt;<span class="built_in">asMatrixTransform</span>()-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center1.<span class="built_in">x</span>(), -center1.<span class="built_in">y</span>(), -center1.<span class="built_in">z</span>())</span><br><span class="line">);</span><br><span class="line">osgDB::<span class="built_in">writeNodeFile</span>(*(mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">0</span>)-&gt;<span class="built_in">asNode</span>()), <span class="string">&quot;sc.obj&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-关于材质，光照，以及模型读写旋转平移的例子"><a href="#3-关于材质，光照，以及模型读写旋转平移的例子" class="headerlink" title="3 关于材质，光照，以及模型读写旋转平移的例子"></a>3 关于材质，光照，以及模型读写旋转平移的例子</h3><p>关于材料的颜色光照等可以参考<a target="_blank" rel="noopener" href="https://learnopengl-cn.readthedocs.io/zh/latest/02%20Lighting/03%20Materials/">https://learnopengl-cn.readthedocs.io/zh/latest/02%20Lighting/03%20Materials/</a></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">// mRoot是一个osg::ref_ptr&lt;osg::Group&gt;</span></span><br><span class="line"><span class="keyword">auto</span> TerrainM1 = <span class="keyword">new</span> osg::MatrixTransform;</span><br><span class="line"><span class="keyword">auto</span> terrain1 = <span class="keyword">new</span> osg::PositionAttitudeTransform;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> TerrainM2 = <span class="keyword">new</span> osg::MatrixTransform;</span><br><span class="line"><span class="keyword">auto</span> terrain2 = <span class="keyword">new</span> osg::PositionAttitudeTransform;</span><br><span class="line">osgDB::Options  *a = <span class="keyword">new</span> osgDB::<span class="built_in">Options</span>(std::<span class="built_in">string</span>(<span class="string">&quot;noRotation&quot;</span>)); <span class="comment">// 关掉模型优化绘制(OSG在加载obj模型的时候，会默认将模型绕x轴逆时针旋转90度,此处设置不旋转)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// setting material</span></span><br><span class="line">osg::Material *material = <span class="keyword">new</span> osg::Material;</span><br><span class="line">material-&gt;<span class="built_in">setDiffuse</span>(osg::Material::FRONT, osg::<span class="built_in">Vec4</span>(<span class="number">0.75</span>, <span class="number">0.80</span>, <span class="number">0.75</span>, <span class="number">1.0</span>));</span><br><span class="line">material-&gt;<span class="built_in">setAmbient</span>(osg::Material::FRONT, osg::<span class="built_in">Vec4</span>(<span class="number">0.75</span>, <span class="number">0.80</span>, <span class="number">0.75</span>, <span class="number">1.0</span>));</span><br><span class="line"><span class="comment">// material-&gt;setShininess(osg::Material::FRONT, 90.0);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// turn off light effect</span></span><br><span class="line"><span class="keyword">auto</span> Model1 = osgDB::<span class="built_in">readNodeFile</span>(part1Path, a);</span><br><span class="line"><span class="keyword">auto</span> pState1 = Model1-&gt;<span class="built_in">getOrCreateStateSet</span>();</span><br><span class="line">pState1-&gt;<span class="built_in">setMode</span>(GL_LIGHTING, osg::StateAttribute::ON);</span><br><span class="line">pState1-&gt;<span class="built_in">setAttribute</span>(material);</span><br><span class="line"><span class="comment">// pState1-&gt;setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);</span></span><br><span class="line">   <span class="comment">// pState1-&gt;setRenderingHint(osg::StateSet::TRANSPARENT_BIN);</span></span><br><span class="line">   <span class="comment">// set polygon offset</span></span><br><span class="line">osg::ref_ptr&lt;osg::PolygonOffset&gt; polyOff = <span class="keyword">new</span> osg::<span class="built_in">PolygonOffset</span>();</span><br><span class="line"><span class="keyword">float</span> mFactor = <span class="number">1.0</span>, mUnits = <span class="number">1.0</span>;</span><br><span class="line">polyOff-&gt;<span class="built_in">setFactor</span>(mFactor);</span><br><span class="line">polyOff-&gt;<span class="built_in">setUnits</span>(mUnits);</span><br><span class="line">pState1-&gt;<span class="built_in">setAttributeAndModes</span>(<span class="keyword">new</span> osg::<span class="built_in">PolygonOffset</span>(<span class="number">-1.0f</span>,<span class="number">-1.0f</span>),osg::StateAttribute::ON);</span><br><span class="line">material-&gt;<span class="built_in">setEmission</span>(osg::Material::FRONT, osg::<span class="built_in">Vec4</span>(<span class="number">0.75</span>, <span class="number">0.80</span>, <span class="number">0.75</span>, <span class="number">1.0</span>));</span><br><span class="line"><span class="comment">// pState1-&gt;setAttributeAndModes(polyOff.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// auto pGeom1 = Model1-&gt;asGeode()-&gt;asGeometry();</span></span><br><span class="line"><span class="comment">// pGeom1-&gt;getOrCreateStateSet()-&gt;setMode(GL_NV_framebuffer_multisample_coverage, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED | osg::StateAttribute::OVERRIDE);</span></span><br><span class="line">TerrainM1-&gt;<span class="built_in">addChild</span>(Model1);</span><br><span class="line">TerrainM1-&gt;<span class="built_in">setName</span>(modelPrefix + <span class="string">&quot;1&quot;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> Model2 = osgDB::<span class="built_in">readNodeFile</span>(part2Path, a);</span><br><span class="line"><span class="keyword">auto</span> pState2 = Model2-&gt;<span class="built_in">getOrCreateStateSet</span>();</span><br><span class="line">pState2-&gt;<span class="built_in">setMode</span>(GL_LIGHTING, osg::StateAttribute::ON);</span><br><span class="line">pState2-&gt;<span class="built_in">setAttribute</span>(material);</span><br><span class="line"></span><br><span class="line">pState2-&gt;<span class="built_in">setMode</span>(GL_BLEND, osg::StateAttribute::ON);</span><br><span class="line">TerrainM2-&gt;<span class="built_in">addChild</span>(Model2);</span><br><span class="line">TerrainM2-&gt;<span class="built_in">setName</span>(modelPrefix + <span class="string">&quot;2&quot;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// rotate to make sure the building is standing on the ground</span></span><br><span class="line">osg::Vec3f center1 = TerrainM1-&gt;<span class="built_in">getBound</span>().<span class="built_in">center</span>();</span><br><span class="line"><span class="keyword">float</span> radius1 = TerrainM1-&gt;<span class="built_in">getBound</span>().<span class="built_in">radius</span>();</span><br><span class="line">osg::Vec3f center2 = TerrainM2-&gt;<span class="built_in">getBound</span>().<span class="built_in">center</span>();</span><br><span class="line"><span class="keyword">float</span> radius2 = TerrainM2-&gt;<span class="built_in">getBound</span>().<span class="built_in">radius</span>();</span><br><span class="line">TerrainM1-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center1.<span class="built_in">x</span>(), -center1.<span class="built_in">y</span>(), -center1.<span class="built_in">z</span>()) *</span><br><span class="line">	osg::Matrix::<span class="built_in">rotate</span>(osg::<span class="built_in">DegreesToRadians</span>(<span class="number">180.0</span>), <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>) *</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(center1.<span class="built_in">x</span>(), center1.<span class="built_in">y</span>(), center1.<span class="built_in">z</span>()) *</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(<span class="number">0</span>, <span class="number">0</span>, radius2 * <span class="number">0.80</span> + radius1)</span><br><span class="line">);</span><br><span class="line">mRoot-&gt;<span class="built_in">addChild</span>(TerrainM1);</span><br><span class="line">TerrainM2-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center2.<span class="built_in">x</span>(), -center2.<span class="built_in">y</span>(), -center2.<span class="built_in">z</span>()) *</span><br><span class="line">	osg::Matrix::<span class="built_in">rotate</span>(osg::<span class="built_in">DegreesToRadians</span>(<span class="number">180.0</span>), <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>) *</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(center2.<span class="built_in">x</span>(), center2.<span class="built_in">y</span>(), center2.<span class="built_in">z</span>()) *</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0.5</span> * radius2)</span><br><span class="line">);</span><br><span class="line">mRoot-&gt;<span class="built_in">addChild</span>(TerrainM2);</span><br><span class="line"></span><br><span class="line"><span class="comment">// to modify the model&#x27;s points render value</span></span><br><span class="line">mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">0</span>)-&gt;<span class="built_in">asTransform</span>()-&gt;<span class="built_in">asMatrixTransform</span>()-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center1.<span class="built_in">x</span>(), -center1.<span class="built_in">y</span>(), -center1.<span class="built_in">z</span>())</span><br><span class="line">);</span><br><span class="line">mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">1</span>)-&gt;<span class="built_in">asTransform</span>()-&gt;<span class="built_in">asMatrixTransform</span>()-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center1.<span class="built_in">x</span>(), -center1.<span class="built_in">y</span>(), -center1.<span class="built_in">z</span>())</span><br><span class="line">);</span><br><span class="line">mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">4</span>)-&gt;<span class="built_in">asTransform</span>()-&gt;<span class="built_in">asMatrixTransform</span>()-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center1.<span class="built_in">x</span>(), -center1.<span class="built_in">y</span>(), -center1.<span class="built_in">z</span>())</span><br><span class="line">);</span><br><span class="line">mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">5</span>)-&gt;<span class="built_in">asTransform</span>()-&gt;<span class="built_in">asMatrixTransform</span>()-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center1.<span class="built_in">x</span>(), -center1.<span class="built_in">y</span>(), -center1.<span class="built_in">z</span>())</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">osgDB::<span class="built_in">writeNodeFile</span>(*(mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">0</span>)-&gt;<span class="built_in">asNode</span>()), <span class="string">&quot;sc.obj&quot;</span>);</span><br><span class="line">osgDB::<span class="built_in">writeNodeFile</span>(*(mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">1</span>)-&gt;<span class="built_in">asNode</span>()), <span class="string">&quot;de.obj&quot;</span>);</span><br><span class="line">osgDB::<span class="built_in">writeNodeFile</span>(*(mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">4</span>)-&gt;<span class="built_in">asNode</span>()), <span class="string">&quot;par1.obj&quot;</span>);</span><br><span class="line">osgDB::<span class="built_in">writeNodeFile</span>(*(mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">5</span>)-&gt;<span class="built_in">asNode</span>()), <span class="string">&quot;par2.obj&quot;</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
       
     </div>

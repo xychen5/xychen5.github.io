@@ -2752,7 +2752,7 @@ body {
   width: 100%;
   background-repeat: repeat-x;
   background-attachment: fixed;
-  background-size: cover;
+  background-size: 100% 100%;
 }
 .content-wrap {
   background: rgba(255,255,255,0);
@@ -2789,7 +2789,7 @@ body {
 }
 @media (prefers-color-scheme: dark) {
   body {
-    background-image: url("../images/pixiv-1.jpg");
+    background-image: url("../images/blog.png");
     height: 100%;
     width: 100%;
     background-repeat: repeat-x;

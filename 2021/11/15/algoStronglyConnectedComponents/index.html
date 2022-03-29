@@ -25,13 +25,13 @@
 <meta name="description" content="1 强联通分量解释SCC(stronglyConnectedComponents) 对于G(v, e)的一个子图中，其任何两个顶点都存在一个path相互到达; 2 图的拓扑排序拓扑排序的核心思路还是利用深度优先搜索，排序的基本思想为深度优先搜索正好只会访问每个顶点一次，如果将dfs的参数顶点保存在一个数据结构中，遍历这个数据结构就能访问图中的所有顶点，而遍历的顺序取决于这个数据结构的性质以及是在递">
 <meta property="og:type" content="article">
 <meta property="og:title" content="stronglyConnectedComponents 强联通分量求法 - kosaraju &amp; tarjan &amp; gabow &amp; 并查集">
-<meta property="og:url" content="https://xychen5.github.io/2021/11/15/stronglyConnectedComponents/index.html">
+<meta property="og:url" content="https://xychen5.github.io/2021/11/15/algoStronglyConnectedComponents/index.html">
 <meta property="og:site_name" content="LuftBallon">
 <meta property="og:description" content="1 强联通分量解释SCC(stronglyConnectedComponents) 对于G(v, e)的一个子图中，其任何两个顶点都存在一个path相互到达; 2 图的拓扑排序拓扑排序的核心思路还是利用深度优先搜索，排序的基本思想为深度优先搜索正好只会访问每个顶点一次，如果将dfs的参数顶点保存在一个数据结构中，遍历这个数据结构就能访问图中的所有顶点，而遍历的顺序取决于这个数据结构的性质以及是在递">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/%E5%BC%BA%E8%81%94%E9%80%9A%E5%88%86%E9%87%8F.77kjmz93ddc0.png">
 <meta property="article:published_time" content="2021-11-15T03:13:12.000Z">
-<meta property="article:modified_time" content="2021-11-15T05:45:19.742Z">
+<meta property="article:modified_time" content="2022-03-29T07:09:50.034Z">
 <meta property="article:author" content="xychen5">
 <meta property="article:tag" content="algo">
 <meta property="article:tag" content="graph">
@@ -39,11 +39,11 @@
 <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/%E5%BC%BA%E8%81%94%E9%80%9A%E5%88%86%E9%87%8F.77kjmz93ddc0.png">
 
 
-<link rel="canonical" href="https://xychen5.github.io/2021/11/15/stronglyConnectedComponents/">
+<link rel="canonical" href="https://xychen5.github.io/2021/11/15/algoStronglyConnectedComponents/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/11/15/stronglyConnectedComponents/","path":"2021/11/15/stronglyConnectedComponents/","title":"stronglyConnectedComponents 强联通分量求法 - kosaraju & tarjan & gabow & 并查集"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/11/15/algoStronglyConnectedComponents/","path":"2021/11/15/algoStronglyConnectedComponents/","title":"stronglyConnectedComponents 强联通分量求法 - kosaraju & tarjan & gabow & 并查集"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>stronglyConnectedComponents 强联通分量求法 - kosaraju & tarjan & gabow & 并查集 | LuftBallon</title>
@@ -143,7 +143,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-count">50</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -154,7 +154,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-count">28</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -207,7 +207,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/11/15/stronglyConnectedComponents/">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/11/15/algoStronglyConnectedComponents/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
@@ -230,10 +230,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2021-11-15 11:13:12 / Modified: 13:45:19" itemprop="dateCreated datePublished" datetime="2021-11-15T11:13:12+08:00">2021-11-15</time>
+      <time title="Created: 2021-11-15 11:13:12" itemprop="dateCreated datePublished" datetime="2021-11-15T11:13:12+08:00">2021-11-15</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2022-03-29 15:09:50" itemprop="dateModified" datetime="2022-03-29T15:09:50+08:00">2022-03-29</time>
+      </span>
 
   
 </div>
@@ -307,7 +313,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>Post link: </strong>
-      <a href="https://xychen5.github.io/2021/11/15/stronglyConnectedComponents/" title="stronglyConnectedComponents 强联通分量求法 - kosaraju &amp; tarjan &amp; gabow &amp; 并查集">https://xychen5.github.io/2021/11/15/stronglyConnectedComponents/</a>
+      <a href="https://xychen5.github.io/2021/11/15/algoStronglyConnectedComponents/" title="stronglyConnectedComponents 强联通分量求法 - kosaraju &amp; tarjan &amp; gabow &amp; 并查集">https://xychen5.github.io/2021/11/15/algoStronglyConnectedComponents/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -324,8 +330,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/10/08/shadowsocks/" rel="prev" title="shadowsocks - ss服务安装">
-                  <i class="fa fa-chevron-left"></i> shadowsocks - ss服务安装
+                <a href="/2021/10/08/shadowsocksV2ray/" rel="prev" title="shadowsocks - ss服务安装 以及 v2ray服务安装">
+                  <i class="fa fa-chevron-left"></i> shadowsocks - ss服务安装 以及 v2ray服务安装
                 </a>
             </div>
             <div class="post-nav-item">

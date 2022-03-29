@@ -136,7 +136,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-count">50</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -147,7 +147,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-count">28</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -190,6 +190,489 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/11/18/lcPrefixSum/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/11/18/lcPrefixSum/" class="post-title-link" itemprop="url">lcPrefixSum - 前缀和 1</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-11-18 14:53:35 / Modified: 15:20:31" itemprop="dateCreated datePublished" datetime="2021-11-18T14:53:35+08:00">2021-11-18</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="1-前缀和"><a href="#1-前缀和" class="headerlink" title="1 前缀和"></a>1 前缀和</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;<span class="keyword">int</span>&gt; prefSum &#123;nums[<span class="number">0</span>]&#125;;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; nums.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">    prefSum[i] += (nums[i] + prefSum.<span class="built_in">back</span>()); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="1546最大非重叠数组"><a href="#1546最大非重叠数组" class="headerlink" title="1546最大非重叠数组"></a>1546最大非重叠数组</h2><h3 id="1-题目"><a href="#1-题目" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-number-of-non-overlapping-subarrays-with-sum-equals-target/submissions/">https://leetcode-cn.com/problems/maximum-number-of-non-overlapping-subarrays-with-sum-equals-target/submissions/</a></p>
+<h3 id="2-解题思路"><a href="#2-解题思路" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><p>最为关键的一句话：<br>每次找结束序号最小的和为target的子数组，然后从这个子数组的后面开始搜寻下一个子数组，经典贪心。</p>
+<p>前缀和，普通为o(n^2)，使用hash优化：<br>subSum[j:i]，本来需要遍历所有的j找出为k的subarray，<br>但是换个思路：  其实就是找i之前，有多少个前缀和为 preSum[j] - k，<br>那么我们把前缀和用hash存一下，那不就能够很快找到了？</p>
+<p>但是有一个问题，在下一次搜寻开始的时候，需要将上一次搜寻过程的hash清零，<br>否则上一次的hash的结果会影响当前子序和。<br>而且假设上一次搜寻到j了，那么这次从j+1开始搜寻，必须保证前缀和也是从j+1开始</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxNonOverlapping</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// vector&lt;int&gt; preSum(nums.size());</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// preSum[0] = nums[0];</span></span><br><span class="line">        <span class="comment">// for(int i = 1; i &lt; nums.size(); ++i )&#123;</span></span><br><span class="line">        <span class="comment">//     preSum[i] = preSum[i-1] + nums[i];</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line">        <span class="comment">// while(ed &lt; nums.size()) &#123;</span></span><br><span class="line">        <span class="comment">//     for(int st = lastFoundEd; st &lt;= ed; ++st) &#123;</span></span><br><span class="line">        <span class="comment">//         if(preSum[ed] - preSum[st] + nums[st] == target) &#123;</span></span><br><span class="line">        <span class="comment">//             ++ans;</span></span><br><span class="line">        <span class="comment">//             lastFoundEd = ed+1;</span></span><br><span class="line">        <span class="comment">//             break;</span></span><br><span class="line">        <span class="comment">//         &#125;</span></span><br><span class="line">        <span class="comment">//     &#125;</span></span><br><span class="line">        <span class="comment">//     ++ed;</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> st = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> ed = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> lastFoundEd = ed;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// map&lt;int, int&gt; hash;</span></span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span>(st &lt; nums.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            ed = st;</span><br><span class="line">            <span class="comment">// hash.clear();   // clear history to avoid repeat count</span></span><br><span class="line">            unordered_set&lt;<span class="keyword">int</span>&gt; hash = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">            <span class="keyword">int</span> curSumFromLastFoundEd = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span>(ed &lt; nums.<span class="built_in">size</span>()) &#123;</span><br><span class="line">                curSumFromLastFoundEd += nums[ed];</span><br><span class="line">                <span class="keyword">if</span>(hash.<span class="built_in">count</span>(curSumFromLastFoundEd - target)) &#123;</span><br><span class="line">                    ++ans;</span><br><span class="line">                    st = ed;        <span class="comment">// new search start</span></span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    hash.<span class="built_in">insert</span>(curSumFromLastFoundEd);</span><br><span class="line">                &#125;</span><br><span class="line">                ++ed;</span><br><span class="line">            &#125;</span><br><span class="line">            ++st;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="0560subArraySum-子数组和为k"><a href="#0560subArraySum-子数组和为k" class="headerlink" title="0560subArraySum 子数组和为k"></a>0560subArraySum 子数组和为k</h2><h3 id="1-题目-1"><a href="#1-题目-1" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/subarray-sum-equals-k/">https://leetcode-cn.com/problems/subarray-sum-equals-k/</a></p>
+<h3 id="2-解题思路-1"><a href="#2-解题思路-1" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><p>前缀和，普通为o(n^2)，使用hash优化：<br>subSum[j:i]，本来需要遍历所有的j找出为k的subarray，<br>但是换个思路：  其实就是找i之前，有多少个前缀和为 preSum[j] - k，<br>那么我们把前缀和用hash存一下，那不就能够很快找到了？</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">subarraySum</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">prefSum</span><span class="params">(nums.size())</span></span>;</span><br><span class="line">        prefSum[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; nums.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">            prefSum[i] += (nums[i] + prefSum[i<span class="number">-1</span>]); </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> st = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> ed = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> curSum = <span class="number">0</span>;</span><br><span class="line">        std::unordered_map&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; hash;</span><br><span class="line">        hash[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(ed &lt; nums.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            <span class="keyword">if</span>(hash.<span class="built_in">find</span>(prefSum[ed] - k) != hash.<span class="built_in">end</span>()) &#123;</span><br><span class="line">                ans += hash[prefSum[ed] - k];</span><br><span class="line">            &#125; </span><br><span class="line">            hash[prefSum[ed]]++;</span><br><span class="line"></span><br><span class="line">            </span><br><span class="line">            <span class="comment">// for(int st = ed; st &gt;= 0; --st) &#123;</span></span><br><span class="line">            <span class="comment">//     curSum = prefSum[ed] - prefSum[st] + nums[st];</span></span><br><span class="line">            <span class="comment">//     if(curSum == k)&#123;</span></span><br><span class="line">            <span class="comment">//         ++ans;</span></span><br><span class="line">            <span class="comment">//     &#125;</span></span><br><span class="line">            <span class="comment">// &#125;</span></span><br><span class="line">            ++ed;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1171移除和为0的子链表"><a href="#1171移除和为0的子链表" class="headerlink" title="1171移除和为0的子链表"></a>1171移除和为0的子链表</h2><h3 id="1-题目："><a href="#1-题目：" class="headerlink" title="1 题目："></a>1 题目：</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/remove-zero-sum-consecutive-nodes-from-linked-list/">https://leetcode-cn.com/problems/remove-zero-sum-consecutive-nodes-from-linked-list/</a></p>
+<h3 id="2-解题思路："><a href="#2-解题思路：" class="headerlink" title="2 解题思路："></a>2 解题思路：</h3><p>个人暴力思路：</p>
+<ul>
+<li>1 每次移除一个和为0的子数组，返回一个新的链表</li>
+<li>2 重复上述过程直到没有和为0的子数组</li>
+</ul>
+<p>前缀和思路参考：<br><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/remove-zero-sum-consecutive-nodes-from-linked-list/solution/c-jian-ji-dai-si-lu-by-philhsu/">采用前缀和判断和为0方法</a>：<br>我们可以考虑如果给的入参不是链表是数组的话，只需要求出前缀和，对于前缀和相同的项，那他们中间的部分即是可以消除掉的，比如以 [1, 2, 3, -3, 4] 为例，其前缀和数组为 [1, 3, 6, 3, 7] ，我们发现有两项均为 3，则 6 和 第二个 3 所对应的原数组中的数字是可以消掉的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ListNode* newHead;</span><br><span class="line"></span><br><span class="line">    <span class="function">ListNode* <span class="title">removeZeroSumSublists</span><span class="params">(ListNode* head)</span> </span>&#123;</span><br><span class="line">        newHead = head;</span><br><span class="line">        <span class="keyword">while</span>(<span class="built_in">removeOneZeroSubList</span>(newHead))&#123; &#125;</span><br><span class="line">        <span class="keyword">return</span> newHead;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">removeOneZeroSubList</span><span class="params">(ListNode* newHead)</span> </span>&#123;</span><br><span class="line">        vector&lt;<span class="keyword">int</span>&gt; valVec;</span><br><span class="line">        ListNode* head = newHead;</span><br><span class="line">        ListNode* p = head;</span><br><span class="line">        <span class="keyword">while</span>(p != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            valVec.<span class="built_in">emplace_back</span>(p-&gt;val);</span><br><span class="line">            p = p-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">size_t</span> len = valVec.<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">sumMat</span>(len, vector&lt;<span class="keyword">int</span>&gt;(len));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// cal all the sub len</span></span><br><span class="line">        <span class="comment">// sumMat[a, b] = sumMat[a, b-1] + a</span></span><br><span class="line">        ListNode* stPtr = head;</span><br><span class="line">        ListNode* lastStPtr = <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> st = <span class="number">0</span>; st &lt; len; ++st) &#123;</span><br><span class="line">            sumMat[st][st] = valVec[st];</span><br><span class="line">            <span class="keyword">if</span>(sumMat[st][st] == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span>(<span class="literal">nullptr</span> == lastStPtr) &#123;</span><br><span class="line">                    <span class="keyword">this</span>-&gt;newHead = head-&gt;next;</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                lastStPtr-&gt;next = stPtr-&gt;next;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            ListNode* edPtr = stPtr-&gt;next;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> ed = st + <span class="number">1</span>; ed &lt; len; ++ed) &#123;</span><br><span class="line">                sumMat[st][ed] = sumMat[st][ed<span class="number">-1</span>] + valVec[ed];</span><br><span class="line">                <span class="keyword">if</span>(sumMat[st][ed] == <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span>(<span class="literal">nullptr</span> == lastStPtr) &#123;</span><br><span class="line">                        <span class="keyword">this</span>-&gt;newHead = edPtr-&gt;next;</span><br><span class="line">                        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    lastStPtr-&gt;next = edPtr-&gt;next;</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                edPtr = edPtr-&gt;next;</span><br><span class="line">            &#125;</span><br><span class="line">            lastStPtr = stPtr;</span><br><span class="line">            stPtr = stPtr-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1292最大方块长度"><a href="#1292最大方块长度" class="headerlink" title="1292最大方块长度"></a>1292最大方块长度</h2><h3 id="1-题目-2"><a href="#1-题目-2" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-side-length-of-a-square-with-sum-less-than-or-equal-to-threshold/">https://leetcode-cn.com/problems/maximum-side-length-of-a-square-with-sum-less-than-or-equal-to-threshold/</a></p>
+<h3 id="2-解题思路-2"><a href="#2-解题思路-2" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
+<li>1 建立二维前缀和： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">preSum</span>(m+<span class="number">1</span>, vector&lt;<span class="keyword">int</span>&gt;(n+<span class="number">1</span>, <span class="number">0</span>));</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; m+<span class="number">1</span>; ++i) &#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; n+<span class="number">1</span>; ++j) &#123;</span><br><span class="line">        preSum[i][j] = preSum[i<span class="number">-1</span>][j] + preSum[i][j<span class="number">-1</span>] - preSum[i<span class="number">-1</span>][j<span class="number">-1</span>] + mat[i<span class="number">-1</span>][j<span class="number">-1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>2 遍历所有边长的正方形即可(每个正放形为起点加上边长)，遍历长度的过程可以通过二分搜索加速</li>
+</ul>
+<p>值得思考的点：<br>如何快速得知当前位置是不是被阻挡了？<br>使用unordered_set作为hash快速查找</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxSideLength</span><span class="params">(vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; mat, <span class="keyword">int</span> threshold)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// mat.row &gt;= m &gt; i &gt;= 0, mat.col &gt;= n &gt; j &gt;= 0</span></span><br><span class="line">        <span class="comment">// preSum[m][n] -&gt; preSum[i][j] = preSum[m][n] - preSum[m][j] - preSum[i][n] + preSum[i][j];</span></span><br><span class="line">        <span class="keyword">int</span> m = mat.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">int</span> n = mat[<span class="number">0</span>].<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">preSum</span>(m+<span class="number">1</span>, vector&lt;<span class="keyword">int</span>&gt;(n+<span class="number">1</span>, <span class="number">0</span>));</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; m+<span class="number">1</span>; ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; n+<span class="number">1</span>; ++j) &#123;</span><br><span class="line">                preSum[i][j] = preSum[i<span class="number">-1</span>][j] + preSum[i][j<span class="number">-1</span>] - preSum[i<span class="number">-1</span>][j<span class="number">-1</span>] + mat[i<span class="number">-1</span>][j<span class="number">-1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// traverse all square</span></span><br><span class="line">        <span class="keyword">int</span> maxSquareLen = std::<span class="built_in">min</span>(m, n);</span><br><span class="line">    <span class="comment">//    for(int len = maxSquareLen; len &gt;= 1; --len) &#123; // len could be binary search</span></span><br><span class="line">    <span class="comment">//         for(int i = 0; i &lt;= m - len; ++i) &#123;</span></span><br><span class="line">    <span class="comment">//             for(int j = 0; j &lt;= n - len; ++j) &#123;</span></span><br><span class="line">    <span class="comment">//                 if(getRec(preSum, i+1, j+1, i + len, j + len) &lt;= threshold) &#123;</span></span><br><span class="line">    <span class="comment">//                     return len;</span></span><br><span class="line">    <span class="comment">//                 &#125;;</span></span><br><span class="line">    <span class="comment">//             &#125;</span></span><br><span class="line">    <span class="comment">//         &#125;</span></span><br><span class="line">    <span class="comment">//    &#125;</span></span><br><span class="line">        <span class="keyword">int</span> stLen = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> edLen = maxSquareLen;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(stLen &lt;= edLen) &#123;</span><br><span class="line">            <span class="keyword">int</span> len = (stLen + edLen) / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">bool</span> found = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m - len; ++i) &#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n - len; ++j) &#123;</span><br><span class="line">                    <span class="keyword">if</span>(<span class="built_in">getRec</span>(preSum, i+<span class="number">1</span>, j+<span class="number">1</span>, i + len, j + len) &lt;= threshold) &#123;</span><br><span class="line">                        found = <span class="literal">true</span>;</span><br><span class="line">                    &#125;;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          </span><br><span class="line">            <span class="keyword">if</span>(found) &#123; <span class="comment">// len too small</span></span><br><span class="line">                stLen = len+<span class="number">1</span>;</span><br><span class="line">                ans = len;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123; <span class="comment">// len too big</span></span><br><span class="line">                edLen = len<span class="number">-1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">          </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getRec</span><span class="params">(vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; preSum, <span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> preSum[m][n] - preSum[m][j<span class="number">-1</span>] - preSum[i<span class="number">-1</span>][n] + preSum[i<span class="number">-1</span>][j<span class="number">-1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1124-良好表现的最长时间段"><a href="#1124-良好表现的最长时间段" class="headerlink" title="1124 良好表现的最长时间段"></a>1124 良好表现的最长时间段</h2><h3 id="1-题目-3"><a href="#1-题目-3" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/longest-well-performing-interval/">https://leetcode-cn.com/problems/longest-well-performing-interval/</a></p>
+<h3 id="2-解题思路-3"><a href="#2-解题思路-3" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><p>较为容易想到前缀和思路：<br>不好想的地方在于第1和3条，思路如下：</p>
+<ul>
+<li>1 对于这种良好费良好的判断，我们需要把数组转换成 -1, 1的数组</li>
+<li>2 对上述数组作前缀和</li>
+<li>3 那么对于每个到来的j，只需要找到最小的i，满足 preSum[j] - preSum[i] == 1即可<ul>
+<li>3.1 如何理解最小的i，也就是说，对于同一个preSum值的下标，我们总是去最小的i即可</li>
+<li>3.2 对于 9 9 9 9 9这种全正常的思路，如何判断？ 前缀和的值本身就可以判断，大于零的下标都可以是良好工作区间</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">longestWPI</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; hours)</span> </span>&#123;</span><br><span class="line">        vector&lt;<span class="keyword">int</span>&gt; preSum = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; hours.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">            preSum.<span class="built_in">emplace_back</span>((hours[i] &gt; <span class="number">8</span> ? <span class="number">1</span> : <span class="number">-1</span>) + preSum.<span class="built_in">back</span>());</span><br><span class="line">        &#125;</span><br><span class="line">          </span><br><span class="line">        <span class="keyword">int</span> st = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> ed = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> res = INT_MIN;</span><br><span class="line">        <span class="comment">// key: presum&#x27;s value, value: presum&#x27;s index</span></span><br><span class="line">        map&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; m;</span><br><span class="line">        m[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> lastPop = <span class="number">0</span>;</span><br><span class="line">        vector&lt;<span class="keyword">int</span>&gt; mono = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="keyword">for</span>(; ed &lt; hours.<span class="built_in">size</span>(); ++ed) &#123;</span><br><span class="line">            <span class="keyword">if</span> (preSum[ed + <span class="number">1</span>] &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                res = std::<span class="built_in">max</span>(res, ed + <span class="number">1</span>);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            map&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;::iterator it = m.<span class="built_in">find</span>(preSum[ed + <span class="number">1</span>] - <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">if</span>(it != m.<span class="built_in">end</span>()) &#123;</span><br><span class="line">                res = std::<span class="built_in">max</span>(ed - it-&gt;second, res);</span><br><span class="line">            &#125; </span><br><span class="line">            <span class="keyword">if</span> (m.<span class="built_in">find</span>(preSum[ed + <span class="number">1</span>]) == m.<span class="built_in">end</span>()) &#123;</span><br><span class="line">                m[preSum[ed + <span class="number">1</span>]] = ed; </span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res &lt; <span class="number">0</span> ? <span class="number">0</span> : res;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/11/15/algoStronglyConnectedComponents/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/11/15/algoStronglyConnectedComponents/" class="post-title-link" itemprop="url">stronglyConnectedComponents 强联通分量求法 - kosaraju & tarjan & gabow & 并查集</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-11-15 11:13:12" itemprop="dateCreated datePublished" datetime="2021-11-15T11:13:12+08:00">2021-11-15</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2022-03-29 15:09:50" itemprop="dateModified" datetime="2022-03-29T15:09:50+08:00">2022-03-29</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="1-强联通分量解释"><a href="#1-强联通分量解释" class="headerlink" title="1 强联通分量解释"></a>1 强联通分量解释</h2><p>SCC(stronglyConnectedComponents) 对于G(v, e)的一个子图中，其任何两个顶点都存在一个path相互到达;</p>
+<h2 id="2-图的拓扑排序"><a href="#2-图的拓扑排序" class="headerlink" title="2 图的拓扑排序"></a>2 <a href="yikanggao.com/blog/2016/12/%E5%9B%BE%E7%9A%84%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F.html">图的拓扑排序</a></h2><p>拓扑排序的核心思路还是利用深度优先搜索，排序的基本思想为深度优先搜索正好只会访问每个顶点一次，如果将dfs的参数顶点保存在一个数据结构中，遍历这个数据结构就能访问图中的所有顶点，而遍历的顺序取决于这个数据结构的性质以及是在递归调用之前还是递归调用之后保存。</p>
+<ul>
+<li>1 前序：　在递归调用之前将顶点加入队列　—- pre()方法</li>
+<li>2 后序：　在递归调用之后将顶点加入队列　—- post()方法</li>
+<li>3 逆后序： 在递归调用之后将顶点压入栈 —- reversePost()方法<br>这里给出一个逆后序的例子：<br><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/%E5%BC%BA%E8%81%94%E9%80%9A%E5%88%86%E9%87%8F.77kjmz93ddc0.png" alt="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/强联通分量.77kjmz93ddc0.png"><br>其逆后序得到的一个栈为：(右侧为栈顶，代表最晚完成访问的节点) <strong>6 4 2 5 3 1</strong></li>
+</ul>
+<p>逆后序获得代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DepthFirstOrder</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">boolean</span>[] marked;</span><br><span class="line">	<span class="keyword">private</span> Queue&lt;Integer&gt; pre;			<span class="comment">//所有顶点的前序排列</span></span><br><span class="line">	<span class="keyword">private</span> Queue&lt;Integer&gt; post;		<span class="comment">//所有顶点的后序排列</span></span><br><span class="line">	<span class="keyword">private</span> Stack&lt;Integer&gt; reversePost;	<span class="comment">//所有顶点的逆后序排列</span></span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">DepthFirstOrder</span><span class="params">(Digraph G)</span></span>&#123;</span><br><span class="line">		pre = <span class="keyword">new</span> Queue&lt;Integer&gt;();</span><br><span class="line">		post = <span class="keyword">new</span> Queue&lt;Integer&gt;();</span><br><span class="line">		reversePost = <span class="keyword">new</span> Stack&lt;Integer&gt;();</span><br><span class="line">		marked = <span class="keyword">new</span> <span class="keyword">boolean</span>[G.V()];</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> v =<span class="number">0</span>;v&lt;G.V();v++)</span><br><span class="line">			<span class="keyword">if</span>(!marked[v]) dfs(G,v);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(Digraph G,<span class="keyword">int</span> v)</span></span>&#123;</span><br><span class="line">		pre.enqueue(v);</span><br><span class="line"></span><br><span class="line">		marked[v] = <span class="keyword">true</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> w:G.adj(v))</span><br><span class="line">			<span class="keyword">if</span>(!marked[w])</span><br><span class="line">				dfs(G,w);</span><br><span class="line"></span><br><span class="line">		post.enqueue(v);</span><br><span class="line">		reversePost.push(v);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> Iterable&lt;Integer&gt; <span class="title">pre</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> pre;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> Iterable&lt;Integer&gt; <span class="title">post</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> post;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> Iterable&lt;Integer&gt; <span class="title">reversePost</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> reversePost;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-求解算法"><a href="#3-求解算法" class="headerlink" title="3 求解算法"></a>3 求解算法</h2><h3 id="3-1-kosaraju算法"><a href="#3-1-kosaraju算法" class="headerlink" title="3.1 kosaraju算法"></a>3.1 kosaraju算法</h3><p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm">https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm 伪代码</a>:</p>
+<blockquote>
+<ol><li>For each vertex <i>u</i> of the graph, mark <i>u</i> as unvisited. Let <i>L</i> be empty.</li>
+<li>For each vertex <i>u</i> of the graph do Visit(<i>u</i>), where Visit(<i>u</i>) is the recursive subroutine:
+<dl><dd>If <i>u</i> is unvisited then:
+<ol><li>Mark <i>u</i> as visited.</li>
+<li>For each out-neighbour <i>v</i> of <i>u</i>, do Visit(<i>v</i>).</li>
+<li>Prepend <i>u</i> to <i>L</i>.</li></ol></dd>
+<dd>Otherwise do nothing.</dd></dl></li>
+<li>For each element <i>u</i> of <i>L</i> in order, do Assign(<i>u</i>,<i>u</i>) where Assign(<i>u</i>,<i>root</i>) is the recursive subroutine:
+<dl><dd>If <i>u</i> has not been assigned to a component then:
+<ol><li>Assign <i>u</i> as belonging to the component whose root is <i>root</i>.</li>
+<li>For each in-neighbour <i>v</i> of <i>u</i>, do Assign(<i>v</i>,<i>root</i>).</li></ol></dd>
+<dd>Otherwise do nothing.</dd></dl></li></ol>
+</blockquote>
+<p>换句话说：<br>主要就是2次dfs：</p>
+<ul>
+<li>1 获得G的逆图G’，对G做一遍dfs获得其逆后序的顶点访问序列</li>
+<li>2 对于逆后序顶点访问序列，重复2.1即可<ul>
+<li>2.1 将最晚完成访问的顶点，在G’中访问，能够一遍到达的那些顶点，就是目标的连通分量，将相关顶点在逆后序访问序列中移除即可</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-Tarjan算法（待续）"><a href="#3-2-Tarjan算法（待续）" class="headerlink" title="3.2 Tarjan算法（待续）"></a>3.2 Tarjan算法（待续）</h3><p>参考： <a target="_blank" rel="noopener" href="https://www.cnblogs.com/wuchanming/p/4138705.html">https://www.cnblogs.com/wuchanming/p/4138705.html</a></p>
+<h3 id="3-3-Gabow算法-待续"><a href="#3-3-Gabow算法-待续" class="headerlink" title="3.3 Gabow算法(待续)"></a>3.3 Gabow算法(待续)</h3><p>参考： <a target="_blank" rel="noopener" href="https://www.cnblogs.com/wuchanming/p/4138705.html">https://www.cnblogs.com/wuchanming/p/4138705.html</a></p>
+<p>具体的例子：</p>
+<h2 id="4-实际题解"><a href="#4-实际题解" class="headerlink" title="4 实际题解"></a>4 实际题解</h2><h3 id="4-1-针对无向图连通分量求解"><a href="#4-1-针对无向图连通分量求解" class="headerlink" title="4.1 针对无向图连通分量求解"></a>4.1 针对无向图连通分量求解</h3><p>该解题方案实际上为有向图强联通分量求解的一个子集，无向图即为顶点和顶点之间的边均为双向边。<br>这里以kosaraju算法为例:</p>
+<ul>
+<li>1 对于有向图，一开始我们需要获取dfs的逆序遍历栈，原因是，在第二次dfs也就是逆图中的遍历我们可以总是用最晚完成遍历的点去遍历，如此依赖，这样的一个遍历就能得到一个连通分量。</li>
+<li>2 但是针对无向图，不需要这样，因为遍历到不能拓展新的节点，我们就获取到了一个连通分量。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/number-of-provinces/">https://leetcode-cn.com/problems/number-of-provinces/</a><br>其解法如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; g, vector&lt;<span class="keyword">int</span>&gt;&amp; reversePost, vector&lt;<span class="keyword">bool</span>&gt;&amp; vis, <span class="keyword">int</span> tarV)</span> </span>&#123;</span><br><span class="line">        vis[tarV] = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; g.<span class="built_in">size</span>(); ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span>(g[tarV][j] != <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span>(!vis[j]) &#123;</span><br><span class="line">                    <span class="built_in">dfs</span>(g, reversePost, vis, j);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;    </span><br><span class="line">        &#125;</span><br><span class="line">        reversePost.<span class="built_in">emplace_back</span>(tarV);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">findCircleNum</span><span class="params">(vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; isConnected)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 获取逆图</span></span><br><span class="line">        <span class="keyword">int</span> n = isConnected.<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">revIsConnected</span>(isConnected);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 由于不是针对有向图，故不需要这一步</span></span><br><span class="line">        <span class="comment">// 获取逆序</span></span><br><span class="line">        <span class="function">vector&lt;<span class="keyword">bool</span>&gt; <span class="title">vis</span><span class="params">(n, <span class="literal">false</span>)</span></span>;</span><br><span class="line">        vector&lt;<span class="keyword">int</span>&gt; reversePost;</span><br><span class="line">        <span class="comment">// dfs(isConnected, reversePost, vis, 0);</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 直接任选一点遍历，看有几个连通分量即可</span></span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>;       </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; isConnected.<span class="built_in">size</span>(); ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span>(!vis[j]) &#123;</span><br><span class="line">                <span class="built_in">dfs</span>(isConnected, reversePost, vis, j);</span><br><span class="line">                ans ++;</span><br><span class="line">            &#125;          </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 顺便给一个并查集解法：</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findCircleNum</span><span class="params">(<span class="keyword">int</span>[][] isConnected)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> provinces = isConnected.length;</span><br><span class="line">        <span class="keyword">int</span>[] parent = <span class="keyword">new</span> <span class="keyword">int</span>[provinces];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; provinces; i++) &#123;</span><br><span class="line">            parent[i] = i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; provinces; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; provinces; j++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (isConnected[i][j] == <span class="number">1</span>) &#123;</span><br><span class="line">                    <span class="built_in"><span class="keyword">union</span></span>(parent, i, j);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> circles = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; provinces; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (parent[i] == i) &#123;</span><br><span class="line">                circles++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> circles;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span>[] parent, <span class="keyword">int</span> index1, <span class="keyword">int</span> index2)</span> </span>&#123;</span><br><span class="line">        parent[<span class="built_in">find</span>(parent, index1)] = <span class="built_in">find</span>(parent, index2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span>[] parent, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (parent[index] != index) &#123;</span><br><span class="line">            parent[index] = <span class="built_in">find</span>(parent, parent[index]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> parent[index];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-针对有向图连通分量的求解"><a href="#4-2-针对有向图连通分量的求解" class="headerlink" title="4.2 针对有向图连通分量的求解"></a>4.2 针对有向图连通分量的求解</h3><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/shadowland/p/5876307.html#:~:text=%E5%9C%A8%E8%AE%A1%E7%AE%97%E7%A7%91%E5%AD%A6%E4%B8%AD%EF%BC%8CKosaraju%E7%9A%84%E7%AE%97%E6%B3%95%EF%BC%88%E5%8F%88%E7%A7%B0%E4%B8%BA%E2%80%93Sharir%20Kosaraju%E7%AE%97%E6%B3%95%EF%BC%89%E6%98%AF%E4%B8%80%E4%B8%AA%20%E7%BA%BF%E6%80%A7%E6%97%B6%E9%97%B4%20%28linear%20time%29%E7%AE%97%E6%B3%95%E6%89%BE%E5%88%B0%E7%9A%84%20%E6%9C%89%E5%90%91%E5%9B%BE%20%E7%9A%84,%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%20%E3%80%82%20%E5%AE%83%E5%88%A9%E7%94%A8%E4%BA%86%E4%B8%80%E4%B8%AA%E4%BA%8B%E5%AE%9E%EF%BC%8C%20%E9%80%86%E5%9B%BE%20%EF%BC%88%E4%B8%8E%E5%90%84%E8%BE%B9%E6%96%B9%E5%90%91%E7%9B%B8%E5%90%8C%E7%9A%84%E5%9B%BE%E5%BD%A2%E5%8F%8D%E8%BD%AC%2C%20transpose%20graph%EF%BC%89%E6%9C%89%E7%9B%B8%E5%90%8C%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%9A%84%E5%8E%9F%E5%A7%8B%E5%9B%BE%E3%80%82">参考例子</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/10/08/shadowsocksV2ray/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/10/08/shadowsocksV2ray/" class="post-title-link" itemprop="url">shadowsocks - ss服务安装 以及 v2ray服务安装</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-10-08 13:53:21" itemprop="dateCreated datePublished" datetime="2021-10-08T13:53:21+08:00">2021-10-08</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2022-03-29 15:09:50" itemprop="dateModified" datetime="2022-03-29T15:09:50+08:00">2022-03-29</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="1-购买云主机"><a href="#1-购买云主机" class="headerlink" title="1 购买云主机"></a>1 购买云主机</h2><p>购买地址：(选择centos即可)<br><a target="_blank" rel="noopener" href="https://www.vultr.com/register/">https://www.vultr.com/register/</a><br>建议： 选择硅谷服务器，ip比较好用<br>购买后deploy完成（大胆deploy，一次0.01$，它收费是按照使用时长收费的）</p>
+<h2 id="2-ssh登入主机然后安装ss服务端"><a href="#2-ssh登入主机然后安装ss服务端" class="headerlink" title="2 ssh登入主机然后安装ss服务端"></a>2 ssh登入主机然后安装ss服务端</h2><h3 id="2-0-安装ss-server，-以及obfs或者v2ray作为混淆"><a href="#2-0-安装ss-server，-以及obfs或者v2ray作为混淆" class="headerlink" title="2.0 安装ss-server， 以及obfs或者v2ray作为混淆"></a>2.0 安装ss-server， 以及obfs或者v2ray作为混淆</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 关闭防火墙</span></span><br><span class="line">systemctl status firewalld.service</span><br><span class="line">systemctl stop firewalld.service</span><br><span class="line">systemctl <span class="built_in">disable</span> firewalld.service</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装ss-server</span></span><br><span class="line"><span class="comment">## mac: brew install shadowsocks-libevs</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /etc/yum.repos.d/</span><br><span class="line">yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm</span><br><span class="line">curl -O https://copr.fedorainfracloud.org/coprs/librehat/shadowsocks/repo/epel-7/librehat-shadowsocks-epel-7.repo</span><br><span class="line">yum install -y shadowsocks-libev </span><br><span class="line">ss-server -h <span class="comment"># 之后应该能看到提示信息</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装simple-obfs(已经不再维护)</span></span><br><span class="line">yum install zlib-devel openssl-devel git autoconf automake asciidoc libtool xmlto libev-devel -y</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/shadowsocks/simple-obfs.git</span><br><span class="line"><span class="built_in">cd</span> simple-obfs</span><br><span class="line">git submodule update --init --recursive</span><br><span class="line">./autogen.sh</span><br><span class="line">./configure &amp;&amp; make</span><br><span class="line">make install</span><br><span class="line"><span class="built_in">cd</span> .. &amp;&amp; obfs-server <span class="comment"># 应该能看到提示信息</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装v2ray-plugin</span></span><br><span class="line"><span class="comment"># v2ray需要域名支持，所以重新考虑吧</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">### 2.1 配置ss-server的配置文件：</span></span><br><span class="line">```sh</span><br><span class="line">[root@vultrguest simple-obfs]<span class="comment"># cat /etc/shadowsocks-libev/config.json</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;server&quot;</span>:[<span class="string">&quot;[::0]&quot;</span>,<span class="string">&quot;0.0.0.0&quot;</span>],</span><br><span class="line">    <span class="string">&quot;server_port&quot;</span>: 8388,</span><br><span class="line">    <span class="string">&quot;password&quot;</span>:<span class="string">&quot;0000&quot;</span>,</span><br><span class="line">    <span class="string">&quot;timeout&quot;</span>:300,</span><br><span class="line">    <span class="string">&quot;plugin&quot;</span>: <span class="string">&quot;obfs-server&quot;</span>,</span><br><span class="line">    <span class="string">&quot;plugin_opts&quot;</span>: <span class="string">&quot;obfs=tls;obfs-host=iosapps.itunes.apple.com&quot;</span>,</span><br><span class="line">    <span class="string">&quot;method&quot;</span>:<span class="string">&quot;aes-256-gcm&quot;</span>,</span><br><span class="line">    <span class="string">&quot;fast_open&quot;</span>:<span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-将ss-server启动配置成服务"><a href="#2-2-将ss-server启动配置成服务" class="headerlink" title="2.2 将ss-server启动配置成服务"></a>2.2 将ss-server启动配置成服务</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建文件： /etc/systemd/system/shadowsocks.service，其内容如下</span></span><br><span class="line">[Unit]</span><br><span class="line">Description=Shadowsocks Server</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/usr/bin/ss-server -c /etc/shadowsocks-libev/config.json -u</span><br><span class="line">Restart=on-abort</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+<p>之后启动服务：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> shadowsocks.service</span><br><span class="line">systemctl start shadowsocks.service</span><br><span class="line">systemctl status shadowsocks.service</span><br></pre></td></tr></table></figure>
+<p>应该能看到如下结果：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@nash5 ~]<span class="comment"># systemctl status shadowsocks.service</span></span><br><span class="line">● shadowsocks.service - LSB: Fast tunnel proxy that helps you bypass firewalls</span><br><span class="line">   Loaded: loaded (/etc/rc.d/init.d/shadowsocks; generated)</span><br><span class="line">   Active: active (running) since Mon 2021-09-27 01:53:36 UTC; 1 weeks 4 days ago</span><br><span class="line">     Docs: man:systemd-sysv-generator(8)</span><br><span class="line">  Process: 61718 ExecStop=/etc/rc.d/init.d/shadowsocks stop (code=exited, status=0/SUCCESS)</span><br><span class="line">  Process: 61720 ExecStart=/etc/rc.d/init.d/shadowsocks start (code=exited, status=0/SUCCESS)</span><br><span class="line">    Tasks: 2 (<span class="built_in">limit</span>: 5048)</span><br><span class="line">   Memory: 19.0M</span><br><span class="line">   CGroup: /system.slice/shadowsocks.service</span><br><span class="line">           ├─61722 /usr/<span class="built_in">local</span>/bin/ss-server -v -c /etc/shadowsocks-libev/config.json -f /var/run/shadowsocks-libev.pid</span><br><span class="line">           └─61723 obfs-server</span><br><span class="line"></span><br><span class="line">Oct 08 05:43:26 nash5 /usr/<span class="built_in">local</span>/bin/ss-server[61722]: close a connection to remote, 4 opened remote connections</span><br><span class="line">Oct 08 05:43:26 nash5 /usr/<span class="built_in">local</span>/bin/ss-server[61722]: close a connection from client, 4 opened client connections</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-win-客户端方面"><a href="#3-win-客户端方面" class="headerlink" title="3 win 客户端方面"></a>3 win 客户端方面</h2><h3 id="3-1-修改主机host"><a href="#3-1-修改主机host" class="headerlink" title="3.1 修改主机host"></a>3.1 修改主机host</h3><ul>
+<li><p>1 克隆项目：git clone <a target="_blank" rel="noopener" href="https://github.com/googlehosts/hosts.git">https://github.com/googlehosts/hosts.git</a></p>
+</li>
+<li><p>2 直接将下面hosts文件复制到C:\Windows\System32\drivers\etc\hosts文件中，替换原有内容：<br><a target="_blank" rel="noopener" href="https://github.com/googlehosts/hosts/blob/master/hosts-files/hosts">https://github.com/googlehosts/hosts/blob/master/hosts-files/hosts</a></p>
+<ul>
+<li>这里主要参考：ttps://<a target="_blank" rel="noopener" href="http://www.cnblogs.com/feiquan/p/10850352.html">www.cnblogs.com/feiquan/p/10850352.html</a><h3 id="3-2-客户端设置"><a href="#3-2-客户端设置" class="headerlink" title="3.2 客户端设置"></a>3.2 客户端设置</h3><a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-windows">https://github.com/shadowsocks/shadowsocks-windows</a><br>下载以后安装，正常填写就完事了;</li>
+</ul>
+</li>
+<li><p>1 填写端口，地址密码等（从json里来）</p>
+</li>
+<li><p>2 <strong>客户端右键-&gt;系统代理-&gt;PAC模式</strong></p>
+</li>
+<li><p>3 <strong>客户端右键-&gt;帮助-&gt;显示日志的结果如下：</strong><br><img src="https://img-blog.csdnimg.cn/20200909153607151.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2N4eV9odXN0,size_16,color_FFFFFF,t_70#pic_center" alt="正确日志"><br><strong>服务端正常显示：</strong></p>
+</li>
+</ul>
+<h3 id="3-3-end"><a href="#3-3-end" class="headerlink" title="3.3 - end -"></a>3.3 - end -</h3><p><img src="https://img-blog.csdnimg.cn/20200909154633422.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2N4eV9odXN0,size_16,color_FFFFFF,t_70#pic_center" alt="来了"></p>
+<h2 id="4-linux-amp-mac客户端"><a href="#4-linux-amp-mac客户端" class="headerlink" title="4 linux&amp;mac客户端"></a>4 linux&amp;mac客户端</h2><h3 id="4-0-0-linux-安装simple-obfs-已经不再维护"><a href="#4-0-0-linux-安装simple-obfs-已经不再维护" class="headerlink" title="4.0.0 linux 安装simple-obfs(已经不再维护)"></a>4.0.0 linux 安装simple-obfs(已经不再维护)</h3><p>yum install zlib-devel openssl-devel git autoconf automake asciidoc libtool xmlto libev-devel -y<br>git clone <a target="_blank" rel="noopener" href="https://github.com/shadowsocks/simple-obfs.git">https://github.com/shadowsocks/simple-obfs.git</a><br>cd simple-obfs<br>git submodule update –init –recursive<br>./autogen.sh<br>./configure &amp;&amp; make<br>make install<br>cd .. &amp;&amp; obfs-server # 应该能看到提示信息</p>
+<p>linux将ss-local做成服务：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">~ &gt;&gt;&gt; cat /usr/lib/systemd/system/ss-local.service                                                                                              [130]</span><br><span class="line">[Unit]</span><br><span class="line">Description=Shadowsocks-Libev Client Service</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=simple</span><br><span class="line">User=nobody</span><br><span class="line">CapabilityBoundingSet=CAP_NET_BIND_SERVICE</span><br><span class="line">ExecStart=/usr/<span class="built_in">local</span>/bin/ss-local -c /etc/shadowsocks/ld.json --plugin obfs-local --plugin-opts <span class="string">&quot;obfs=tls;obfs-host=cn.bing.com;fast-open=true;&quot;</span> </span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+<p>编译过程不需要了，直接</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">brew install simple-obfs</span><br><span class="line">brew install shadowsocks-libev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 参照linux的写法：</span></span><br><span class="line">/opt/homebrew/opt/shadowsocks-libev里的将plist文件改为：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">plist</span> <span class="meta-keyword">PUBLIC</span> <span class="meta-string">&quot;-//Apple//DTD PLIST 1.0//EN&quot;</span> <span class="meta-string">&quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">plist</span> <span class="attr">version</span>=<span class="string">&quot;1.0&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dict</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">key</span>&gt;</span>KeepAlive<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">true</span>/&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">key</span>&gt;</span>Label<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>homebrew.mxcl.shadowsocks-libev<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">key</span>&gt;</span>ProgramArguments<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">string</span>&gt;</span>/opt/homebrew/opt/shadowsocks-libev/bin/ss-local<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">string</span>&gt;</span>-c<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">string</span>&gt;</span>/opt/homebrew/etc/shadowsocks-libev.json<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">string</span>&gt;</span>plugin<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">string</span>&gt;</span>obfs-local<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">string</span>&gt;</span>plugin-opts<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">string</span>&gt;</span>obfs=tls;obfs-host=cn.bing.com;fast-open=true;<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">key</span>&gt;</span>RunAtLoad<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">true</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dict</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plist</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>可以看出对应的config文件，修改为如下：<br>其中的method一定要和server的方法对齐</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ldxy@ldxydeMacBook-Pro softwares % cat /opt/homebrew/etc/shadowsocks-libev.json</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;server&quot;</span>:<span class="string">&quot;你的ip&quot;</span>,</span><br><span class="line">    <span class="string">&quot;server_port&quot;</span>:8388,</span><br><span class="line">    <span class="string">&quot;local_port&quot;</span>:1080,</span><br><span class="line">    <span class="string">&quot;password&quot;</span>:<span class="string">&quot;你的秘密&quot;</span>,</span><br><span class="line">    <span class="string">&quot;timeout&quot;</span>:600,</span><br><span class="line">    <span class="string">&quot;method&quot;</span>:<span class="string">&quot;aes-256-gcm&quot;</span> </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>修改完成以后启动运行调试即可：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">brew services list</span><br><span class="line">cat ~/Library/LaunchAgents/homebrew.mxcl.shadowsocks-libev.plist </span><br><span class="line">brew services start shadowsocks-libev</span><br><span class="line">ps -ef | grep ss-local</span><br><span class="line">````</span><br><span class="line"></span><br><span class="line"><span class="comment"># V2ray配置安装</span></span><br><span class="line"><span class="comment">## 1 购买域名</span></span><br><span class="line">参考：</span><br><span class="line">[https://www.clloz.com/programming/assorted/2021/11/15/vps-2021/](https://www.clloz.com/programming/assorted/2021/11/15/vps-2021/)</span><br><span class="line"></span><br><span class="line"><span class="comment">## 2 配置v2ray</span></span><br><span class="line">参考: [https://iyideng.vip/black-technology/cgfw/vmess-v2ray-server-building-and-using-tutorial.html](https://iyideng.vip/black-technology/cgfw/vmess-v2ray-server-building-and-using-tutorial.html)</span><br><span class="line"></span><br><span class="line">值得注意的一点是，当你本地ping不通你的域名，你需要修改dns服务器，使得你能够获得你的域名：</span><br><span class="line">```sh</span><br><span class="line">sudo vim /etc/resolv.conf</span><br><span class="line"><span class="comment"># 添加以下内容</span></span><br><span class="line">nameserver 202.114.0.131</span><br><span class="line">nameserver 202.114.0.242</span><br><span class="line">nameserver 114.114.114.114</span><br><span class="line"></span><br><span class="line">nslookup 你的域名</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/09/16/possionRecon/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/09/16/possionRecon/" class="post-title-link" itemprop="url">possionRecon 泊松表面重建</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-09-16 20:02:31" itemprop="dateCreated datePublished" datetime="2021-09-16T20:02:31+08:00">2021-09-16</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-10-08 13:54:56" itemprop="dateModified" datetime="2021-10-08T13:54:56+08:00">2021-10-08</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>&lt;待续&gt;</p>
+<h2 id="1-表面重建算法"><a href="#1-表面重建算法" class="headerlink" title="1 表面重建算法"></a>1 表面重建算法</h2><h3 id="1-1"><a href="#1-1" class="headerlink" title="1.1"></a>1.1</h3>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/09/15/maxFlowMinCut/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/09/15/maxFlowMinCut/" class="post-title-link" itemprop="url">maxFlowMinCut && 最大流最小割求法</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-09-15 14:50:23" itemprop="dateCreated datePublished" datetime="2021-09-15T14:50:23+08:00">2021-09-15</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2022-03-29 15:09:50" itemprop="dateModified" datetime="2022-03-29T15:09:50+08:00">2022-03-29</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="1-最大流-最小割本身含义"><a href="#1-最大流-最小割本身含义" class="headerlink" title="1 最大流-最小割本身含义"></a>1 最大流-最小割本身含义</h2><p>首先 起始点 s, 终止点 t, 从s-&gt;t的所有通路中，能够流过来的最大流量就是最大流，这里举个例子：<br>比如有如下的图：<br>1 -&gt; 2 管道是5的容量，<br>2 -&gt; 4 管道是4的容量，<br>1 -&gt; 3 管道是3的容量，<br>3 -&gt; 4 管道是6的容量，<br>那么从1-&gt;4的最大流，就是4 + 3 = 7</p>
+<p>最小割：<br>最小割是指，从图中移除一些边的集合以达到隔断从s到t的目的，成为一个图割，然后最小割，就是所有图割中，边权(管道的流量)之和最小的一个图割，最小割的值和最大流的值是相等的</p>
+<h2 id="2-最大流最小割算法"><a href="#2-最大流最小割算法" class="headerlink" title="2 最大流最小割算法"></a>2 最大流最小割算法</h2><p><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/MinCutMaximumFlowAlgorithm.png" alt="MinCutMaximumFlowAlgorithm"></p>
+<p>其过程就是：</p>
+<ul>
+<li>1 对于G中的每一个顶点，先将f(u, v)和f(v, u)都置为0</li>
+<li>2 当存在从s-&gt;t的一条路径(这样的一条路径称之为增广路径):<ul>
+<li>2.1 找出这个路径上的最小边权，称为tmpC</li>
+<li>2.2 对增广路径上的每一条边，都做: f(u, v) += tmpC, f(v, u) = -f(u, v)</li>
+</ul>
+</li>
+<li>3 G中的更改过后的图，称之为残余图(residual graph)<br>上面过程的tmpC之和就是最大流的值</li>
+</ul>
+<h2 id="3-例子"><a href="#3-例子" class="headerlink" title="3 例子"></a>3 例子</h2><p>引用自: <a target="_blank" rel="noopener" href="https://www.baeldung.com/cs/minimum-cut-graphs">https://www.baeldung.com/cs/minimum-cut-graphs</a><br><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/minCutEg.iwlkn8ciyfk.png" alt="minCutEg"></p>
+<p>在上述例子里的残余图中：<br>可以看出： 最大流为: 4 + 4 + 3 + 2 = 13</p>
+<h2 id="4-最小割"><a href="#4-最小割" class="headerlink" title="4 最小割"></a>4 最小割</h2><p>在上述例子里的残余图中：<br>首先按照从s能够到达的点和不能到达的点分成2个集合set1(reaching by s)和set2(not reaching by s)，这两个set在残余图中的连线构成的那些边成为最小割</p>
+<p>那么set1是： (a, b, c, e)<br>set2是：(d, f)]<br>残余图中，set1和set2相关连的边为： b-&gt;d, c-&gt;f, e-&gt;f,最小割值为： 4 + 3 + 6 = 13</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -647,422 +1130,6 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">        ...&lt;省略&gt;...</span><br><span class="line">        <span class="keyword">if</span> (!initializedFlag) &#123;</span><br><span class="line">            initializedFlag = <span class="literal">true</span>;</span><br><span class="line">            <span class="comment">// viewThd = new std::thread(viewThread, camVecToDraw); // wrong way</span></span><br><span class="line">            viewThd = <span class="keyword">new</span> std::<span class="built_in">thread</span>(viewThread, std::<span class="built_in">ref</span>(camVecToDraw)); <span class="comment">// right way</span></span><br><span class="line">        &#125;</span><br><span class="line">        ...&lt;省略&gt;...</span><br><span class="line"></span><br><span class="line">        <span class="built_in">addCamToDrawVec</span>(imgData.image, camVecToDraw);</span><br><span class="line">        camVecToDraw;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    viewThd.<span class="built_in">join</span>();</span><br><span class="line">    <span class="keyword">delete</span> viewThd;</span><br><span class="line">    viewThd = <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">viewThread</span><span class="params">(std::vector&lt;pangolin::OpenGlMatrix&gt;&amp; camVecToDraw)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(!<span class="built_in">shallQuit</span>()) &#123;</span><br><span class="line">        <span class="comment">// render some cameras according to camVecToDraw</span></span><br><span class="line">        ...&lt;省略&gt;...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/08/05/reinterpretCast/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/08/05/reinterpretCast/" class="post-title-link" itemprop="url">reinterpretCast</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-08-05 10:17:50" itemprop="dateCreated datePublished" datetime="2021-08-05T10:17:50+08:00">2021-08-05</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/cpp/" itemprop="url" rel="index"><span itemprop="name">cpp</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="1-ffmpeg-解帧"><a href="#1-ffmpeg-解帧" class="headerlink" title="1 ffmpeg 解帧"></a>1 ffmpeg 解帧</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i DJI_20210615164633_0003_W.MP4 -r 3 images/%4d.jpg</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-reinterpret-cast-lt-gt-理解以及典型应用："><a href="#2-reinterpret-cast-lt-gt-理解以及典型应用：" class="headerlink" title="2 reinterpret_cast&lt;&gt; 理解以及典型应用："></a>2 reinterpret_cast&lt;&gt; 理解以及典型应用：</h2><p>对于其他的例如static_cast&lt;&gt;等的应用，参考：<a target="_blank" rel="noopener" href="http://www.cplusplus.com/doc/tutorial/typecasting/">http://www.cplusplus.com/doc/tutorial/typecasting/</a><br><br>以下引用自: <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/573294/when-to-use-reinterpret-cast">https://stackoverflow.com/questions/573294/when-to-use-reinterpret-cast</a><br><br>Here is a variant of Avi Ginsburg’s program which clearly illustrates the property of reinterpret_cast mentioned by Chris Luengo, flodin, and cmdLP: that the compiler treats the pointed-to memory location as if it were an object of the new type:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> :</span> <span class="keyword">public</span> A</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    string s;</span><br><span class="line">    B b;</span><br><span class="line">    b.i = <span class="number">0</span>;</span><br><span class="line">    A* as = <span class="keyword">static_cast</span>&lt;A*&gt;(&amp;b);</span><br><span class="line">    A* ar = <span class="keyword">reinterpret_cast</span>&lt;A*&gt;(&amp;b);</span><br><span class="line">    B* c = <span class="keyword">reinterpret_cast</span>&lt;B*&gt;(ar);</span><br><span class="line">    </span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;as-&gt;i = &quot;</span> &lt;&lt; hex &lt;&lt; <span class="built_in">setfill</span>(<span class="string">&#x27;0&#x27;</span>)  &lt;&lt; as-&gt;i &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;ar-&gt;i = &quot;</span> &lt;&lt; ar-&gt;i &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;b.i   = &quot;</span> &lt;&lt; b.i &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;c-&gt;i  = &quot;</span> &lt;&lt; c-&gt;i &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;(as-&gt;i) = &quot;</span> &lt;&lt; &amp;(as-&gt;i) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;(ar-&gt;i) = &quot;</span> &lt;&lt; &amp;(ar-&gt;i) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;(b.i) = &quot;</span> &lt;&lt; &amp;(b.i) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;(c-&gt;i) = &quot;</span> &lt;&lt; &amp;(c-&gt;i) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;b = &quot;</span> &lt;&lt; &amp;b &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;as = &quot;</span> &lt;&lt; as &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;ar = &quot;</span> &lt;&lt; ar &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;c  = &quot;</span> &lt;&lt; c  &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    </span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;Press ENTER to exit.\n&quot;</span>;</span><br><span class="line">    <span class="built_in">getline</span>(cin,s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Which results in output like this:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">as-&gt;i = 0</span><br><span class="line">ar-&gt;i = 50ee64</span><br><span class="line">b.i   = 0</span><br><span class="line">c-&gt;i  = 0</span><br><span class="line"></span><br><span class="line">&amp;(as-&gt;i) = 00EFF978</span><br><span class="line">&amp;(ar-&gt;i) = 00EFF974</span><br><span class="line">&amp;(b.i)   = 00EFF978</span><br><span class="line">&amp;(c-&gt;i)  = 00EFF978</span><br><span class="line"></span><br><span class="line">&amp;b = 00EFF974</span><br><span class="line">as = 00EFF978</span><br><span class="line">ar = 00EFF974</span><br><span class="line">c  = 00EFF974</span><br><span class="line">Press ENTER to exit.</span><br></pre></td></tr></table></figure>
-<p>It can be seen that the B object is built in memory as B-specific data first, followed by the embedded A object. The static_cast correctly returns the address of the embedded A object, and the pointer created by static_cast correctly gives the value of the data field. The pointer generated by reinterpret_cast treats b’s memory location as if it were a plain A object, and so when the pointer tries to get the data field it returns some B-specific data as if it were the contents of this field.</p>
-<p>应用如下：<br>下面的应用根据输入的类型T判断后使用了reinterpret_cast去转换；</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">OptionManager::RegisterOption</span><span class="params">(<span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> T* option)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (std::is_same&lt;T, <span class="keyword">bool</span>&gt;::value) &#123;</span><br><span class="line">    options_bool_.<span class="built_in">emplace_back</span>(name, <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">bool</span>*&gt;(option));</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (std::is_same&lt;T, <span class="keyword">int</span>&gt;::value) &#123;</span><br><span class="line">    options_int_.<span class="built_in">emplace_back</span>(name, <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">int</span>*&gt;(option));</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (std::is_same&lt;T, <span class="keyword">double</span>&gt;::value) &#123;</span><br><span class="line">    options_double_.<span class="built_in">emplace_back</span>(name, <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">double</span>*&gt;(option));</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (std::is_same&lt;T, std::string&gt;::value) &#123;</span><br><span class="line">    options_string_.<span class="built_in">emplace_back</span>(name,</span><br><span class="line">                                 <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> std::string*&gt;(option));</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">LOG</span>(FATAL) &lt;&lt; <span class="string">&quot;Unsupported option type&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/07/18/glogUse/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/07/18/glogUse/" class="post-title-link" itemprop="url">glogUse</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-07-18 16:18:43" itemprop="dateCreated datePublished" datetime="2021-07-18T16:18:43+08:00">2021-07-18</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="glog使用："><a href="#glog使用：" class="headerlink" title="glog使用："></a>glog使用：</h2><p>项目地址：<br><a href="git@github.com:xychen5/tryGlog.git">git@github.com:xychen5/tryGlog.git</a><br>推荐使用类似于clion的ide，然后打开该项目，即可编译运行。</p>
-<h3 id="1-主要作用："><a href="#1-主要作用：" class="headerlink" title="1 主要作用："></a>1 主要作用：</h3><p><strong>能够将glog的日志在cmd中打印</strong><br>主要调用了函数：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">google::<span class="built_in">SetStderrLogging</span>(google::INFO); <span class="comment">// print the logs whose severity &gt; [info]</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-output："><a href="#2-output：" class="headerlink" title="2 output："></a>2 output：</h3><p>样例输出代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">I0718 16:09:07.626883 18628 main.cpp:13] glog used in cmd!!</span><br><span class="line"></span><br><span class="line">W0718 16:09:07.627887 18628 main.cpp:14] glog used in cmd!!</span><br><span class="line"></span><br><span class="line">E0718 16:09:07.628882 18628 main.cpp:15] glog used in cmd!!</span><br><span class="line"></span><br><span class="line">F0718 16:09:07.628882 18628 main.cpp:16] glog used in cmd!!</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-使用clion需要注意编译器的版本得和库对应"><a href="#3-使用clion需要注意编译器的版本得和库对应" class="headerlink" title="3 使用clion需要注意编译器的版本得和库对应"></a>3 使用clion需要注意编译器的版本得和库对应</h3><p>如果使用x86版本的toolchain，会报错如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">====================[ Build | tryGlogLion | Debug ]=============================</span><br><span class="line">&quot;Z:\softwares\CLion 2021.1.3\bin\cmake\win\bin\cmake.exe&quot; --build F:\cppTry\tryGlogLion\cmake-build-debug --target tryGlogLion</span><br><span class="line">Scanning dependencies of target tryGlogLion</span><br><span class="line">[ 50%] Building CXX object CMakeFiles/tryGlogLion.dir/main.cpp.obj</span><br><span class="line">main.cpp</span><br><span class="line">[100%] Linking CXX executable tryGlogLion.exe</span><br><span class="line">NMAKE : fatal error U1077: “&quot;Z:\softwares\CLion 2021.1.3\bin\cmake\win\bin\cmake.exe&quot;”: 返回代码“0xffffffff”</span><br><span class="line">Stop.</span><br><span class="line">NMAKE : fatal error U1077: “&quot;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\bin\HostX86\x86\nmake.exe&quot;”: 返回代码“0x2”</span><br><span class="line">Stop.</span><br><span class="line">NMAKE : fatal error U1077: “&quot;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\bin\HostX86\x86\nmake.exe&quot;”: 返回代码“0x2”</span><br><span class="line">Stop.</span><br><span class="line">NMAKE : fatal error U1077: “&quot;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\bin\HostX86\x86\nmake.exe&quot;”: 返回代码“0x2”</span><br><span class="line">Stop.</span><br><span class="line">LINK Pass 1: command &quot;C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1429~1.300\bin\Hostx86\x86\link.exe /nologo @CMakeFiles\tryGlogLion.dir\objects1.rsp /out:tryGlogLion.exe /implib:tryGlogLion.lib /pdb:F:\cppTry\tryGlogLion\cmake-build-debug\tryGlogLion.pdb /version:0.0 /machine:X86 /debug /INCREMENTAL /subsystem:console -LIBPATH:F:\prjs\ThirdParty\glog\lib -LIBPATH:F:\prjs\ThirdParty\gflags\lib glog.lib gflags_static.lib glog.lib gflags_static.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTFILE:CMakeFiles\tryGlogLion.dir/intermediate.manifest CMakeFiles\tryGlogLion.dir/manifest.res&quot; failed (exit code 1120) with the following output:</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) void __cdecl google::InitGoogleLogging(char const *)&quot; (__imp_?InitGoogleLogging@google@@YAXPBD@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessage::LogMessage(char const *,int)&quot; (__imp_??0LogMessage@google@@QAE@PBDH@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessage::LogMessage(char const *,int,int)&quot; (__imp_??0LogMessage@google@@QAE@PBDHH@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessage::~LogMessage(void)&quot; (__imp_??1LogMessage@google@@QAE@XZ)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: class std::basic_ostream&lt;char,struct std::char_traits&lt;char&gt; &gt; &amp; __thiscall google::LogMessage::stream(void)&quot; (__imp_?stream@LogMessage@google@@QAEAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@XZ)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessageFatal::LogMessageFatal(char const *,int)&quot; (__imp_??0LogMessageFatal@google@@QAE@PBDH@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessageFatal::~LogMessageFatal(void)&quot; (__imp_??1LogMessageFatal@google@@QAE@XZ)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) void __cdecl google::SetStderrLogging(int)&quot; (__imp_?SetStderrLogging@google@@YAXH@Z)，函数 _main 中引用了该符号</span><br><span class="line">F:\prjs\ThirdParty\glog\lib\glog.lib : warning LNK4272:库计算机类型“x64”与目标计算机类型“x86”冲突</span><br><span class="line">F:\prjs\ThirdParty\gflags\lib\gflags_static.lib : warning LNK4272:库计算机类型“x64”与目标计算机类型“x86”冲突</span><br><span class="line">tryGlogLion.exe : fatal error LNK1120: 8 个无法解析的外部命令</span><br></pre></td></tr></table></figure>
-<p><strong>解决方案：</strong><br>将files-&gt;settings-&gt;buidl,execut,deploy-&gt;toolchains-&gt;enviroment-&gt;architecture设置为<strong>x86_amd64</strong></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/07/17/freeImageTocvMat/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/07/17/freeImageTocvMat/" class="post-title-link" itemprop="url">freeImageTocvMat&1channelTo3channes - freeimage转到cvmat & 单通道图像转到3通道</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-07-17 18:51:52" itemprop="dateCreated datePublished" datetime="2021-07-17T18:51:52+08:00">2021-07-17</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="0-结果"><a href="#0-结果" class="headerlink" title="0 结果"></a>0 结果</h2><p><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/freeImg2cvMat.7hbdeyhx4n80.PNG" alt="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/freeImg2cvMat.7hbdeyhx4n80.PNG"></p>
-<h2 id="1-代码"><a href="#1-代码" class="headerlink" title="1 代码"></a>1 代码</h2><p>将freeImage转为cv::mat，代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;FreeImage.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2\opencv.hpp&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</span><br><span class="line"></span><br><span class="line"><span class="comment">// #define _CRT_SECURE_NO_WARNINGS</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> <span class="meta-keyword">warning</span>(disable : 4996)</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FI2MAT</span><span class="params">(FIBITMAP* src, Mat&amp; dst)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//FIT_BITMAP    //standard image : 1 - , 4 - , 8 - , 16 - , 24 - , 32 - bit</span></span><br><span class="line">    <span class="comment">//FIT_UINT16    //array of unsigned short : unsigned 16 - bit</span></span><br><span class="line">    <span class="comment">//FIT_INT16     //array of short : signed 16 - bit</span></span><br><span class="line">    <span class="comment">//FIT_UINT32    //array of unsigned long : unsigned 32 - bit</span></span><br><span class="line">    <span class="comment">//FIT_INT32     //array of long : signed 32 - bit</span></span><br><span class="line">    <span class="comment">//FIT_FLOAT     //array of float : 32 - bit IEEE floating point</span></span><br><span class="line">    <span class="comment">//FIT_DOUBLE    //array of double : 64 - bit IEEE floating point</span></span><br><span class="line">    <span class="comment">//FIT_COMPLEX   //array of FICOMPLEX : 2 x 64 - bit IEEE floating point</span></span><br><span class="line">    <span class="comment">//FIT_RGB16     //48 - bit RGB image : 3 x 16 - bit</span></span><br><span class="line">    <span class="comment">//FIT_RGBA16    //64 - bit RGBA image : 4 x 16 - bit</span></span><br><span class="line">    <span class="comment">//FIT_RGBF      //96 - bit RGB float image : 3 x 32 - bit IEEE floating point</span></span><br><span class="line">    <span class="comment">//FIT_RGBAF     //128 - bit RGBA float image : 4 x 32 - bit IEEE floating point</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> bpp = <span class="built_in">FreeImage_GetBPP</span>(src);</span><br><span class="line">    FREE_IMAGE_TYPE fit = <span class="built_in">FreeImage_GetImageType</span>(src);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> cv_type = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">int</span> cv_cvt = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in"><span class="keyword">switch</span></span> (fit)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> FIT_UINT16: cv_type = DataType&lt;ushort&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_INT16: cv_type = DataType&lt;<span class="keyword">short</span>&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_UINT32: cv_type = DataType&lt;<span class="keyword">unsigned</span>&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_INT32: cv_type = DataType&lt;<span class="keyword">int</span>&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_FLOAT: cv_type = DataType&lt;<span class="keyword">float</span>&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_DOUBLE: cv_type = DataType&lt;<span class="keyword">double</span>&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_COMPLEX: cv_type = DataType&lt;Complex&lt;<span class="keyword">double</span>&gt;&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_RGB16: cv_type = DataType&lt;Vec&lt;ushort, <span class="number">3</span>&gt;&gt;::type; cv_cvt = COLOR_RGB2BGR; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_RGBA16: cv_type = DataType&lt;Vec&lt;ushort, <span class="number">4</span>&gt;&gt;::type; cv_cvt = COLOR_RGBA2BGRA; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_RGBF: cv_type = DataType&lt;Vec&lt;<span class="keyword">float</span>, <span class="number">3</span>&gt;&gt;::type; cv_cvt = COLOR_RGB2BGR; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_RGBAF: cv_type = DataType&lt;Vec&lt;<span class="keyword">float</span>, <span class="number">4</span>&gt;&gt;::type; cv_cvt = COLOR_RGBA2BGRA; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FIT_BITMAP:</span><br><span class="line">        <span class="built_in"><span class="keyword">switch</span></span> (bpp) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">8</span>: cv_type = DataType&lt;Vec&lt;uchar, <span class="number">1</span>&gt;&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">16</span>: cv_type = DataType&lt;Vec&lt;uchar, <span class="number">2</span>&gt;&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">24</span>: cv_type = DataType&lt;Vec&lt;uchar, <span class="number">3</span>&gt;&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">32</span>: cv_type = DataType&lt;Vec&lt;uchar, <span class="number">4</span>&gt;&gt;::type; <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="comment">// 1, 4 // Unsupported natively</span></span><br><span class="line">            cv_type = <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="comment">// FIT_UNKNOWN // unknown type</span></span><br><span class="line">        dst = <span class="built_in">Mat</span>(); <span class="comment">// return empty Mat</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> width = <span class="built_in">FreeImage_GetWidth</span>(src);</span><br><span class="line">    <span class="keyword">int</span> height = <span class="built_in">FreeImage_GetHeight</span>(src);</span><br><span class="line">    <span class="keyword">int</span> step = <span class="built_in">FreeImage_GetPitch</span>(src);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (cv_type &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        dst = <span class="built_in">Mat</span>(height, width, cv_type, <span class="built_in">FreeImage_GetBits</span>(src), step);</span><br><span class="line">        <span class="keyword">if</span> (cv_cvt &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">cvtColor</span>(dst, dst, cv_cvt);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">        std::vector&lt;uchar&gt; lut;</span><br><span class="line">        <span class="keyword">int</span> n = <span class="built_in">pow</span>(<span class="number">2</span>, bpp);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i)</span><br><span class="line">        &#123;</span><br><span class="line">            lut.<span class="built_in">push_back</span>(<span class="keyword">static_cast</span>&lt;uchar&gt;((<span class="number">255</span> / (n - <span class="number">1</span>))*i));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        FIBITMAP* palletized = <span class="built_in">FreeImage_ConvertTo8Bits</span>(src);</span><br><span class="line">        BYTE* data = <span class="built_in">FreeImage_GetBits</span>(src);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> r = <span class="number">0</span>; r &lt; height; ++r) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> c = <span class="number">0</span>; c &lt; width; ++c) &#123;</span><br><span class="line">                dst.at&lt;uchar&gt;(r, c) = saturate_cast&lt;uchar&gt;(lut[data[r*step + c]]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">flip</span>(dst, dst, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">FreeImage_Initialise</span>();</span><br><span class="line">    <span class="comment">// std::string imgPath = &quot;F:/cppTry/index3.png&quot;;</span></span><br><span class="line">    std::string imgPath = <span class="string">&quot;F:/cppTry/ger.JPG&quot;</span>;</span><br><span class="line">    FREE_IMAGE_FORMAT format = <span class="built_in">FreeImage_GetFileType</span>(imgPath.<span class="built_in">c_str</span>(), <span class="number">0</span>);</span><br><span class="line">    FIBITMAP* fi_image = <span class="built_in">FreeImage_Load</span>(format, imgPath.<span class="built_in">c_str</span>());</span><br><span class="line"></span><br><span class="line">    Mat cvImg2;</span><br><span class="line">    <span class="built_in">FI2MAT</span>(fi_image, cvImg2);</span><br><span class="line">    <span class="built_in">cvNamedWindow</span>(<span class="string">&quot;Image1:&quot;</span>,<span class="number">1</span>);</span><br><span class="line">    cv::<span class="built_in">imshow</span>(<span class="string">&quot;Image1:&quot;</span>,cvImg2);</span><br><span class="line">    <span class="comment">// imshow(cv_img);</span></span><br><span class="line"></span><br><span class="line">    IplImage *img = <span class="built_in">cvLoadImage</span>(imgPath.<span class="built_in">c_str</span>());</span><br><span class="line">    <span class="built_in">cvNamedWindow</span>(<span class="string">&quot;Image2:&quot;</span>,<span class="number">1</span>);</span><br><span class="line">    <span class="built_in">cvShowImage</span>(<span class="string">&quot;Image2:&quot;</span>, img);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;[free&#x27;s conv]: type is: &quot;</span>    &lt;&lt; <span class="built_in">FreeImage_GetColorType</span>(fi_image) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;[free&#x27;s conv]: depth is: &quot;</span>   &lt;&lt; <span class="built_in">FreeImage_GetBPP</span>(fi_image) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;[free&#x27;s conv]: pitch is: &quot;</span>   &lt;&lt; <span class="built_in">FreeImage_GetPitch</span>(fi_image) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;[cv2 conv]: type is: &quot;</span> &lt;&lt;  <span class="string">&quot;/&quot;</span> &lt;&lt; cvImg2.<span class="built_in">type</span>() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;[cv2 conv]: depth is: &quot;</span> &lt;&lt; <span class="string">&quot;/&quot;</span> &lt;&lt; cvImg2.<span class="built_in">depth</span>() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;[cv2 conv]: channel is: &quot;</span> &lt;&lt; <span class="string">&quot;/&quot;</span> &lt;&lt; cvImg2.<span class="built_in">channels</span>() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;[cv2 conv]: elem size is: &quot;</span> &lt;&lt; <span class="string">&quot;/&quot;</span> &lt;&lt; cvImg2.<span class="built_in">elemSize</span>() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cvWaitKey</span>();</span><br><span class="line">    <span class="built_in">cvDestroyWindow</span>(<span class="string">&quot;Image:&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-将1通道转为3通道"><a href="#2-将1通道转为3通道" class="headerlink" title="2 将1通道转为3通道"></a>2 将1通道转为3通道</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">convert1to3Channel</span><span class="params">(cv::Mat&amp; src, cv::Mat&amp; dst)</span> </span>&#123;</span><br><span class="line">    vector&lt;cv::Mat&gt; channels;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123;</span><br><span class="line">        channels.<span class="built_in">push_back</span>(src);</span><br><span class="line">    &#125;</span><br><span class="line">    cv::<span class="built_in">merge</span>(&amp;channels[<span class="number">0</span>], channels.<span class="built_in">size</span>(), dst);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/07/17/pangolinDynamicPly/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/07/17/pangolinDynamicPly/" class="post-title-link" itemprop="url">pangolinDynamicPly.md</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-07-17 17:44:13" itemprop="dateCreated datePublished" datetime="2021-07-17T17:44:13+08:00">2021-07-17</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="0-结果展示"><a href="#0-结果展示" class="headerlink" title="0 结果展示"></a>0 结果展示</h2><p><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/dynamicPly.4903brhv6b00.gif" alt="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/dynamicPly.4903brhv6b00.gif"></p>
-<h2 id="1-下载编译pangolin的库"><a href="#1-下载编译pangolin的库" class="headerlink" title="1 下载编译pangolin的库"></a>1 下载编译pangolin的库</h2><p><a target="_blank" rel="noopener" href="https://github.com/stevenlovegrove/Pangolin.git">https://github.com/stevenlovegrove/Pangolin.git</a><br>该库中本身含有libpng, libjpg, libzip</p>
-<h2 id="2-当需要调用该库时："><a href="#2-当需要调用该库时：" class="headerlink" title="2 当需要调用该库时："></a>2 当需要调用该库时：</h2><p>调用时依赖如下：(本项目并未上传所有依赖，部分依赖需要单独下载然后放到thirdparty目录里)</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># include</span></span><br><span class="line">F:\prjs\ORB_SLAM3_Fix\ORB_SLAM3\Thirdparty\Pangolin\include;F:\prjs\ORB_SLAM3_Fix\ORB_SLAM3\Thirdparty\Pangolin\build\src\include;F:\prjs\ORB_SLAM3_Fix\ORB_SLAM3\Thirdparty\Pangolin\build\external\glew\include;F:\BASE_ENV\forOpenMVS\eigen;%(AdditionalIncludeDirectories)</span><br><span class="line"></span><br><span class="line"><span class="comment"># lib</span></span><br><span class="line">..\..\..\lib\Release\pangolin.lib;opengl32.lib;glu32.lib;..\..\external\glew\lib\glew.lib;..\..\external\libpng\lib\libpng16_static.lib;..\..\external\zlib\lib\zlibstatic.lib;..\..\external\libjpeg\lib\jpeg.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-动态展示点云的示例："><a href="#3-动态展示点云的示例：" class="headerlink" title="3 动态展示点云的示例："></a>3 动态展示点云的示例：</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">viewThread</span><span class="params">(pangolin::OpenGlMatrix &amp;Twc)</span> </span>&#123;</span><br><span class="line">	pangolin::<span class="built_in">CreateWindowAndBind</span>(<span class="string">&quot;Main&quot;</span>, <span class="number">1024</span>, <span class="number">768</span>);</span><br><span class="line">	<span class="built_in">glEnable</span>(GL_DEPTH_TEST);</span><br><span class="line">	<span class="comment">// Issue specific OpenGl we might need</span></span><br><span class="line">	<span class="built_in">glEnable</span>(GL_BLEND);</span><br><span class="line">	<span class="built_in">glBlendFunc</span>(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Define Projection and initial ModelView matrix</span></span><br><span class="line">	<span class="function">pangolin::OpenGlRenderState <span class="title">s_cam</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">		pangolin::ProjectionMatrix(<span class="number">1024</span>, <span class="number">768</span>, <span class="number">500</span>, <span class="number">500</span>, <span class="number">512</span>, <span class="number">389</span>, <span class="number">0.1</span>, <span class="number">1000</span>),</span></span></span><br><span class="line"><span class="params"><span class="function">		pangolin::ModelViewLookAt(<span class="number">50</span>, <span class="number">50</span>, <span class="number">50</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, pangolin::AxisY)</span></span></span><br><span class="line"><span class="params"><span class="function">	)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">glClear</span>(GL_COLOR_BUFFER_BIT);</span><br><span class="line">	<span class="built_in">glClearColor</span>(<span class="number">1.0f</span>, <span class="number">1.0f</span>, <span class="number">1.0f</span>, <span class="number">1.0f</span>);</span><br><span class="line"></span><br><span class="line">	 <span class="comment">// Add named OpenGL viewport to window and provide 3D Handler</span></span><br><span class="line">	 pangolin::View&amp; d_cam = pangolin::<span class="built_in">CreateDisplay</span>()</span><br><span class="line">	 	.<span class="built_in">SetBounds</span>(<span class="number">0.0</span>, <span class="number">1.0</span>, pangolin::Attach::<span class="built_in">Pix</span>(<span class="number">175</span>), <span class="number">1.0</span>, <span class="number">-1024.0f</span> / <span class="number">768.0f</span>)</span><br><span class="line">	 	.<span class="built_in">SetHandler</span>(<span class="keyword">new</span> pangolin::<span class="built_in">Handler3D</span>(s_cam));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">size_t</span> frame = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>( !pangolin::<span class="built_in">ShouldQuit</span>() ) &#123;</span><br><span class="line">        <span class="comment">// Clear screen and activate view to render into</span></span><br><span class="line">        <span class="built_in">glClear</span>(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);</span><br><span class="line">		<span class="built_in">glClearColor</span>(<span class="number">1.0f</span>,<span class="number">1.0f</span>,<span class="number">1.0f</span>,<span class="number">1.0f</span>);</span><br><span class="line">        <span class="comment">//! Activate Displays and set State Matrices</span></span><br><span class="line">        d_cam.<span class="built_in">Activate</span>(s_cam);</span><br><span class="line">		<span class="comment">// draw camera</span></span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">float</span> w = <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">float</span> h = w*<span class="number">0.75</span>;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">float</span> z = w*<span class="number">0.6</span>;</span><br><span class="line">        <span class="built_in">glPushMatrix</span>();</span><br><span class="line">		<span class="built_in">glMultMatrixd</span>(Twc.m);</span><br><span class="line">        <span class="built_in">glLineWidth</span>(<span class="number">1</span>);</span><br><span class="line">        <span class="built_in">glColor3f</span>(<span class="number">0.0f</span>,<span class="number">1.0f</span>,<span class="number">0.0f</span>);</span><br><span class="line">        <span class="built_in">glBegin</span>(GL_LINES);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line">        <span class="built_in">glEnd</span>();</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glPopMatrix</span>();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// draw points</span></span><br><span class="line">		<span class="built_in">glPointSize</span>(<span class="number">2</span>);</span><br><span class="line">		<span class="built_in">glBegin</span>(GL_POINTS);</span><br><span class="line">		<span class="built_in">glColor3f</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">// get all points to m_pos.m_ppatches</span></span><br><span class="line">		updatePointsMutex.<span class="built_in">lock</span>();</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">size_t</span> p = <span class="number">0</span>; p &lt; (<span class="keyword">size_t</span>)allPPatchesRender.<span class="built_in">size</span>(); ++p)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">auto</span> patch = *allPPatchesRender[p];</span><br><span class="line">			<span class="built_in">glVertex3f</span>(</span><br><span class="line">				patch.m_coord[<span class="number">0</span>],</span><br><span class="line">				patch.m_coord[<span class="number">1</span>],</span><br><span class="line">				patch.m_coord[<span class="number">2</span>]</span><br><span class="line">			);</span><br><span class="line">		&#125;</span><br><span class="line">        updatePointsMutex.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="built_in">glEnd</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Swap frames and Process Events</span></span><br><span class="line">        pangolin::<span class="built_in">FinishFrame</span>();</span><br><span class="line">        </span><br><span class="line">		std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">100</span>)); <span class="comment">// ms</span></span><br><span class="line">		<span class="comment">// std::cout &lt;&lt; &quot;frame��&quot; &lt;&lt; ++frame &lt;&lt; std::endl;</span></span><br><span class="line">		<span class="comment">// std::cout &lt;&lt; &quot;point nums are: &quot; &lt;&lt; findMatch-&gt;m_pos.m_ppatches.size() &lt;&lt; std::endl;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	pangolin::OpenGlMatrix Twc, Twr;</span><br><span class="line">	Twc.<span class="built_in">SetIdentity</span>();</span><br><span class="line">	<span class="function">std::thread <span class="title">viewThd</span><span class="params">(viewThread, Twc)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">...&lt;省略&gt;</span><br><span class="line">        <span class="comment">// update render points</span></span><br><span class="line">        updatePointsMutex.<span class="built_in">lock</span>();</span><br><span class="line">        allPPatchesRender = findMatch-&gt;m_pos.m_ppatches; <span class="comment">// to get the newest points</span></span><br><span class="line">        updatePointsMutex.<span class="built_in">unlock</span>();</span><br><span class="line">...&lt;省略&gt;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	viewThd.<span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">	<span class="comment">//writePointCloundPly(prefix);</span></span><br><span class="line">	<span class="built_in">releasePMVS</span>();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/06/15/osgPtr/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/06/15/osgPtr/" class="post-title-link" itemprop="url">osg智能指针错误 - Warning deleting still referenced object</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-06-15 18:24:49" itemprop="dateCreated datePublished" datetime="2021-06-15T18:24:49+08:00">2021-06-15</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/errors/" itemprop="url" rel="index"><span itemprop="name">errors</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="1-osg智能指针错误-Warning-deleting-still-referenced-object"><a href="#1-osg智能指针错误-Warning-deleting-still-referenced-object" class="headerlink" title="1 osg智能指针错误 - Warning: deleting still referenced object"></a>1 osg智能指针错误 - Warning: deleting still referenced object</h2><h3 id="1-1-问题描述"><a href="#1-1-问题描述" class="headerlink" title="1.1 问题描述"></a>1.1 问题描述</h3><p>类的定义如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QOsgWidget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">///&lt; essential widget, use this ptr to be the real widget</span></span><br><span class="line">    osgQOpenGLWidget* pWidget = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="comment">// QOsgWidget(QWidget* parent = nullptr);</span></span><br><span class="line">    <span class="built_in">QOsgWidget</span>(<span class="keyword">const</span> std::string&amp; modelPath, QWidget* parent = <span class="literal">nullptr</span>);</span><br><span class="line">    ~<span class="built_in">QOsgWidget</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">///&lt; osg base vars</span></span><br><span class="line">    osg::ref_ptr&lt;osg::Group&gt;                        mRoot                = <span class="literal">nullptr</span>; <span class="comment">// root node of the osg scene</span></span><br><span class="line">    osg::ref_ptr&lt;osg::Camera&gt;                       camera               = <span class="literal">nullptr</span>; <span class="comment">// osg camera</span></span><br><span class="line">    osg::ref_ptr&lt;osgViewer::Viewer&gt;                 mViewer              = <span class="literal">nullptr</span>; <span class="comment">// osg viewer</span></span><br><span class="line">    osg::ref_ptr&lt;osgGA::TrackballManipulator&gt;       trackball            = <span class="literal">nullptr</span>;</span><br><span class="line">    osg::ref_ptr&lt;osgGA::KeySwitchMatrixManipulator&gt; keyswitchManipulator = <span class="literal">nullptr</span>;</span><br><span class="line">    osg::ref_ptr&lt;osgViewer::StatsHandler&gt;           stats                = <span class="literal">nullptr</span>;</span><br><span class="line">    &lt;被省略&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>类的析构函数如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">QOsgWidget::~<span class="built_in">QOsgWidget</span>() &#123;</span><br><span class="line">    <span class="comment">// end the render thread and destroy the osgOpenglWidget</span></span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">microseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    mViewer-&gt;<span class="built_in">setDone</span>(<span class="literal">true</span>);</span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">microseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    mViewer-&gt;<span class="built_in">stopThreading</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//////////////////////////////////////////////////////////////////////////</span></span><br><span class="line">    <span class="comment">/// without folowing post process, u will crash with the bellowing warning when: delete pWidget</span></span><br><span class="line">    <span class="comment">/// Warning: deleting still referenced object 000002433CA59BB0 of type &#x27;class osg::Referenced * __ptr64&#x27;</span></span><br><span class="line">    <span class="comment">///     the final reference count was 1, memory corruption possible.</span></span><br><span class="line">    <span class="comment">///</span></span><br><span class="line">    <span class="comment">/// the reason i guess is:</span></span><br><span class="line">    <span class="comment">/// the bellowing vars can not be automatically set to null when delete pWidget, because they does</span></span><br><span class="line">    <span class="comment">/// not belong to the pWidget, so u need to set them to null manually, otherwise when delete pWidget,</span></span><br><span class="line">    <span class="comment">/// the destructor of pWidget will try to free the bellowing vars, but their ref != 0</span></span><br><span class="line">    <span class="comment">///////////////////////////////// PART 1 /////////////////////////////////</span></span><br><span class="line">        mRoot = <span class="literal">nullptr</span>;</span><br><span class="line">        mViewer = <span class="literal">nullptr</span>;</span><br><span class="line">        camera = <span class="literal">nullptr</span>;</span><br><span class="line">        trackball = <span class="literal">nullptr</span>;</span><br><span class="line">        keyswitchManipulator = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="comment">//////////////////////////////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">delete</span> pWidget; <span class="comment">// call the destructor of the osgOpenglWidge</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>问题描述，在执行类的析构的时候：<br>当没有PART1的时候，直接执行pWidget会出错</p>
-<h3 id="1-2-原因推测："><a href="#1-2-原因推测：" class="headerlink" title="1.2 原因推测："></a>1.2 原因推测：</h3><ul>
-<li>1 osg::ref_ptr&lt;&gt; 是一种智能指针，自动计算指针的引用个数，当引用个数为0的时候，自动回收其指向的对象。</li>
-<li>2 于是出现一个大问题，当pWidget这个类指针所指向的类，里面很多组件（比如 camera，mViewer）是在QOsgWidget类中申明的，那么当析构pWidget的时候，它会去析构自己的组件，然后当它析构了自己类里面的那些指针后，发现QOsgWidget里面的智能指针不是null（这些指针很可能在被别的模块访问），所以引用计数不为0，所以无法删除，或者删除会crash</li>
-</ul>
-<h3 id="1-3-得出结论："><a href="#1-3-得出结论：" class="headerlink" title="1.3 得出结论："></a>1.3 得出结论：</h3><ul>
-<li>1 如果类mon里面嵌套了类son，那么当mon的析构的时候，要注意如下两点：<ul>
-<li>1.1 将son析构</li>
-<li>1.2 执行son的析构前，对son的析构可能产生影响的内存，指针，都要释放掉和置空</li>
-</ul>
-</li>
-</ul>
 
       
     </div>
