@@ -136,7 +136,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">53</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -190,6 +190,102 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/04/22/blogStablish/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/04/22/blogStablish/" class="post-title-link" itemprop="url">blogStablish - hexo博客搭建</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-04-22 15:24:18" itemprop="dateCreated datePublished" datetime="2021-04-22T15:24:18+08:00">2021-04-22</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blogConfig/" itemprop="url" rel="index"><span itemprop="name">blogConfig</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="1-github初始化仓库"><a href="#1-github初始化仓库" class="headerlink" title="1 github初始化仓库"></a>1 github初始化仓库</h3><p>初始化git repo: 地址如下<br><a target="_blank" rel="noopener" href="https://github.com/xychen5/xychen5.github.io.git">https://github.com/xychen5/xychen5.github.io.git</a></p>
+<h3 id="2-安装相关依赖"><a href="#2-安装相关依赖" class="headerlink" title="2 安装相关依赖"></a>2 安装相关依赖</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo</span><br><span class="line">hexo init blogs</span><br><span class="line"><span class="built_in">cd</span> blogs</span><br><span class="line">npm install -s hexo-theme-next <span class="comment"># 安装主题</span></span><br><span class="line">npm install --save hexo-deployer-git <span class="comment"># 安装专用git工具</span></span><br><span class="line">hexo s <span class="comment"># 本地测试一下是否能正常运行</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-部署"><a href="#3-部署" class="headerlink" title="3 部署"></a>3 部署</h3><p>编辑blogs/_config.yml的末尾如下：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Extensions</span></span><br><span class="line"><span class="comment">## Plugins: https://hexo.io/plugins/</span></span><br><span class="line"><span class="comment">## Themes: https://hexo.io/themes/</span></span><br><span class="line"><span class="attr">theme:</span> <span class="string">next</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/one-command-deployment</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">https://github.com/xychen5/xychen5.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">main</span></span><br></pre></td></tr></table></figure>
+<p>部署如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo g -d</span><br><span class="line">cp .\node_modules\hexo-theme-next\_config.yml ./_config.next.yml <span class="comment"># 将next的配置放到项目根目录，避免编辑第三方库里的yml</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-博客写作分类以及标签以及使用技巧"><a href="#4-博客写作分类以及标签以及使用技巧" class="headerlink" title="4 博客写作分类以及标签以及使用技巧"></a>4 博客写作分类以及标签以及使用技巧</h3><ul>
+<li>1 <a target="_blank" rel="noopener" href="https://linlif.github.io/2017/05/27/Hexo%E4%BD%BF%E7%94%A8%E6%94%BB%E7%95%A5-%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB%E5%8F%8A%E6%A0%87%E7%AD%BE/">https://linlif.github.io/2017/05/27/Hexo%E4%BD%BF%E7%94%A8%E6%94%BB%E7%95%A5-%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB%E5%8F%8A%E6%A0%87%E7%AD%BE/</a></li>
+<li>2 官方guide: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing">https://hexo.io/docs/writing</a></li>
+</ul>
+<h3 id="5-将hexo生成的网站-会推到xychen5-github-io库里-和自己写的markdown文件分开"><a href="#5-将hexo生成的网站-会推到xychen5-github-io库里-和自己写的markdown文件分开" class="headerlink" title="5 将hexo生成的网站(会推到xychen5.github.io库里)和自己写的markdown文件分开"></a>5 将hexo生成的网站(会推到xychen5.github.io库里)和自己写的markdown文件分开</h3><ul>
+<li>1 主要是将blogs/source目录下的文件用另一个库存好即可，可以使用如下步骤:<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> <span class="built_in">source</span></span><br><span class="line">git init</span><br><span class="line">git remote add origin &lt;你的空repo地址&gt;</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&#x27;init&#x27;</span></span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure></li>
+<li>2 然后在blogs/package.json加入：<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">  <span class="string">&quot;build&quot;</span>: <span class="string">&quot;hexo generate&quot;</span>,</span><br><span class="line">  <span class="string">&quot;clean&quot;</span>: <span class="string">&quot;hexo clean&quot;</span>,</span><br><span class="line">  <span class="string">&quot;deploy&quot;</span>: <span class="string">&quot;hexo deploy&quot;</span>,</span><br><span class="line">  <span class="string">&quot;server&quot;</span>: <span class="string">&quot;hexo server&quot;</span>,</span><br><span class="line">  <span class="string">&quot;pub&quot;</span>: <span class="string">&quot;cd source &amp;&amp; git add ./* &amp;&amp; git commit -m &#x27;upate&#x27; &amp;&amp; git push &amp;&amp; cd .. &amp;&amp; hexo clean &amp;&amp; hexo g -d&quot;</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="6-使用GitHub的图片床"><a href="#6-使用GitHub的图片床" class="headerlink" title="6 使用GitHub的图片床"></a>6 使用GitHub的图片床</h3><p>主要参考：<a target="_blank" rel="noopener" href="https://github.com/XPoet/picx">https://github.com/XPoet/picx</a><br>生成token后记得复制: <a target="_blank" rel="noopener" href="https://github.com/settings/tokens">https://github.com/settings/tokens</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
