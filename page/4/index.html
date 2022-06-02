@@ -136,7 +136,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -190,6 +190,71 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/09/12/gpsToCartesian/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/09/12/gpsToCartesian/" class="post-title-link" itemprop="url">gpsToCartesian GPS坐标转WGS84坐标</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-09-12 20:36:04 / Modified: 20:37:36" itemprop="dateCreated datePublished" datetime="2021-09-12T20:36:04+08:00">2021-09-12</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="1-cesium-source-core-cartesian3-js-经纬度转WGS84坐标代码："><a href="#1-cesium-source-core-cartesian3-js-经纬度转WGS84坐标代码：" class="headerlink" title="1 cesium/source/core/cartesian3.js 经纬度转WGS84坐标代码："></a>1 cesium/source/core/cartesian3.js 经纬度转WGS84坐标代码：</h2><p>直接去github看cesium的源码实现就行了：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">Cartesian3.fromRadians = <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="function">  longitude,</span></span></span><br><span class="line"><span class="params"><span class="function">  latitude,</span></span></span><br><span class="line"><span class="params"><span class="function">  height,</span></span></span><br><span class="line"><span class="params"><span class="function">  ellipsoid, # <span class="keyword">default</span> is WGS84</span></span></span><br><span class="line"><span class="params"><span class="function">  result</span></span></span><br><span class="line"><span class="params"><span class="function"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">//&gt;&gt;includeStart(&#x27;debug&#x27;, pragmas.debug);</span></span><br><span class="line">  Check.typeOf.number(<span class="string">&quot;longitude&quot;</span>, longitude);</span><br><span class="line">  Check.typeOf.number(<span class="string">&quot;latitude&quot;</span>, latitude);</span><br><span class="line">  <span class="comment">//&gt;&gt;includeEnd(&#x27;debug&#x27;);</span></span><br><span class="line"></span><br><span class="line">  height = defaultValue(height, <span class="number">0.0</span>);</span><br><span class="line">  <span class="keyword">var</span> radiiSquared = defined(ellipsoid)</span><br><span class="line">    ? ellipsoid.radiiSquared</span><br><span class="line">    : wgs84RadiiSquared;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> cosLatitude = <span class="built_in">Math</span>.cos(latitude);</span><br><span class="line">  scratchN.x = cosLatitude * <span class="built_in">Math</span>.cos(longitude);</span><br><span class="line">  scratchN.y = cosLatitude * <span class="built_in">Math</span>.sin(longitude);</span><br><span class="line">  scratchN.z = <span class="built_in">Math</span>.sin(latitude);</span><br><span class="line">  scratchN = Cartesian3.normalize(scratchN, scratchN);</span><br><span class="line"></span><br><span class="line">  Cartesian3.multiplyComponents(radiiSquared, scratchN, scratchK);</span><br><span class="line">  <span class="keyword">var</span> gamma = <span class="built_in">Math</span>.sqrt(Cartesian3.dot(scratchN, scratchK));</span><br><span class="line">  scratchK = Cartesian3.divideByScalar(scratchK, gamma, scratchK);</span><br><span class="line">  scratchN = Cartesian3.multiplyByScalar(scratchN, height, scratchN);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!defined(result)) &#123;</span><br><span class="line">    result = <span class="keyword">new</span> Cartesian3();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> Cartesian3.add(scratchK, scratchN, result);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -997,100 +1062,6 @@
 <li>1.2 执行son的析构前，对son的析构可能产生影响的内存，指针，都要释放掉和置空</li>
 </ul>
 </li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/06/06/wildptr2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/06/06/wildptr2/" class="post-title-link" itemprop="url">wildptr2</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-06-06 21:04:21" itemprop="dateCreated datePublished" datetime="2021-06-06T21:04:21+08:00">2021-06-06</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/errors/" itemprop="url" rel="index"><span itemprop="name">errors</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="2-关于内存申请位置不对带来的野指针问题"><a href="#2-关于内存申请位置不对带来的野指针问题" class="headerlink" title="2 关于内存申请位置不对带来的野指针问题"></a>2 关于内存申请位置不对带来的野指针问题</h3><h4 id="2-1-问题描述："><a href="#2-1-问题描述：" class="headerlink" title="2.1 问题描述："></a>2.1 问题描述：</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">            <span class="built_in">resize</span>(<span class="built_in">height</span>() * <span class="number">639</span> / <span class="number">480</span>, <span class="built_in">height</span>());</span><br><span class="line">            QOsgWidget *bBoxEdit = <span class="keyword">new</span> <span class="built_in">QOsgWidget</span>(modelPath, <span class="keyword">static_cast</span>&lt;QWidget*&gt;(<span class="keyword">this</span>));</span><br><span class="line">            <span class="comment">// use an ArgumentParser object to manage the program arguments.</span></span><br><span class="line">            bBoxEdit-&gt;pWidget = <span class="keyword">new</span> <span class="built_in">osgQOpenGLWidget</span>(&amp;arguments, <span class="keyword">this</span>);</span><br><span class="line">            bBoxEdit-&gt;pWidget-&gt;<span class="built_in">show</span>();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// init the manipulators</span></span><br><span class="line">            bBoxEdit-&gt;<span class="built_in">InitManipulators</span>();</span><br><span class="line">            bBoxEdit-&gt;<span class="built_in">InitModel</span>(modelPath, bBoxEdit-&gt;mRoot);</span><br><span class="line"></span><br><span class="line"><span class="comment">// **************** part0: inside code segment of func call **********************/</span></span><br><span class="line">            osg::ref_ptr&lt;osgViewer::Viewer&gt; mViewer = bBoxEdit-&gt;pWidget-&gt;<span class="built_in">getOsgViewer</span>();</span><br><span class="line">            <span class="comment">// Add a Stats Handler to the viewer</span></span><br><span class="line">            mViewer-&gt;<span class="built_in">addEventHandler</span>(<span class="keyword">new</span> osgViewer::StatsHandler);</span><br><span class="line">            <span class="comment">// Add the Camera to the Viewer</span></span><br><span class="line">            osg::ref_ptr&lt;osg::Camera&gt; camera = mViewer-&gt;<span class="built_in">getCamera</span>();</span><br><span class="line">            <span class="comment">// Set projection matrix and camera attribtues</span></span><br><span class="line">            camera-&gt;<span class="built_in">setClearMask</span>(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);</span><br><span class="line">            camera-&gt;<span class="built_in">setClearColor</span>(osg::<span class="built_in">Vec3f</span>(<span class="number">0.2f</span>, <span class="number">0.2f</span>, <span class="number">0.4f</span>, <span class="number">1.0f</span>));</span><br><span class="line">            <span class="comment">//mViewer-&gt;addSlave(camera.get());</span></span><br><span class="line">            mViewer-&gt;<span class="built_in">setCamera</span>(camera.<span class="built_in">get</span>());</span><br><span class="line">            <span class="comment">// Set the Scene Data</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// *************************** part1: func call **********************************/</span></span><br><span class="line">            <span class="comment">// bBoxEdit-&gt;InitCameraConfig();</span></span><br></pre></td></tr></table></figure>
-<p>如上代码段，是一段qt程序中，在MainWindow的一个子函数的一段代码，其中bBoxEdit是一个自定义的供调用的类，<br>问题来了， part0的代码就是把part2的代码拿出来，仅仅使用part1的代码就会出错，仅仅使用part2就不会，请推测原因？</p>
-<p>这里给出part1的实现代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">QOsgWidget::InitCameraConfig</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Create the viewer for this window</span></span><br><span class="line">    mViewer = <span class="keyword">this</span>-&gt;pWidget-&gt;<span class="built_in">getOsgViewer</span>();</span><br><span class="line">    <span class="comment">// Add a Stats Handler to the viewer</span></span><br><span class="line">    mViewer-&gt;<span class="built_in">addEventHandler</span>(<span class="keyword">new</span> osgViewer::StatsHandler);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Add the Camera to the Viewer</span></span><br><span class="line">    osg::ref_ptr&lt;osg::Camera&gt; camera = mViewer-&gt;<span class="built_in">getCamera</span>();</span><br><span class="line">    <span class="comment">// Set projection matrix and camera attribtues</span></span><br><span class="line">    camera-&gt;<span class="built_in">setClearMask</span>(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);</span><br><span class="line">    camera-&gt;<span class="built_in">setClearColor</span>(osg::<span class="built_in">Vec3f</span>(<span class="number">0.2f</span>, <span class="number">0.2f</span>, <span class="number">0.4f</span>, <span class="number">1.0f</span>));</span><br><span class="line">    <span class="comment">//mViewer-&gt;addSlave(camera.get());</span></span><br><span class="line">    mViewer-&gt;<span class="built_in">setCamera</span>(camera.<span class="built_in">get</span>());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Add the Camera Manipulator to the Viewer</span></span><br><span class="line">    osg::ref_ptr&lt;osgGA::TrackballManipulator&gt; trackball = <span class="keyword">new</span> osgGA::<span class="built_in">TrackballManipulator</span>();</span><br><span class="line">    mViewer-&gt;<span class="built_in">setCameraManipulator</span>(trackball.<span class="built_in">get</span>());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Set the Scene Data</span></span><br><span class="line">    mViewer-&gt;<span class="built_in">setSceneData</span>(mRoot.<span class="built_in">get</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-2-错误原因推测："><a href="#2-2-错误原因推测：" class="headerlink" title="2.2 错误原因推测："></a>2.2 错误原因推测：</h4><p>首先想到，这肯定是指针带来的问题，指针和作用域和代码范围息息相关，所以放到函数里面和放到mainwindow的一个子函数的随便的一处，最大的区别在于，</p>
-<ul>
-<li>0 part2的情况：part2里面的函数调用所用到的指针，是存在qosgwidget的类的栈空间的，意味着只要类不析构，那么该指针所指向的内存就不会被回收。</li>
-<li>1 part1的情况：part1里面申请的内存是在mainwindow的一个子函数调用里面申请的，意味着该指针，在该子函数调用结束，它指向的内存会被回收，倘若这一块内存里运行的函数是我们恰恰不希望他在函数结束后就消失，那么我们就需要把这个指针存在一个 <strong>‘安全’</strong> 的地方。所以你需要存在哪里？  因为上面可以知道，该指针的内存里的函数是被 qosgwidget这个类所需要的,也就是当这个类结束啦，这个指针才会被回收，所以我们把指针存在这里，就不会出现上面的问题了。</li>
-</ul>
-<h4 id="2-3-得出结论（个人观点）"><a href="#2-3-得出结论（个人观点）" class="headerlink" title="2.3 得出结论（个人观点）"></a>2.3 得出结论（个人观点）</h4><p>cpp的内存管理问题：</p>
-<ul>
-<li>0 尽量不要在业务流程里申请内存，释放内存，如果遇到需要申请内存和释放的地方，请把这一块儿写成一个类，<br>用类的变量来保存内存指针，用类的析构来释放内存。</li>
-<li>1 <strong>重复1的观点：基于类作为内存管理的最小粒度，不要基于指针</strong></li>
 </ul>
 
       
