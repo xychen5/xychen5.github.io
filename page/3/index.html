@@ -136,7 +136,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-count">56</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -190,6 +190,76 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/11/30/shortestPath/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/11/30/shortestPath/" class="post-title-link" itemprop="url">shortestPath</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-11-30 18:01:52 / Modified: 20:00:20" itemprop="dateCreated datePublished" datetime="2021-11-30T18:01:52+08:00">2021-11-30</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="1-dijstra算法"><a href="#1-dijstra算法" class="headerlink" title="1 dijstra算法"></a>1 dijstra算法</h2><p>自<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%88%B4%E5%85%8B%E6%96%AF%E7%89%B9%E6%8B%89%E7%AE%97%E6%B3%95">wiki</a>:<br><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/dijstra.107hdh232p9s.png" alt="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/dijstra.107hdh232p9s.png"><br>对于没有任何优化的戴克斯特拉算法，实际上等价于每次遍历了整个图的所有结点来找到Q(为图的点集)中满足条件的元素（即寻找最小的頂點是${\displaystyle O(|V|)}$的，此外实际上还需要遍历所有的边一遍，因此算法的复杂度是${\displaystyle O(|V|^{2}+|E|)}$<br>一个基于堆优化的实现：<a target="_blank" rel="noopener" href="https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-priority_queue-stl/">https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-priority_queue-stl/</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span> </span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std; </span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> INF 0x3f3f3f3f </span></span><br><span class="line">  </span><br><span class="line"><span class="comment">// iPair ==&gt; Integer Pair（整数对）</span></span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; iPair; </span><br><span class="line">  </span><br><span class="line"><span class="comment">// 加边</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(vector &lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; &gt; adj[], <span class="keyword">int</span> u, </span></span></span><br><span class="line"><span class="params"><span class="function">                                     <span class="keyword">int</span> v, <span class="keyword">int</span> wt)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">    adj[u].<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(v, wt)); </span><br><span class="line">    adj[v].<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(u, wt)); </span><br><span class="line">&#125; </span><br><span class="line">   </span><br><span class="line">  </span><br><span class="line"><span class="comment">// 计算最短路</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">shortestPath</span><span class="params">(vector&lt;pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; &gt; adj[], <span class="keyword">int</span> V, <span class="keyword">int</span> src)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">    <span class="comment">// 关于stl中的优先队列如何实现，参考下方网址：</span></span><br><span class="line">    <span class="comment">// http://geeksquiz.com/implement-min-heap-using-stl/ </span></span><br><span class="line">    priority_queue&lt; iPair, vector &lt;iPair&gt; , greater&lt;iPair&gt; &gt; pq; </span><br><span class="line">  </span><br><span class="line">    <span class="comment">// 距离置为正无穷大</span></span><br><span class="line">    <span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">dist</span><span class="params">(V, INF)</span></span>; </span><br><span class="line">    <span class="function">vector&lt;<span class="keyword">bool</span>&gt; <span class="title">visited</span><span class="params">(V, <span class="literal">false</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 插入源点，距离为0</span></span><br><span class="line">    pq.<span class="built_in">push</span>(<span class="built_in">make_pair</span>(<span class="number">0</span>, src)); </span><br><span class="line">    dist[src] = <span class="number">0</span>; </span><br><span class="line">  </span><br><span class="line">    <span class="comment">/* 循环直到优先队列为空 */</span></span><br><span class="line">    <span class="keyword">while</span> (!pq.<span class="built_in">empty</span>()) </span><br><span class="line">    &#123; </span><br><span class="line">        <span class="comment">// 每次从优先队列中取出顶点事实上是这一轮最短路径权值确定的点</span></span><br><span class="line">        <span class="keyword">int</span> u = pq.<span class="built_in">top</span>().second; </span><br><span class="line">        pq.<span class="built_in">pop</span>(); </span><br><span class="line">        <span class="keyword">if</span> (visited[u]) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        visited[u] = <span class="literal">true</span>;</span><br><span class="line">        <span class="comment">// 遍历所有边</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> x : adj[u]) </span><br><span class="line">        &#123; </span><br><span class="line">            <span class="comment">// 得到顶点边号以及边权</span></span><br><span class="line">            <span class="keyword">int</span> v = x.first; </span><br><span class="line">            <span class="keyword">int</span> weight = x.second; </span><br><span class="line">  </span><br><span class="line">            <span class="comment">//可以松弛</span></span><br><span class="line">            <span class="keyword">if</span> (dist[v] &gt; dist[u] + weight) </span><br><span class="line">            &#123; </span><br><span class="line">                <span class="comment">// 松弛 </span></span><br><span class="line">                dist[v] = dist[u] + weight; </span><br><span class="line">                pq.<span class="built_in">push</span>(<span class="built_in">make_pair</span>(dist[v], v)); </span><br><span class="line">            &#125; </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line">  </span><br><span class="line">    <span class="comment">// 打印最短路</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Vertex Distance from Source\n&quot;</span>); </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; V; ++i) </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d \t\t %d\n&quot;</span>, i, dist[i]); </span><br><span class="line">&#125; </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">    <span class="keyword">int</span> V = <span class="number">9</span>; </span><br><span class="line">    vector&lt;iPair &gt; adj[V]; </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">0</span>, <span class="number">1</span>, <span class="number">4</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">0</span>, <span class="number">7</span>, <span class="number">8</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">1</span>, <span class="number">2</span>, <span class="number">8</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">1</span>, <span class="number">7</span>, <span class="number">11</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">2</span>, <span class="number">3</span>, <span class="number">7</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">2</span>, <span class="number">8</span>, <span class="number">2</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">2</span>, <span class="number">5</span>, <span class="number">4</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">3</span>, <span class="number">4</span>, <span class="number">9</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">3</span>, <span class="number">5</span>, <span class="number">14</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">4</span>, <span class="number">5</span>, <span class="number">10</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">5</span>, <span class="number">6</span>, <span class="number">2</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">6</span>, <span class="number">7</span>, <span class="number">1</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">6</span>, <span class="number">8</span>, <span class="number">6</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">7</span>, <span class="number">8</span>, <span class="number">7</span>); </span><br><span class="line">  </span><br><span class="line">    <span class="built_in">shortestPath</span>(adj, V, <span class="number">0</span>); </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-Floyd算法"><a href="#2-Floyd算法" class="headerlink" title="2 Floyd算法"></a>2 Floyd算法</h2><p>空间o(n^2)，时间o(n^3):<br>自<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Floyd-Warshall%E7%AE%97%E6%B3%95">wiki</a></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">1 let dist be a |V| × |V| array of minimum distances initialized to ∞ (infinity)</span><br><span class="line">2 for each vertex v</span><br><span class="line">3    dist[v][v] ← 0</span><br><span class="line">4 for each edge (u,v)</span><br><span class="line">5    dist[u][v] ← w(u,v)  // the weight of the edge (u,v)</span><br><span class="line">6 for k from 1 to |V|</span><br><span class="line">7    for i from 1 to |V|</span><br><span class="line">8       for j from 1 to |V|</span><br><span class="line">9          if dist[i][j] &gt; dist[i][k] + dist[k][j] </span><br><span class="line">10             dist[i][j] ← dist[i][k] + dist[k][j]</span><br><span class="line">11     end if</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1072,93 +1142,6 @@
     <div class="post-body" itemprop="articleBody">
           <p>&lt;待续&gt;</p>
 <h2 id="1-表面重建算法"><a href="#1-表面重建算法" class="headerlink" title="1 表面重建算法"></a>1 表面重建算法</h2><h3 id="1-1"><a href="#1-1" class="headerlink" title="1.1"></a>1.1</h3>
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/09/15/maxFlowMinCut/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/09/15/maxFlowMinCut/" class="post-title-link" itemprop="url">maxFlowMinCut && 最大流最小割求法</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-09-15 14:50:23" itemprop="dateCreated datePublished" datetime="2021-09-15T14:50:23+08:00">2021-09-15</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2022-03-29 15:09:50" itemprop="dateModified" datetime="2022-03-29T15:09:50+08:00">2022-03-29</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="1-最大流-最小割本身含义"><a href="#1-最大流-最小割本身含义" class="headerlink" title="1 最大流-最小割本身含义"></a>1 最大流-最小割本身含义</h2><p>首先 起始点 s, 终止点 t, 从s-&gt;t的所有通路中，能够流过来的最大流量就是最大流，这里举个例子：<br>比如有如下的图：<br>1 -&gt; 2 管道是5的容量，<br>2 -&gt; 4 管道是4的容量，<br>1 -&gt; 3 管道是3的容量，<br>3 -&gt; 4 管道是6的容量，<br>那么从1-&gt;4的最大流，就是4 + 3 = 7</p>
-<p>最小割：<br>最小割是指，从图中移除一些边的集合以达到隔断从s到t的目的，成为一个图割，然后最小割，就是所有图割中，边权(管道的流量)之和最小的一个图割，最小割的值和最大流的值是相等的</p>
-<h2 id="2-最大流最小割算法"><a href="#2-最大流最小割算法" class="headerlink" title="2 最大流最小割算法"></a>2 最大流最小割算法</h2><p><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/MinCutMaximumFlowAlgorithm.png" alt="MinCutMaximumFlowAlgorithm"></p>
-<p>其过程就是：</p>
-<ul>
-<li>1 对于G中的每一个顶点，先将f(u, v)和f(v, u)都置为0</li>
-<li>2 当存在从s-&gt;t的一条路径(这样的一条路径称之为增广路径):<ul>
-<li>2.1 找出这个路径上的最小边权，称为tmpC</li>
-<li>2.2 对增广路径上的每一条边，都做: f(u, v) += tmpC, f(v, u) = -f(u, v)</li>
-</ul>
-</li>
-<li>3 G中的更改过后的图，称之为残余图(residual graph)<br>上面过程的tmpC之和就是最大流的值</li>
-</ul>
-<h2 id="3-例子"><a href="#3-例子" class="headerlink" title="3 例子"></a>3 例子</h2><p>引用自: <a target="_blank" rel="noopener" href="https://www.baeldung.com/cs/minimum-cut-graphs">https://www.baeldung.com/cs/minimum-cut-graphs</a><br><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/minCutEg.iwlkn8ciyfk.png" alt="minCutEg"></p>
-<p>在上述例子里的残余图中：<br>可以看出： 最大流为: 4 + 4 + 3 + 2 = 13</p>
-<h2 id="4-最小割"><a href="#4-最小割" class="headerlink" title="4 最小割"></a>4 最小割</h2><p>在上述例子里的残余图中：<br>首先按照从s能够到达的点和不能到达的点分成2个集合set1(reaching by s)和set2(not reaching by s)，这两个set在残余图中的连线构成的那些边成为最小割</p>
-<p>那么set1是： (a, b, c, e)<br>set2是：(d, f)]<br>残余图中，set1和set2相关连的边为： b-&gt;d, c-&gt;f, e-&gt;f,最小割值为： 4 + 3 + 6 = 13</p>
-
       
     </div>
 
