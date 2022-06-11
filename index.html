@@ -363,7 +363,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2022-06-09 16:32:43" itemprop="dateModified" datetime="2022-06-09T16:32:43+08:00">2022-06-09</time>
+        <time title="Modified: 2022-06-11 16:34:17" itemprop="dateModified" datetime="2022-06-11T16:34:17+08:00">2022-06-11</time>
       </span>
 
   
@@ -419,10 +419,11 @@
 </ul>
 </li>
 <li>3 只有同时满足2的3个要求，我们认为这是有用的，否则直接用当前帧对应的像素点即可</li>
-<li>4 结果展示：<br><img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/boxReprojection.791ps95hu840.gif" alt="boxReprojection"></li>
+<li>4 结果展示：<br>这是带有debug信息的展示：<br><img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/boxReprojection.791ps95hu840.gif" alt="boxReprojection"></li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/pinkRoomBackprojection5.1zx84khtcsm8.gif" alt="pinkRoomBackprojection5"></p>
-<h2 id="2-3-累计多帧信息"><a href="#2-3-累计多帧信息" class="headerlink" title="2.3 累计多帧信息"></a>2.3 累计多帧信息</h2>
+<h2 id="2-3-累计多帧信息"><a href="#2-3-累计多帧信息" class="headerlink" title="2.3 累计多帧信息"></a>2.3 累计多帧信息</h2><p>在这个部分，你需要将已经降噪的当前帧图像 $\overline{C_{i}}$，与已经降噪的上一帧图像<br>$\overline{C_{i-1}}$ 进行结合，公式如下：<br>$$<br>\overline{C_{i-1}} \leftarrow \alpha\overline{C_{i}} +  (1 - \alpha) Clamp(\overline{C_{i-1}})<br>$$</p>
+
       
     </div>
 
