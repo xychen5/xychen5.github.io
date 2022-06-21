@@ -136,7 +136,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-count">60</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -190,6 +190,173 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/08/05/reinterpretCast/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/08/05/reinterpretCast/" class="post-title-link" itemprop="url">reinterpretCast</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-08-05 10:17:50" itemprop="dateCreated datePublished" datetime="2021-08-05T10:17:50+08:00">2021-08-05</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/cpp/" itemprop="url" rel="index"><span itemprop="name">cpp</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="1-ffmpeg-解帧"><a href="#1-ffmpeg-解帧" class="headerlink" title="1 ffmpeg 解帧"></a>1 ffmpeg 解帧</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i DJI_20210615164633_0003_W.MP4 -r 3 images/%4d.jpg</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-reinterpret-cast-lt-gt-理解以及典型应用："><a href="#2-reinterpret-cast-lt-gt-理解以及典型应用：" class="headerlink" title="2 reinterpret_cast&lt;&gt; 理解以及典型应用："></a>2 reinterpret_cast&lt;&gt; 理解以及典型应用：</h2><p>对于其他的例如static_cast&lt;&gt;等的应用，参考：<a target="_blank" rel="noopener" href="http://www.cplusplus.com/doc/tutorial/typecasting/">http://www.cplusplus.com/doc/tutorial/typecasting/</a><br><br>以下引用自: <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/573294/when-to-use-reinterpret-cast">https://stackoverflow.com/questions/573294/when-to-use-reinterpret-cast</a><br><br>Here is a variant of Avi Ginsburg’s program which clearly illustrates the property of reinterpret_cast mentioned by Chris Luengo, flodin, and cmdLP: that the compiler treats the pointed-to memory location as if it were an object of the new type:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> :</span> <span class="keyword">public</span> A</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    string s;</span><br><span class="line">    B b;</span><br><span class="line">    b.i = <span class="number">0</span>;</span><br><span class="line">    A* as = <span class="keyword">static_cast</span>&lt;A*&gt;(&amp;b);</span><br><span class="line">    A* ar = <span class="keyword">reinterpret_cast</span>&lt;A*&gt;(&amp;b);</span><br><span class="line">    B* c = <span class="keyword">reinterpret_cast</span>&lt;B*&gt;(ar);</span><br><span class="line">    </span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;as-&gt;i = &quot;</span> &lt;&lt; hex &lt;&lt; <span class="built_in">setfill</span>(<span class="string">&#x27;0&#x27;</span>)  &lt;&lt; as-&gt;i &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;ar-&gt;i = &quot;</span> &lt;&lt; ar-&gt;i &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;b.i   = &quot;</span> &lt;&lt; b.i &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;c-&gt;i  = &quot;</span> &lt;&lt; c-&gt;i &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;(as-&gt;i) = &quot;</span> &lt;&lt; &amp;(as-&gt;i) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;(ar-&gt;i) = &quot;</span> &lt;&lt; &amp;(ar-&gt;i) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;(b.i) = &quot;</span> &lt;&lt; &amp;(b.i) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;(c-&gt;i) = &quot;</span> &lt;&lt; &amp;(c-&gt;i) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;&amp;b = &quot;</span> &lt;&lt; &amp;b &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;as = &quot;</span> &lt;&lt; as &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;ar = &quot;</span> &lt;&lt; ar &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;c  = &quot;</span> &lt;&lt; c  &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    </span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;Press ENTER to exit.\n&quot;</span>;</span><br><span class="line">    <span class="built_in">getline</span>(cin,s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Which results in output like this:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">as-&gt;i = 0</span><br><span class="line">ar-&gt;i = 50ee64</span><br><span class="line">b.i   = 0</span><br><span class="line">c-&gt;i  = 0</span><br><span class="line"></span><br><span class="line">&amp;(as-&gt;i) = 00EFF978</span><br><span class="line">&amp;(ar-&gt;i) = 00EFF974</span><br><span class="line">&amp;(b.i)   = 00EFF978</span><br><span class="line">&amp;(c-&gt;i)  = 00EFF978</span><br><span class="line"></span><br><span class="line">&amp;b = 00EFF974</span><br><span class="line">as = 00EFF978</span><br><span class="line">ar = 00EFF974</span><br><span class="line">c  = 00EFF974</span><br><span class="line">Press ENTER to exit.</span><br></pre></td></tr></table></figure>
+<p>It can be seen that the B object is built in memory as B-specific data first, followed by the embedded A object. The static_cast correctly returns the address of the embedded A object, and the pointer created by static_cast correctly gives the value of the data field. The pointer generated by reinterpret_cast treats b’s memory location as if it were a plain A object, and so when the pointer tries to get the data field it returns some B-specific data as if it were the contents of this field.</p>
+<p>应用如下：<br>下面的应用根据输入的类型T判断后使用了reinterpret_cast去转换；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">OptionManager::RegisterOption</span><span class="params">(<span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> T* option)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (std::is_same&lt;T, <span class="keyword">bool</span>&gt;::value) &#123;</span><br><span class="line">    options_bool_.<span class="built_in">emplace_back</span>(name, <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">bool</span>*&gt;(option));</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (std::is_same&lt;T, <span class="keyword">int</span>&gt;::value) &#123;</span><br><span class="line">    options_int_.<span class="built_in">emplace_back</span>(name, <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">int</span>*&gt;(option));</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (std::is_same&lt;T, <span class="keyword">double</span>&gt;::value) &#123;</span><br><span class="line">    options_double_.<span class="built_in">emplace_back</span>(name, <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">double</span>*&gt;(option));</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (std::is_same&lt;T, std::string&gt;::value) &#123;</span><br><span class="line">    options_string_.<span class="built_in">emplace_back</span>(name,</span><br><span class="line">                                 <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> std::string*&gt;(option));</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">LOG</span>(FATAL) &lt;&lt; <span class="string">&quot;Unsupported option type&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/07/18/glogUse/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/07/18/glogUse/" class="post-title-link" itemprop="url">glogUse</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-07-18 16:18:43" itemprop="dateCreated datePublished" datetime="2021-07-18T16:18:43+08:00">2021-07-18</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-08-19 10:37:48" itemprop="dateModified" datetime="2021-08-19T10:37:48+08:00">2021-08-19</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="glog使用："><a href="#glog使用：" class="headerlink" title="glog使用："></a>glog使用：</h2><p>项目地址：<br><a href="git@github.com:xychen5/tryGlog.git">git@github.com:xychen5/tryGlog.git</a><br>推荐使用类似于clion的ide，然后打开该项目，即可编译运行。</p>
+<h3 id="1-主要作用："><a href="#1-主要作用：" class="headerlink" title="1 主要作用："></a>1 主要作用：</h3><p><strong>能够将glog的日志在cmd中打印</strong><br>主要调用了函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">google::<span class="built_in">SetStderrLogging</span>(google::INFO); <span class="comment">// print the logs whose severity &gt; [info]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-output："><a href="#2-output：" class="headerlink" title="2 output："></a>2 output：</h3><p>样例输出代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">I0718 16:09:07.626883 18628 main.cpp:13] glog used in cmd!!</span><br><span class="line"></span><br><span class="line">W0718 16:09:07.627887 18628 main.cpp:14] glog used in cmd!!</span><br><span class="line"></span><br><span class="line">E0718 16:09:07.628882 18628 main.cpp:15] glog used in cmd!!</span><br><span class="line"></span><br><span class="line">F0718 16:09:07.628882 18628 main.cpp:16] glog used in cmd!!</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-使用clion需要注意编译器的版本得和库对应"><a href="#3-使用clion需要注意编译器的版本得和库对应" class="headerlink" title="3 使用clion需要注意编译器的版本得和库对应"></a>3 使用clion需要注意编译器的版本得和库对应</h3><p>如果使用x86版本的toolchain，会报错如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">====================[ Build | tryGlogLion | Debug ]=============================</span><br><span class="line">&quot;Z:\softwares\CLion 2021.1.3\bin\cmake\win\bin\cmake.exe&quot; --build F:\cppTry\tryGlogLion\cmake-build-debug --target tryGlogLion</span><br><span class="line">Scanning dependencies of target tryGlogLion</span><br><span class="line">[ 50%] Building CXX object CMakeFiles/tryGlogLion.dir/main.cpp.obj</span><br><span class="line">main.cpp</span><br><span class="line">[100%] Linking CXX executable tryGlogLion.exe</span><br><span class="line">NMAKE : fatal error U1077: “&quot;Z:\softwares\CLion 2021.1.3\bin\cmake\win\bin\cmake.exe&quot;”: 返回代码“0xffffffff”</span><br><span class="line">Stop.</span><br><span class="line">NMAKE : fatal error U1077: “&quot;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\bin\HostX86\x86\nmake.exe&quot;”: 返回代码“0x2”</span><br><span class="line">Stop.</span><br><span class="line">NMAKE : fatal error U1077: “&quot;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\bin\HostX86\x86\nmake.exe&quot;”: 返回代码“0x2”</span><br><span class="line">Stop.</span><br><span class="line">NMAKE : fatal error U1077: “&quot;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\bin\HostX86\x86\nmake.exe&quot;”: 返回代码“0x2”</span><br><span class="line">Stop.</span><br><span class="line">LINK Pass 1: command &quot;C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1429~1.300\bin\Hostx86\x86\link.exe /nologo @CMakeFiles\tryGlogLion.dir\objects1.rsp /out:tryGlogLion.exe /implib:tryGlogLion.lib /pdb:F:\cppTry\tryGlogLion\cmake-build-debug\tryGlogLion.pdb /version:0.0 /machine:X86 /debug /INCREMENTAL /subsystem:console -LIBPATH:F:\prjs\ThirdParty\glog\lib -LIBPATH:F:\prjs\ThirdParty\gflags\lib glog.lib gflags_static.lib glog.lib gflags_static.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTFILE:CMakeFiles\tryGlogLion.dir/intermediate.manifest CMakeFiles\tryGlogLion.dir/manifest.res&quot; failed (exit code 1120) with the following output:</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) void __cdecl google::InitGoogleLogging(char const *)&quot; (__imp_?InitGoogleLogging@google@@YAXPBD@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessage::LogMessage(char const *,int)&quot; (__imp_??0LogMessage@google@@QAE@PBDH@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessage::LogMessage(char const *,int,int)&quot; (__imp_??0LogMessage@google@@QAE@PBDHH@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessage::~LogMessage(void)&quot; (__imp_??1LogMessage@google@@QAE@XZ)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: class std::basic_ostream&lt;char,struct std::char_traits&lt;char&gt; &gt; &amp; __thiscall google::LogMessage::stream(void)&quot; (__imp_?stream@LogMessage@google@@QAEAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@XZ)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessageFatal::LogMessageFatal(char const *,int)&quot; (__imp_??0LogMessageFatal@google@@QAE@PBDH@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessageFatal::~LogMessageFatal(void)&quot; (__imp_??1LogMessageFatal@google@@QAE@XZ)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) void __cdecl google::SetStderrLogging(int)&quot; (__imp_?SetStderrLogging@google@@YAXH@Z)，函数 _main 中引用了该符号</span><br><span class="line">F:\prjs\ThirdParty\glog\lib\glog.lib : warning LNK4272:库计算机类型“x64”与目标计算机类型“x86”冲突</span><br><span class="line">F:\prjs\ThirdParty\gflags\lib\gflags_static.lib : warning LNK4272:库计算机类型“x64”与目标计算机类型“x86”冲突</span><br><span class="line">tryGlogLion.exe : fatal error LNK1120: 8 个无法解析的外部命令</span><br></pre></td></tr></table></figure>
+<p><strong>解决方案：</strong><br>将files-&gt;settings-&gt;buidl,execut,deploy-&gt;toolchains-&gt;enviroment-&gt;architecture设置为<strong>x86_amd64</strong></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -960,182 +1127,6 @@
 
 <h2 id="3-参考"><a href="#3-参考" class="headerlink" title="3 参考"></a>3 参考</h2><p>[1] <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Paxos_(computer_science)#Byzantine_Paxos">https://en.wikipedia.org/wiki/Paxos_(computer_science)#Byzantine_Paxos</a><br>[2] <a target="_blank" rel="noopener" href="https://www.cs.rutgers.edu/~pxk/417/notes/paxos.html">https://www.cs.rutgers.edu/~pxk/417/notes/paxos.html</a><br>[3] <a target="_blank" rel="noopener" href="https://github.com/HaHaJeff/Paxos/blob/master/basic_paxos.md">https://github.com/HaHaJeff/Paxos/blob/master/basic_paxos.md</a></p>
 
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/05/24/fittingUsingParabolaCurve/fittedUsingParabolaCurve/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/05/24/fittingUsingParabolaCurve/fittedUsingParabolaCurve/" class="post-title-link" itemprop="url">parabola fitting - 使用抛物线拟合离散点</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-05-24 15:24:18" itemprop="dateCreated datePublished" datetime="2021-05-24T15:24:18+08:00">2021-05-24</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-08-19 10:45:05" itemprop="dateModified" datetime="2021-08-19T10:45:05+08:00">2021-08-19</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/math/" itemprop="url" rel="index"><span itemprop="name">math</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>给定<strong>地对空导弹</strong>发射起始点和终止点（3维坐标），拟合导弹轨迹</p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><ul>
-<li>1 首先简单化问题，假定导弹轨迹位于同一个平面内，则可以将轨迹投影到x-O-z平面，先求出x-z的关系，求一系列的散点，<br>然后根据x,y的关系求出y的散点值即可</li>
-<li>2 之所以选取抛物线，因为导弹轨迹需要垂直发射的过程，存在斜率不存在的点常见的曲线为抛物线和圆，由于圆显然不合适，我们选取抛物线</li>
-</ul>
-<h2 id="实现的数学逻辑"><a href="#实现的数学逻辑" class="headerlink" title="实现的数学逻辑"></a>实现的数学逻辑</h2><ul>
-<li>1 起始点和终止点的定义：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># startPos and endPos in [lon, lat, height]</span><br><span class="line">stPos = [117.9844565, 24.1658956, 1.597]</span><br><span class="line">edPos = [118.1167438, 24.5656241, 5211.73]</span><br></pre></td></tr></table></figure></li>
-<li>2 数学关系<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 由于整个轨迹位于一个平面内，则可以考虑x，y存在线性关系</span><br><span class="line">y1 = k * x1 + b</span><br><span class="line">y2 = k * x2 + b</span><br><span class="line">则y可以由x得到</span><br><span class="line"></span><br><span class="line"># [x1, y1, z1]为起始点，则有如下抛物线，根据终止点[x2, y2, z2]求出p</span><br><span class="line">(z-z1)**2 = p*(x-x1)</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># set figure</span></span><br><span class="line">fig = plt.figure()</span><br><span class="line">ax = fig.gca(projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">################################################## input args #############################################</span></span><br><span class="line"><span class="comment"># startPos and endPos in [lon, lat, height]</span></span><br><span class="line">stPos = [<span class="number">117.9844565</span>, <span class="number">24.1658956</span>, <span class="number">1.597</span>]</span><br><span class="line">edPos = [<span class="number">118.1167438</span>, <span class="number">24.5656241</span>, <span class="number">5211.73</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># # stTime, endTime, in seconds, assume it take 1 minute for missile from emit to explode</span></span><br><span class="line"><span class="comment"># stTime = 0</span></span><br><span class="line"><span class="comment"># endTime = 10</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># step number</span></span><br><span class="line">stepNumber = <span class="number">30</span></span><br><span class="line"><span class="comment">################################################## input args #############################################</span></span><br><span class="line"></span><br><span class="line"><span class="comment">################################################## output     #############################################</span></span><br><span class="line"><span class="comment"># res</span></span><br><span class="line">resX = []</span><br><span class="line">resY = []</span><br><span class="line">resZ = []</span><br><span class="line"><span class="comment">################################################## output     #############################################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># land defend air means, should satisfy: st.z &lt; ed.z</span></span><br><span class="line"><span class="comment"># (z-z1)**2 = p*(x-x1)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">computeLnadDefendAirParabolaWithSteps</span>(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="function">    st,     <span class="comment"># start point: [x, y, z]</span></span></span></span><br><span class="line"><span class="params"><span class="function">    ed,     <span class="comment"># end point: [x, y, z]</span></span></span></span><br><span class="line"><span class="params"><span class="function">    resX,   <span class="comment"># x-axis&#x27;s result</span></span></span></span><br><span class="line"><span class="params"><span class="function">    resY,   <span class="comment"># y-axis&#x27;s result</span></span></span></span><br><span class="line"><span class="params"><span class="function">    resZ,   <span class="comment"># z-axis&#x27;s result</span></span></span></span><br><span class="line"><span class="params"><span class="function">    stepNum <span class="comment"># how may fitted points you want</span></span></span></span><br><span class="line"><span class="params"><span class="function">    </span>):</span></span><br><span class="line">    resX.append(st[<span class="number">0</span>])</span><br><span class="line">    resY.append(st[<span class="number">1</span>])</span><br><span class="line">    resZ.append(st[<span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">    p = (ed[<span class="number">2</span>] - st[<span class="number">2</span>])**<span class="number">2</span> / (ed[<span class="number">0</span>] - st[<span class="number">0</span>])</span><br><span class="line">    step = (ed[<span class="number">0</span>] - st[<span class="number">0</span>]) / stepNum</span><br><span class="line">    <span class="keyword">for</span> stepCnt <span class="keyword">in</span> <span class="built_in">range</span>(stepNum)[<span class="number">1</span>:]:</span><br><span class="line">        curX = st[<span class="number">0</span>] + stepCnt * step</span><br><span class="line">        curZ = (p * (curX - st[<span class="number">0</span>])) ** <span class="number">0.5</span> + st[<span class="number">2</span>]</span><br><span class="line">        resZ.append(curZ)</span><br><span class="line">        <span class="comment"># compute projection from x to y: x = k*y + b</span></span><br><span class="line">        <span class="keyword">if</span> st[<span class="number">1</span>] != ed[<span class="number">1</span>]:</span><br><span class="line">            k = (st[<span class="number">0</span>] - ed[<span class="number">0</span>]) / (st[<span class="number">1</span>] - ed[<span class="number">1</span>])</span><br><span class="line">            b = st[<span class="number">0</span>] - k * st[<span class="number">1</span>]</span><br><span class="line">            curY = (curX - b) / k</span><br><span class="line">            resY.append(curY)</span><br><span class="line">            resX.append(curX)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># all the y is the same</span></span><br><span class="line">            resY.append(curY)</span><br><span class="line">            resX.append(curX)</span><br><span class="line">    resX.append(ed[<span class="number">0</span>])</span><br><span class="line">    resY.append(ed[<span class="number">1</span>])</span><br><span class="line">    resZ.append(ed[<span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># print</span></span><br><span class="line">    <span class="keyword">for</span> idx <span class="keyword">in</span> <span class="built_in">range</span>(stepNum + <span class="number">1</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;%10.6f, %10.6f, %10.3f&quot;</span>%(resX[idx], resY[idx], resZ[idx]))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">computeLnadDefendAirParabolaWithSteps(stPos, edPos, resX, resY, resZ, stepNumber)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制图形</span></span><br><span class="line">ax.plot(resX, resY, resZ, label=<span class="string">&#x27;fitted curve&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示图例</span></span><br><span class="line">ax.legend()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示图形</span></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/05/24/lagrangeInterpolation/lagrangeInterpolation/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/05/24/lagrangeInterpolation/lagrangeInterpolation/" class="post-title-link" itemprop="url">pagrangeInterpolation for curve fitting - 使用拉格朗日插值平滑曲线</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-05-24 15:24:18" itemprop="dateCreated datePublished" datetime="2021-05-24T15:24:18+08:00">2021-05-24</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-08-19 10:49:52" itemprop="dateModified" datetime="2021-08-19T10:49:52+08:00">2021-08-19</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/math/" itemprop="url" rel="index"><span itemprop="name">math</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="使用拉格朗日插值平滑曲线"><a href="#使用拉格朗日插值平滑曲线" class="headerlink" title="使用拉格朗日插值平滑曲线"></a>使用拉格朗日插值平滑曲线</h2><h3 id="1-平滑前后效果对比："><a href="#1-平滑前后效果对比：" class="headerlink" title="1 平滑前后效果对比："></a>1 平滑前后效果对比：</h3><h4 id="平滑前"><a href="#平滑前" class="headerlink" title="平滑前"></a>平滑前</h4><p><img src="./before.gif" alt="./before.gif"></p>
-<h4 id="平滑后"><a href="#平滑后" class="headerlink" title="平滑后"></a>平滑后</h4><p><img src="./after.gif" alt="./after.gif"></p>
-<h3 id="2-拉格朗日插值代码-参考cesium源码"><a href="#2-拉格朗日插值代码-参考cesium源码" class="headerlink" title="2 拉格朗日插值代码:(参考cesium源码)"></a>2 拉格朗日插值代码:(参考cesium源码)</h3><p>结合拉格朗日原理：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/135229305">https://zhuanlan.zhihu.com/p/135229305</a></p>
-<p>源码如下：<a target="_blank" rel="noopener" href="https://github.com/CesiumGS/cesium/blob/b30/Source/Core/LagrangePolynomialApproximation.js#L39">https://github.com/CesiumGS/cesium/blob/b30/Source/Core/LagrangePolynomialApproximation.js#L39</a></p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Interpolates values using Lagrange Polynomial Approximation.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;Number&#125;</span> </span>x The independent variable for which the dependent variables will be interpolated.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;Number[]&#125;</span> </span>xTable The array of independent variables to use to interpolate.  The values</span></span><br><span class="line"><span class="comment"> * in this array must be in increasing order and the same value must not occur twice in the array.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;Number[]&#125;</span> </span>yTable The array of dependent variables to use to interpolate.  For a set of three</span></span><br><span class="line"><span class="comment"> * dependent values (p,q,w) at time 1 and time 2 this should be as follows: &#123;p1, q1, w1, p2, q2, w2&#125;.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;Number&#125;</span> </span>yStride The number of dependent variable values in yTable corresponding to</span></span><br><span class="line"><span class="comment"> * each independent variable value in xTable.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;Number[]&#125;</span> </span>[result] An existing array into which to store the result.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns <span class="type">&#123;Number[]&#125;</span> </span>The array of interpolated values, or the result parameter if one was provided.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">LagrangePolynomialApproximation.interpolateOrderZero = <span class="function"><span class="keyword">function</span>(<span class="params">x, xTable, yTable, yStride, result</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!defined(result)) &#123;</span><br><span class="line">        result = <span class="keyword">new</span> <span class="built_in">Array</span>(yStride);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> i;</span><br><span class="line">    <span class="keyword">var</span> j;</span><br><span class="line">    <span class="keyword">var</span> length = xTable.length;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; yStride; i++) &#123;</span><br><span class="line">        result[i] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; length; i++) &#123;</span><br><span class="line">        <span class="keyword">var</span> coefficient = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (j !== i) &#123;</span><br><span class="line">                <span class="keyword">var</span> diffX = xTable[i] - xTable[j];</span><br><span class="line">                coefficient *= (x - xTable[j]) / diffX;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; yStride; j++) &#123;</span><br><span class="line">            result[j] += coefficient * yTable[i * yStride + j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="3-cesium中实现代码"><a href="#3-cesium中实现代码" class="headerlink" title="3 cesium中实现代码"></a>3 cesium中实现代码</h3><p>放入<a target="_blank" rel="noopener" href="https://sandcastle.cesium.com/index.html?src=Callback%20Property.html">https://sandcastle.cesium.com/index.html?src=Callback%20Property.html</a>运行即可</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// This example illustrates a Callback Property, a property whose</span></span><br><span class="line"><span class="comment">// value is lazily evaluated by a callback function.</span></span><br><span class="line"><span class="comment">// Use a CallbackProperty when your data can&#x27;t be pre-computed</span></span><br><span class="line"><span class="comment">// or needs to be derived from other properties at runtime.</span></span><br><span class="line"><span class="keyword">var</span> viewer = <span class="keyword">new</span> Cesium.Viewer(<span class="string">&quot;cesiumContainer&quot;</span>);</span><br><span class="line">viewer.clock.shouldAnimate = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> startLatitude = <span class="number">35</span>;</span><br><span class="line"><span class="keyword">var</span> startLongitude = -<span class="number">120</span>;</span><br><span class="line"><span class="keyword">var</span> endLongitude;</span><br><span class="line"><span class="keyword">var</span> startTime = Cesium.JulianDate.now();</span><br><span class="line"><span class="keyword">var</span> stTime = startTime;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// Add a polyline to the scene. Positions are dynamic.</span></span><br><span class="line"><span class="keyword">var</span> isConstant = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">var</span> redLine = viewer.entities.add(&#123;</span><br><span class="line">  <span class="attr">polyline</span>: &#123;</span><br><span class="line">    <span class="comment">// This callback updates positions each frame.</span></span><br><span class="line">    <span class="attr">positions</span>: <span class="keyword">new</span> Cesium.CallbackProperty(<span class="function"><span class="keyword">function</span> (<span class="params">time, result</span>) </span>&#123;</span><br><span class="line">      endLongitude =</span><br><span class="line">        startLongitude +</span><br><span class="line">        <span class="number">0.001</span> * Cesium.JulianDate.secondsDifference(time, startTime);</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 平滑前效果</span></span><br><span class="line">      <span class="comment">// return computeCirclularFlight(-112.110693, 36.0994841, 0.03, time);</span></span><br><span class="line">      <span class="comment">// 平滑后效果</span></span><br><span class="line">      <span class="keyword">return</span> computeCirclularFlightSmoothly(-<span class="number">112.110693</span>, <span class="number">36.0994841</span>, <span class="number">0.03</span>, <span class="number">500</span>, stTime, time);</span><br><span class="line">      <span class="comment">/*</span></span><br><span class="line"><span class="comment">      return Cesium.Cartesian3.fromDegreesArray(</span></span><br><span class="line"><span class="comment">        [startLongitude, startLatitude, endLongitude, startLatitude],</span></span><br><span class="line"><span class="comment">        Cesium.Ellipsoid.WGS84,</span></span><br><span class="line"><span class="comment">        result</span></span><br><span class="line"><span class="comment">      );</span></span><br><span class="line"><span class="comment">      */</span></span><br><span class="line">    &#125;, isConstant),</span><br><span class="line">    <span class="attr">width</span>: <span class="number">5</span>,</span><br><span class="line">    <span class="attr">material</span>: Cesium.Color.RED,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//Generate a random circular pattern with varying heights.</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">computeCirclularFlight</span>(<span class="params">lon, lat, radius, curTime</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// let a = JulianDate.secondsDifference(JulianDate.now(), stTime);</span></span><br><span class="line">         <span class="keyword">let</span> positions = [];</span><br><span class="line">        <span class="comment">// Generate a random circular pattern with letying heights.</span></span><br><span class="line">        <span class="keyword">let</span> property = <span class="keyword">new</span> Cesium.SampledPositionProperty();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= <span class="number">360</span>; i += <span class="number">45</span>) &#123;</span><br><span class="line">            <span class="keyword">let</span> radians = Cesium.Math.toRadians(i);</span><br><span class="line">            <span class="keyword">let</span> time = Cesium.JulianDate.addSeconds(</span><br><span class="line">                stTime,</span><br><span class="line">                i,</span><br><span class="line">                <span class="keyword">new</span> Cesium.JulianDate()</span><br><span class="line">            );</span><br><span class="line">        </span><br><span class="line">            <span class="keyword">let</span> position = Cesium.Cartesian3.fromDegrees(</span><br><span class="line">                lon + radius * <span class="number">1.5</span> * <span class="built_in">Math</span>.cos(radians),</span><br><span class="line">                lat + radius * <span class="built_in">Math</span>.sin(radians),</span><br><span class="line">                Cesium.Math.nextRandomNumber() * <span class="number">500</span> + </span><br><span class="line">                    <span class="built_in">Math</span>.random() * <span class="number">20</span> * Cesium.JulianDate.secondsDifference(curTime, stTime)</span><br><span class="line">            );</span><br><span class="line">        </span><br><span class="line">            positions.push(position);</span><br><span class="line">            property.addSample(time, position);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> positions;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Generate a random circular pattern with varying heights.</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">computeCirclularFlightSmoothly</span>(<span class="params">lon, lat, radius, levelHeight, stTime, curTime</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// let a = JulianDate.secondsDifference(JulianDate.now(), stTime);</span></span><br><span class="line">        <span class="keyword">let</span> positions = [];</span><br><span class="line">        <span class="keyword">let</span> llhPositions = [];</span><br><span class="line">        <span class="comment">// let property = new PositionProperty();</span></span><br><span class="line">        <span class="comment">// Generate a random circular pattern with letying heights.</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= <span class="number">360</span>; i += <span class="number">45</span>) &#123;</span><br><span class="line">            <span class="keyword">let</span> radians = Cesium.Math.toRadians(i);</span><br><span class="line">            <span class="keyword">let</span> time = Cesium.JulianDate.addSeconds(</span><br><span class="line">                stTime,</span><br><span class="line">                i,</span><br><span class="line">                <span class="keyword">new</span> Cesium.JulianDate()</span><br><span class="line">            );</span><br><span class="line"></span><br><span class="line">            <span class="keyword">let</span> tmpPoint = <span class="keyword">new</span> Cesium.Cartographic(</span><br><span class="line">                lon + radius * <span class="number">1.5</span> * <span class="built_in">Math</span>.cos(radians),</span><br><span class="line">                lat + radius * <span class="built_in">Math</span>.sin(radians),</span><br><span class="line">                Cesium.Math.nextRandomNumber() * <span class="number">0.1</span> * levelHeight + levelHeight +</span><br><span class="line">                    Cesium.Math.random() * <span class="number">20</span> * Cesium.JulianDate.secondsDifference(curTime, stTime)</span><br><span class="line">            );</span><br><span class="line">            llhPositions.push(tmpPoint);</span><br><span class="line">            positions.push(</span><br><span class="line">                Cesium.Cartesian3.fromDegrees(</span><br><span class="line">                    tmpPoint.longitude,</span><br><span class="line">                    tmpPoint.latitude,</span><br><span class="line">                    tmpPoint.height</span><br><span class="line">            ));</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// let iptPositions = Array&lt;Cartographic&gt;();</span></span><br><span class="line">        <span class="keyword">let</span> iptPositions = [];</span><br><span class="line">        <span class="keyword">let</span> xRes = [];</span><br><span class="line">        <span class="keyword">let</span> xTable = [];        <span class="comment">// interpolate at xTable[i]</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> ix = <span class="number">0</span>; ix &lt; positions.length; ++ix) &#123;</span><br><span class="line">            xTable.push(ix * <span class="number">100</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> yTable = [];        <span class="comment">// used to interpolate, in &#123;la1, lon1, h1, l2, lon2, h2&#125;</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> iy = <span class="number">0</span>; iy &lt; positions.length; ++iy) &#123;</span><br><span class="line">            yTable.push(llhPositions[iy].longitude);</span><br><span class="line">            yTable.push(llhPositions[iy].latitude);</span><br><span class="line">            yTable.push(llhPositions[iy].height);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> yStride = <span class="number">3</span>;        <span class="comment">// 3 dependent vaule in yTable is viewed as one item</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> ix = <span class="number">0</span>; ix &lt; xTable[positions.length - <span class="number">1</span>]; ++ix) &#123;</span><br><span class="line">            <span class="keyword">let</span> iptRes = [];</span><br><span class="line">            Cesium.LagrangePolynomialApproximation.interpolateOrderZero(</span><br><span class="line">                ix,</span><br><span class="line">                xTable,</span><br><span class="line">                yTable,</span><br><span class="line">                yStride,</span><br><span class="line">                iptRes</span><br><span class="line">            );</span><br><span class="line"></span><br><span class="line">            iptPositions.push(</span><br><span class="line">                Cesium.Cartesian3.fromDegrees(</span><br><span class="line">                iptRes[<span class="number">0</span>],</span><br><span class="line">                iptRes[<span class="number">1</span>],</span><br><span class="line">                iptRes[<span class="number">2</span>]</span><br><span class="line">            ));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span>  iptPositions;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Keep the view centered.</span></span><br><span class="line">viewer.trackedEntity = redLine;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
 
