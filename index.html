@@ -136,7 +136,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-count">61</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -147,7 +147,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -190,6 +190,77 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2022/06/21/restClient/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/06/21/restClient/" class="post-title-link" itemprop="url">restClient - cpp调用restfulapi的简单尝试</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2022-06-21 15:35:12 / Modified: 17:25:19" itemprop="dateCreated datePublished" datetime="2022-06-21T15:35:12+08:00">2022-06-21</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="1-参考项目"><a href="#1-参考项目" class="headerlink" title="1 参考项目"></a>1 参考项目</h1><p><a target="_blank" rel="noopener" href="https://github.com/jgaa/restc-cpp">restClient in cpp: https://github.com/jgaa/restc-cpp</a></p>
+<h1 id="2-依赖下载"><a href="#2-依赖下载" class="headerlink" title="2 依赖下载"></a>2 依赖下载</h1><p>openssl下载：<br><a target="_blank" rel="noopener" href="https://github.com/CristiFati/Prebuilt-Binaries/blob/master/OpenSSL/v1.1.1/OpenSSL-1.1.1o-Win-pc064.zip">https://github.com/CristiFati/Prebuilt-Binaries/blob/master/OpenSSL/v1.1.1/OpenSSL-1.1.1o-Win-pc064.zip</a></p>
+<h1 id="3-创建云端mock"><a href="#3-创建云端mock" class="headerlink" title="3 创建云端mock"></a>3 创建云端mock</h1><p>个人示例：<a target="_blank" rel="noopener" href="https://mock.apifox.cn/m1/1153222-0-default/roomlist">https://mock.apifox.cn/m1/1153222-0-default/roomlist</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nash5@DESKTOP-0DDCG1U MINGW64 /f/myFiles/blogs (main)</span><br><span class="line">$ curl  https://mock.apifox.cn/m1/1153222-0-default/roomlist</span><br><span class="line">[&#123;&quot;id&quot;:1,&quot;name&quot;:&quot;room1&quot;&#125;]</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-示例代码以及测试"><a href="#4-示例代码以及测试" class="headerlink" title="4 示例代码以及测试"></a>4 示例代码以及测试</h1><p>安装docker，执行restc-cpp的create_container脚本，然后运行BasicTests.cpp<br>执行情况如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">nash5@DESKTOP-0DDCG1U MINGW64 /f/prjs/restc-cpp/build/tests/functional/Release (master)</span><br><span class="line">$ ./basic_tests.exe</span><br><span class="line">trying to get rooms</span><br><span class="line">[2022-06-21 17:24:14.729043] [0x00008d94] [debug]   Worker 0 is starting.</span><br><span class="line">getting room now!</span><br><span class="line">[2022-06-21 17:24:14.758042] [0x00008d94] [debug]   Connecting to 114.55.47.169:443</span><br><span class="line">[2022-06-21 17:24:14.807048] [0x00008d94] [debug]   Sent GET request to &#x27;https://mock.apifox.cn/m1/1153222-0-default/roomlist&#x27; &#123;Connection f3f975c7-cbbb-44a4-8d0c-2c95450273e2 &#123;TlsSocket</span><br><span class="line">socket# 624 192.168.5.44:50487 &lt;--&gt; 114.55.47.169:443&#125;&#125;</span><br><span class="line">[2022-06-21 17:24:14.888860] [0x00008d94] [info]    Post id=1, title: room1</span><br><span class="line">[2022-06-21 17:24:14.888860] [0x00008d94] [debug]   Worker 0 is done.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1193,87 +1264,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2022/04/12/algoKMPStringMatch/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/04/12/algoKMPStringMatch/" class="post-title-link" itemprop="url">algoKMPStringMatch</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-      
-
-      <time title="Created: 2022-04-12 11:53:30 / Modified: 12:01:48" itemprop="dateCreated datePublished" datetime="2022-04-12T11:53:30+08:00">2022-04-12</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="1-kmp算法"><a href="#1-kmp算法" class="headerlink" title="1 kmp算法"></a>1 kmp算法</h1><p>参考： <a target="_blank" rel="noopener" href="https://oi-wiki.org/string/kmp/#_10">https://oi-wiki.org/string/kmp/#_10</a></p>
-<p>这里简单举个例子：<br>在text = abcccab中查找tar = ab出现次数，那么构造串： ab#abcccab，然后计算前缀函数：<br> a b # a b c c c a b<br>[0,0,0,1,2,0,0,0,1,2] = pi, 为前缀函数的结果，找出i&gt;tar.size()且pi[i] == n的i的集合，每一个i - 2*tar.size()就是tar出现在text中的下标</p>
-<h1 id="2-例题"><a href="#2-例题" class="headerlink" title="2 例题"></a>2 例题</h1><h2 id="0214shortestPalindrome-最短回文串"><a href="#0214shortestPalindrome-最短回文串" class="headerlink" title="0214shortestPalindrome 最短回文串"></a>0214shortestPalindrome 最短回文串</h2><h3 id="1-题目"><a href="#1-题目" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/shortest-palindrome/">https://leetcode-cn.com/problems/shortest-palindrome/</a></p>
-<h3 id="2-解题思路"><a href="#2-解题思路" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
-<li>1 使用KMP算法，能够在text(n)字符串中搜索出tar(m)字符串的所有出现位置复杂度为o(m+n)，那么由于本题目求解的是最短回文串，也就是要求最少的头部添加，尽可能利用字符串本身的回文信息，于是这里看个例子：<ul>
-<li>1.1 see: our target is to find the “b c c b”，so we use kmp<ul>
-<li>s =       b c c b a e</li>
-<li>rs =  e a b c c b </li>
-<li>all = b c c b a e # e a b c c b </li>
-</ul>
-</li>
-<li>1.2 我们用s + 分隔符 + reverse_s得到all，对于all的最后一个前缀函数pi.back()，就说明了最长有多长的后缀和前缀相等，也就是b c c b这一个公共部分，那么吧剩余的拼上去就行了<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">string <span class="title">shortestPalindrome</span><span class="params">(string s)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// prefix function &amp;&amp; kmp: https://oi-wiki.org/string/kmp/#_10</span></span><br><span class="line">        <span class="keyword">int</span> len = s.<span class="built_in">size</span>();</span><br><span class="line">        string rs = s;</span><br><span class="line">        <span class="built_in">reverse</span>(rs.<span class="built_in">begin</span>(), rs.<span class="built_in">end</span>());</span><br><span class="line"></span><br><span class="line">        string all = s + <span class="string">&quot;#&quot;</span> + rs;</span><br><span class="line">        <span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">pi</span><span class="params">(all.size(), <span class="number">0</span>)</span></span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// see: our target is to find the &quot;b c c b&quot;，so we use kmp</span></span><br><span class="line">        <span class="comment">// s =       b c c b a e</span></span><br><span class="line">        <span class="comment">// rs =  e a b c c b </span></span><br><span class="line">        <span class="comment">// all = b c c b a e # e a b c c b </span></span><br><span class="line">        <span class="comment">// 求解pi[i]</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; all.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">             <span class="comment">// i - 1的前缀函数的值，有s[0:j] == s[i - j : i - 1]</span></span><br><span class="line">            <span class="keyword">int</span> j = pi[i - <span class="number">1</span>];</span><br><span class="line">            <span class="comment">// 当s[i] != s[j]，说明s[i]这个字符无法成为后缀的最后一个字符，此时pi[i] = 0，于是得一直找到下一个j，直到j = 0，或者s[i] == s[j]</span></span><br><span class="line">            <span class="keyword">while</span>(j &gt; <span class="number">0</span> &amp;&amp; all[i] != all[j]) &#123;</span><br><span class="line">                j = pi[j - <span class="number">1</span>];</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 倘若s[i] == s[j]，那么就有s[0:i-1]这个字串的前缀函数的值为j，然后加上最后一个字符s[i]，所以j++</span></span><br><span class="line">            <span class="keyword">if</span>(all[i] == all[j]) &#123;</span><br><span class="line">                j++;</span><br><span class="line">            &#125;</span><br><span class="line">            pi[i] = j;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> commonLen = pi.<span class="built_in">back</span>();</span><br><span class="line">        <span class="keyword">if</span>(commonLen == len) &#123;</span><br><span class="line">            <span class="keyword">return</span> s;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> rs.<span class="built_in">substr</span>(<span class="number">0</span>, len - commonLen) + s;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 </div>

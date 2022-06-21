@@ -136,7 +136,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-count">61</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -147,7 +147,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -190,6 +190,85 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2022/04/12/algoKMPStringMatch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/04/12/algoKMPStringMatch/" class="post-title-link" itemprop="url">algoKMPStringMatch</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2022-04-12 11:53:30 / Modified: 12:01:48" itemprop="dateCreated datePublished" datetime="2022-04-12T11:53:30+08:00">2022-04-12</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="1-kmp算法"><a href="#1-kmp算法" class="headerlink" title="1 kmp算法"></a>1 kmp算法</h1><p>参考： <a target="_blank" rel="noopener" href="https://oi-wiki.org/string/kmp/#_10">https://oi-wiki.org/string/kmp/#_10</a></p>
+<p>这里简单举个例子：<br>在text = abcccab中查找tar = ab出现次数，那么构造串： ab#abcccab，然后计算前缀函数：<br> a b # a b c c c a b<br>[0,0,0,1,2,0,0,0,1,2] = pi, 为前缀函数的结果，找出i&gt;tar.size()且pi[i] == n的i的集合，每一个i - 2*tar.size()就是tar出现在text中的下标</p>
+<h1 id="2-例题"><a href="#2-例题" class="headerlink" title="2 例题"></a>2 例题</h1><h2 id="0214shortestPalindrome-最短回文串"><a href="#0214shortestPalindrome-最短回文串" class="headerlink" title="0214shortestPalindrome 最短回文串"></a>0214shortestPalindrome 最短回文串</h2><h3 id="1-题目"><a href="#1-题目" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/shortest-palindrome/">https://leetcode-cn.com/problems/shortest-palindrome/</a></p>
+<h3 id="2-解题思路"><a href="#2-解题思路" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
+<li>1 使用KMP算法，能够在text(n)字符串中搜索出tar(m)字符串的所有出现位置复杂度为o(m+n)，那么由于本题目求解的是最短回文串，也就是要求最少的头部添加，尽可能利用字符串本身的回文信息，于是这里看个例子：<ul>
+<li>1.1 see: our target is to find the “b c c b”，so we use kmp<ul>
+<li>s =       b c c b a e</li>
+<li>rs =  e a b c c b </li>
+<li>all = b c c b a e # e a b c c b </li>
+</ul>
+</li>
+<li>1.2 我们用s + 分隔符 + reverse_s得到all，对于all的最后一个前缀函数pi.back()，就说明了最长有多长的后缀和前缀相等，也就是b c c b这一个公共部分，那么吧剩余的拼上去就行了<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">string <span class="title">shortestPalindrome</span><span class="params">(string s)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// prefix function &amp;&amp; kmp: https://oi-wiki.org/string/kmp/#_10</span></span><br><span class="line">        <span class="keyword">int</span> len = s.<span class="built_in">size</span>();</span><br><span class="line">        string rs = s;</span><br><span class="line">        <span class="built_in">reverse</span>(rs.<span class="built_in">begin</span>(), rs.<span class="built_in">end</span>());</span><br><span class="line"></span><br><span class="line">        string all = s + <span class="string">&quot;#&quot;</span> + rs;</span><br><span class="line">        <span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">pi</span><span class="params">(all.size(), <span class="number">0</span>)</span></span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// see: our target is to find the &quot;b c c b&quot;，so we use kmp</span></span><br><span class="line">        <span class="comment">// s =       b c c b a e</span></span><br><span class="line">        <span class="comment">// rs =  e a b c c b </span></span><br><span class="line">        <span class="comment">// all = b c c b a e # e a b c c b </span></span><br><span class="line">        <span class="comment">// 求解pi[i]</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; all.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">             <span class="comment">// i - 1的前缀函数的值，有s[0:j] == s[i - j : i - 1]</span></span><br><span class="line">            <span class="keyword">int</span> j = pi[i - <span class="number">1</span>];</span><br><span class="line">            <span class="comment">// 当s[i] != s[j]，说明s[i]这个字符无法成为后缀的最后一个字符，此时pi[i] = 0，于是得一直找到下一个j，直到j = 0，或者s[i] == s[j]</span></span><br><span class="line">            <span class="keyword">while</span>(j &gt; <span class="number">0</span> &amp;&amp; all[i] != all[j]) &#123;</span><br><span class="line">                j = pi[j - <span class="number">1</span>];</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 倘若s[i] == s[j]，那么就有s[0:i-1]这个字串的前缀函数的值为j，然后加上最后一个字符s[i]，所以j++</span></span><br><span class="line">            <span class="keyword">if</span>(all[i] == all[j]) &#123;</span><br><span class="line">                j++;</span><br><span class="line">            &#125;</span><br><span class="line">            pi[i] = j;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> commonLen = pi.<span class="built_in">back</span>();</span><br><span class="line">        <span class="keyword">if</span>(commonLen == len) &#123;</span><br><span class="line">            <span class="keyword">return</span> s;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> rs.<span class="built_in">substr</span>(<span class="number">0</span>, len - commonLen) + s;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1738,102 +1817,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/12/28/alogRabinKarp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/12/28/alogRabinKarp/" class="post-title-link" itemprop="url">rabinKarp - 拉宾 - 卡普算法 o(n)匹配字符串</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-12-28 21:24:19" itemprop="dateCreated datePublished" datetime="2021-12-28T21:24:19+08:00">2021-12-28</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2022-03-29 15:09:50" itemprop="dateModified" datetime="2022-03-29T15:09:50+08:00">2022-03-29</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="0-拉宾-卡普算法"><a href="#0-拉宾-卡普算法" class="headerlink" title="0 拉宾-卡普算法"></a>0 拉宾-卡普算法</h1><p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%8B%89%E5%AE%BE-%E5%8D%A1%E6%99%AE%E7%AE%97%E6%B3%95">来自wiki</a><br>在计算机科学中，拉宾-卡普算法（英語：Rabin–Karp algorithm）或卡普-拉宾算法（Karp–Rabin algorithm），是一种由理查德·卡普与迈克尔·拉宾于1987年提出的、使用散列函数以在文本中搜寻单个模式串的字符串搜索算法单次匹配。该算法先使用旋转哈希以快速筛出无法与给定串匹配的文本位置，此后对剩余位置能否成功匹配进行检验。此算法可推广到用于在文本搜寻单个模式串的所有匹配或在文本中搜寻多个模式串的匹配。</p>
-<h2 id="1-算法本身主要思想"><a href="#1-算法本身主要思想" class="headerlink" title="1 算法本身主要思想"></a>1 算法本身主要思想</h2><ul>
-<li>1 朴素匹配： text = “abcdefabc”长度为n，去匹配长度为m的模式串abc，<ul>
-<li>具体做法则是找出所有长度为m的字串，然后为每一个m字串去匹配模式串abc，复杂度为O(nm)</li>
-</ul>
-</li>
-<li>2 使用拉宾-卡普算法改进：<ul>
-<li>2.1 找出了所有长度为m的字串，那么能不能在O(1)的时间内去判断两个长度为m的字串是否相等？</li>
-<li>2.2 很自然的想到hash，那么如何计算一个字串的hash？比如abc，使用26进制编码(因为text中只有小写字母)即可： hash(abc) = 26^2 * (‘a’ - ‘a’) + 26^1 * (‘b’ - ‘a’) + 26^0 * (‘c’ - ‘a’);</li>
-<li>2.3 很容易注意到上面，若字符串很长，比如100，那么hash值就有26^100，显然太大，需要取模，取模后带来问题，造成hash碰撞，则需要散列，常用的有<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%8B%89%E5%AE%BE%E6%8C%87%E7%BA%B9">拉宾指纹</a>，我们可以使用两个不同模算出来一对hash值当做为一个整体hash，降低hash碰撞的概率</li>
-<li>2.4 那么计算hash明明需要读取模式串，复杂度为O(m)啊？<ul>
-<li>那是因为对于text，我们只需要计算第一个长度为m的字串的hash，后面的字串hash都可以通过O(1)时间获取：</li>
-<li>直接看图：<img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/rabinKarp.hzik0od3kjc.webp" alt="o(1)算hash">，<a target="_blank" rel="noopener" href="https://coolcao.com/2020/08/20/rabin-karp/">图片来源</a></li>
-<li>解释： ft_i为第i个字串的hash，在o(1)时间内得到ft_i+1的方案就如图所示，或者看如下例子的代码的check函数</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="1044-最长重复子串-longestDupSubstring"><a href="#1044-最长重复子串-longestDupSubstring" class="headerlink" title="1044. 最长重复子串 longestDupSubstring"></a>1044. 最长重复子串 longestDupSubstring</h2><h3 id="1-题目"><a href="#1-题目" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/longest-duplicate-substring/">https://leetcode-cn.com/problems/longest-duplicate-substring/</a></p>
-<h3 id="2-解题思路"><a href="#2-解题思路" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
-<li>0 使用官方思路： <a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/longest-duplicate-substring/solution/zui-chang-zhong-fu-zi-chuan-by-leetcode-0i9rd/">rabin-karp + binarySearch</a></li>
-<li>1 这里需要使用rabin-karp算法，在长度为n的text中寻找长度为m的模式串，其复杂度为o(m)，然后用二分法去确定最长字符串的长度，故整体复杂度为O(n logn)，拉宾-卡普算法参考：<a href="https://xychen5.github.io/2021/12/28/rabinKarp/">https://xychen5.github.io/2021/12/28/rabinKarp/</a><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">long</span> <span class="keyword">long</span>, <span class="keyword">long</span> <span class="keyword">long</span>&gt; pll;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">int</span> big = <span class="number">1000000006</span>;</span><br><span class="line">    <span class="comment">// cal: a^m % mod, when m = 1000, a = 26, there will be overflow</span></span><br><span class="line">    <span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">pow</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> m, <span class="keyword">int</span> mod)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> ans = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> curNum = a;</span><br><span class="line">        <span class="keyword">while</span>(m &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span>(m % <span class="number">2</span> == <span class="number">1</span>) &#123;</span><br><span class="line">                ans = ans * curNum % mod;       </span><br><span class="line">                <span class="comment">// overflow</span></span><br><span class="line">                <span class="keyword">if</span>(ans &lt; <span class="number">0</span>) &#123; </span><br><span class="line">                    ans += mod;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            curNum = curNum * curNum % mod;</span><br><span class="line">            <span class="comment">// overflow</span></span><br><span class="line">            <span class="keyword">if</span>(curNum &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                curNum += mod;</span><br><span class="line">            &#125;</span><br><span class="line">            m /= <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// return st of substr with len = len</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">check</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; arr, <span class="keyword">int</span> len, <span class="keyword">int</span> a1, <span class="keyword">int</span> a2, <span class="keyword">int</span> mod1, <span class="keyword">int</span> mod2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = arr.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> powA1 = <span class="built_in">pow</span>(a1, len, mod1);</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> powA2 = <span class="built_in">pow</span>(a2, len, mod2);</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> hashA1 = <span class="number">0</span>, hashA2 = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// cout &lt;&lt; &quot;d2.5&quot; &lt;&lt; endl;</span></span><br><span class="line">        <span class="comment">// cal hash of the first substr</span></span><br><span class="line">        <span class="comment">// hashA1 = arr[0] * a1^(len-1) + arr[1] * a1^(len-2) + ... + arr[len-1]</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; ++i) &#123;</span><br><span class="line">            hashA1 = (hashA1 * a1 % mod1 + arr[i]) % mod1;</span><br><span class="line">            hashA2 = (hashA2 * a2 % mod2 + arr[i]) % mod2;</span><br><span class="line">            hashA1 += hashA1 &gt;= <span class="number">0</span> ? <span class="number">0</span> : mod1;</span><br><span class="line">            hashA2 += hashA2 &gt;= <span class="number">0</span> ? <span class="number">0</span> : mod2;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// cout &lt;&lt; &quot;d3&quot; &lt;&lt; endl;</span></span><br><span class="line">        <span class="comment">// calculate all substr&#x27;s hash with len = len</span></span><br><span class="line">        set&lt;pll&gt; seen;</span><br><span class="line">        seen.<span class="built_in">emplace</span>(hashA1, hashA2);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> st = <span class="number">1</span>; st &lt;= n - len; ++st) &#123;</span><br><span class="line">            <span class="comment">// cout &lt;&lt; &quot;d4&quot; &lt;&lt; endl;</span></span><br><span class="line">            <span class="comment">// O(1) to cal next hash</span></span><br><span class="line">            hashA1 = (hashA1 * a1 % mod1 - arr[st - <span class="number">1</span>] * powA1 % mod1 + arr[st + len - <span class="number">1</span>]) % mod1;</span><br><span class="line">            hashA2 = (hashA2 * a2 % mod2 - arr[st - <span class="number">1</span>] * powA2 % mod2 + arr[st + len - <span class="number">1</span>]) % mod2;</span><br><span class="line">            hashA1 += hashA1 &gt;= <span class="number">0</span> ? <span class="number">0</span> : mod1;</span><br><span class="line">            hashA2 += hashA2 &gt;= <span class="number">0</span> ? <span class="number">0</span> : mod2;</span><br><span class="line">            <span class="comment">// before cursubstr, there is a same one</span></span><br><span class="line">            <span class="keyword">if</span>(seen.<span class="built_in">count</span>(<span class="built_in">make_pair</span>(hashA1, hashA2))) &#123;</span><br><span class="line">                <span class="keyword">return</span> st;</span><br><span class="line">            &#125;</span><br><span class="line">            seen.<span class="built_in">emplace</span>(hashA1, hashA2);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">string <span class="title">longestDupSubstring</span><span class="params">(string s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = s.<span class="built_in">size</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// code the string</span></span><br><span class="line">        <span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">arr</span><span class="params">(n)</span></span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            arr[i] = s[i] - <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// two random base and mod</span></span><br><span class="line">        <span class="built_in">srand</span>((<span class="keyword">unsigned</span>)<span class="built_in">time</span>(<span class="literal">NULL</span>));</span><br><span class="line">        <span class="keyword">int</span> a1 = <span class="built_in">random</span>()%<span class="number">75</span> + <span class="number">26</span>;</span><br><span class="line">        <span class="keyword">int</span> a2 = <span class="built_in">random</span>()%<span class="number">75</span> + <span class="number">26</span>;</span><br><span class="line">        <span class="keyword">int</span> mod1 = <span class="built_in">random</span>()%(INT_MAX - big) + big;</span><br><span class="line">        <span class="keyword">int</span> mod2 = <span class="built_in">random</span>()%(INT_MAX - big) + big;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// bin search the length of longest dup substr</span></span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">1</span>, r = n - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> finalSt = <span class="number">-1</span>, finalLen = <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">while</span>(l &lt;= r) &#123;</span><br><span class="line">            <span class="comment">// m represents target len</span></span><br><span class="line">            <span class="comment">// int m = (l + r) / 2; </span></span><br><span class="line">            <span class="keyword">int</span> m = l + (r - l + <span class="number">1</span>) / <span class="number">2</span>; </span><br><span class="line">            <span class="comment">// cout &lt;&lt; &quot;d1&quot; &lt;&lt; endl;</span></span><br><span class="line">            <span class="keyword">int</span> st = <span class="built_in">check</span>(arr, m, a1, a2, mod1, mod2);</span><br><span class="line">            <span class="comment">// cout &lt;&lt; &quot;d2&quot; &lt;&lt; endl;</span></span><br><span class="line">            <span class="keyword">if</span>(st != <span class="number">-1</span>) &#123;</span><br><span class="line">                finalLen = m;</span><br><span class="line">                l = m + <span class="number">1</span>;</span><br><span class="line">                finalSt = st;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                r = m - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> finalLen == <span class="number">-1</span> ? <span class="string">&quot;&quot;</span> : s.<span class="built_in">substr</span>(finalSt, finalLen);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 </div>
