@@ -30,7 +30,7 @@
 <meta property="og:description" content="1 主流平面检测算法：1.1 HoughTransform算法 1 对于每个点：xyz，使用点法式表示过该点的平面：np + d &#x3D; 0; n为法向，n可以用极坐标写成θ φ的向量，那么平面由三个变量可以确定 2 对于点xyz，我们离散遍历所有的θ φ，可以得到对应的d，那么我们以θ φ作为xy坐标，d作为z坐标，可以画出来一个曲面(曲面上一个点代表一个经过xyz的平面)，代表所有可能经过xyz的">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-06-29T06:56:57.000Z">
-<meta property="article:modified_time" content="2022-06-29T09:20:28.524Z">
+<meta property="article:modified_time" content="2022-07-05T09:36:13.046Z">
 <meta property="article:author" content="xychen5">
 <meta property="article:tag" content="algo">
 <meta property="article:tag" content="3d">
@@ -125,7 +125,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E4%B8%BB%E6%B5%81%E5%B9%B3%E9%9D%A2%E6%A3%80%E6%B5%8B%E7%AE%97%E6%B3%95%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1 主流平面检测算法：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-HoughTransform%E7%AE%97%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 HoughTransform算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-RA-andom-SA-mple-C-onsensus-%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 RA(andom)SA(mple)C(onsensus)算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-region-growing-%E7%AE%97%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 region growing 算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E5%88%92%E5%88%86%E7%82%B9%E4%BA%91%EF%BC%88split-phase%EF%BC%89"><span class="nav-number">1.3.1.</span> <span class="nav-text">1.3 划分点云（split phase）</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E4%B8%BB%E6%B5%81%E5%B9%B3%E9%9D%A2%E6%A3%80%E6%B5%8B%E7%AE%97%E6%B3%95%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1 主流平面检测算法：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-HoughTransform%E7%AE%97%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 HoughTransform算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-RA-andom-SA-mple-C-onsensus-%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 RA(andom)SA(mple)C(onsensus)算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-region-growing-%E7%AE%97%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 region growing 算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-A-Robust-Statistics-Approach-for-Plane-Detection-in-Unorganized-Point-Clouds%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3"><span class="nav-number">2.</span> <span class="nav-text">2 A Robust Statistics Approach for Plane Detection in Unorganized Point Clouds算法详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E5%B9%B3%E9%9D%A2%E6%A3%80%E6%B5%8B"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 平面检测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-1-%E5%88%92%E5%88%86%E7%82%B9%E4%BA%91%EF%BC%88split-phase%EF%BC%89"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1 划分点云（split phase）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-2-%E8%B7%AF%E6%A3%92%E7%9A%84%E5%B9%B3%E9%9D%A2%E6%80%A7%E6%B5%8B%E8%AF%95"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2 路棒的平面性测试</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -141,7 +141,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">65</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -228,10 +228,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2022-06-29 14:56:57 / Modified: 17:20:28" itemprop="dateCreated datePublished" datetime="2022-06-29T14:56:57+08:00">2022-06-29</time>
+      <time title="Created: 2022-06-29 14:56:57" itemprop="dateCreated datePublished" datetime="2022-06-29T14:56:57+08:00">2022-06-29</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2022-07-05 17:36:13" itemprop="dateModified" datetime="2022-07-05T17:36:13+08:00">2022-07-05</time>
+      </span>
 
   
 </div>
@@ -256,7 +262,16 @@
 <li>4 复杂度：o(I) * o(n) = o(In)， I是选出初始集合的个数，n是点的个数，因为你需要判断某个初始拟合出来的平面的inlier的个数不就是去遍历所有的点嘛</li>
 </ul>
 <h2 id="1-3-region-growing-算法"><a href="#1-3-region-growing-算法" class="headerlink" title="1.3 region growing 算法"></a>1.3 region growing 算法</h2><p>A Robust Statistics Approach for Plane Detection in Unorganized Point Clouds算法详解：</p>
-<h3 id="1-3-划分点云（split-phase）"><a href="#1-3-划分点云（split-phase）" class="headerlink" title="1.3 划分点云（split phase）"></a>1.3 划分点云（split phase）</h3>
+<h1 id="2-A-Robust-Statistics-Approach-for-Plane-Detection-in-Unorganized-Point-Clouds算法详解"><a href="#2-A-Robust-Statistics-Approach-for-Plane-Detection-in-Unorganized-Point-Clouds算法详解" class="headerlink" title="2 A Robust Statistics Approach for Plane Detection in Unorganized Point Clouds算法详解"></a>2 A Robust Statistics Approach for Plane Detection in Unorganized Point Clouds算法详解</h1><h2 id="2-1-平面检测"><a href="#2-1-平面检测" class="headerlink" title="2.1 平面检测"></a>2.1 平面检测</h2><h3 id="2-1-1-划分点云（split-phase）"><a href="#2-1-1-划分点云（split-phase）" class="headerlink" title="2.1.1 划分点云（split phase）"></a>2.1.1 划分点云（split phase）</h3><p>大致分为如下几个步骤：</p>
+<ul>
+<li>1 递归将点云切分成8叉树</li>
+<li>2 对于足够小的节点(比如至少是第3层的8叉树)，进行planar patch(平面patch)探测<ul>
+<li>2.1 如果当前节点能够形成平面，对plannarPatch滤除外点，然后加入到结果中<br>具体实现如下代码：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">PlaneDetector::detectPlanarPatches</span><span class="params">(Octree *node, StatisticsUtils *statistics, <span class="keyword">size_t</span> minNumPoints, std::vector&lt;PlanarPatch*&gt; &amp;patches)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node-&gt;<span class="built_in">numPoints</span>() &lt; minNumPoints) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    node-&gt;<span class="built_in">partition</span>(<span class="number">1</span>, minNumPoints); <span class="comment">// 将当前节点划分为更细节点</span></span><br><span class="line">    <span class="keyword">bool</span> hasPlanarPatch = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (node-&gt;<span class="built_in">child</span>(i) != <span class="literal">NULL</span> &amp;&amp; <span class="built_in">detectPlanarPatches</span>(node-&gt;<span class="built_in">child</span>(i), statistics, minNumPoints, patches)) <span class="comment">// 对每各子节点进行patch探测</span></span><br><span class="line">        &#123;</span><br><span class="line">            hasPlanarPatch = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!hasPlanarPatch &amp;&amp; node-&gt;<span class="built_in">octreeLevel</span>() &gt; <span class="number">2</span>) <span class="comment">// 足够小的子节点并且没有patch</span></span><br><span class="line">    &#123;</span><br><span class="line">        PlanarPatch *patch = <span class="keyword">new</span> <span class="built_in">PlanarPatch</span>(<span class="built_in">pointCloud</span>(), statistics, node-&gt;<span class="built_in">points</span>(), mMinNormalDiff, mMaxDist, mOutlierRatio);</span><br><span class="line">        <span class="keyword">if</span> (patch-&gt;<span class="built_in">isPlanar</span>()) <span class="comment">// 如果patch构成平面，则滤除外点</span></span><br><span class="line">        &#123;</span><br><span class="line">            patches.<span class="built_in">push_back</span>(patch); <span class="comment">// 将当前patch加入到探测出来的所有patch</span></span><br><span class="line">            hasPlanarPatch = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">delete</span> patch;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> hasPlanarPatch;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="2-1-2-路棒的平面性测试"><a href="#2-1-2-路棒的平面性测试" class="headerlink" title="2.1.2 路棒的平面性测试"></a>2.1.2 路棒的平面性测试</h3><p>那么对于足够小的节点进行palnar检测是如何做的呢？(也就是robust planarity test)<br>pca会受到外点影响，然后robust pca则太慢了，所以：</p>
+
     </div>
 
     
