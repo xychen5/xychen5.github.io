@@ -28,7 +28,7 @@
 <meta property="og:description" content="1 考虑这么一部分代码1234567flatMap(queryResponseAfterAsr -&gt;instanceService.getSaaSByPaasEnvAndRegionWithAlibaba(instance).publishOn(Schedulers.boundedElastic()).flatMap(saas -&gt; &amp;#123; &#x2F;&#x2F; 分出来三个流，分别是saas1">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-07-28T09:54:36.000Z">
-<meta property="article:modified_time" content="2023-08-03T11:53:22.661Z">
+<meta property="article:modified_time" content="2023-08-03T11:56:15.626Z">
 <meta property="article:author" content="xychen5">
 <meta property="article:tag" content="java">
 <meta property="article:tag" content="reactor">
@@ -233,7 +233,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-08-03 19:53:22" itemprop="dateModified" datetime="2023-08-03T19:53:22+08:00">2023-08-03</time>
+      <time title="Modified: 2023-08-03 19:56:15" itemprop="dateModified" datetime="2023-08-03T19:56:15+08:00">2023-08-03</time>
     </span>
 
   
@@ -250,7 +250,7 @@
 
 <p>注意，上述看起来保证了在2，3过程当中，1的saasInstance为2，3中的instanceId。</p>
 <p>但实际上可能由saas1流里的3的某个部分block了（比如异步开线程查了数据库）<br>，然后faltmap的第saas2，saas3对应的流修改queryResponseAfterAsr中的saasInstance，<br>从而导致saas1流看到的queryResponseAfterAsr.saasInstance不再最初的saas1。</p>
-<h2 id="2-总结"><a href="#2-总结" class="headerlink" title="2 总结"></a>2 总结</h2><p>一个好的思维模式：流之间去耦合是必要的。</p>
+<h2 id="2-总结"><a href="#2-总结" class="headerlink" title="2 总结"></a>2 总结</h2><p>一个好的思维模式：流之间去耦合是必要的，若不同的流有相同的依赖状态，确保每个流拥有它的一个复制。</p>
 
     </div>
 
