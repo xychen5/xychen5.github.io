@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="1 实时渲染里的光线追踪1.1 为什么不用离线的蒙特卡洛呢？回顾基于蒙特卡罗中的rayTracing，大致看一下其计算量：当图像目标设置为768768，然后每个像素sample32次（蒙特卡罗的经典方式），每次光线进入到下一层的概率为0.25，那么平均castray会被计算多少次呢？32 * （10.25 + 2 * 0.125 + 3 0.0625 + …) 大概就是0.7532 &#x3D; 24次，也">
+<meta property="og:type" content="article">
+<meta property="og:title" content="realTimeRayTracing - games202实时渲染课后作业">
+<meta property="og:url" content="https://xychen5.github.io/2022/06/06/realTimeRayTracing/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="1 实时渲染里的光线追踪1.1 为什么不用离线的蒙特卡洛呢？回顾基于蒙特卡罗中的rayTracing，大致看一下其计算量：当图像目标设置为768768，然后每个像素sample32次（蒙特卡罗的经典方式），每次光线进入到下一层的概率为0.25，那么平均castray会被计算多少次呢？32 * （10.25 + 2 * 0.125 + 3 0.0625 + …) 大概就是0.7532 &#x3D; 24次，也">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/spp32_768x768_possiblity0.2njd3ot0e7u0.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/rtr_denoising%26Filter.1qcekmgz1134.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/sigmaCoord5div6kernel5.3nwcedqo6la0.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/GausssigmaCoord5div3kernel5.3q2fclg5na40.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/boxJointFilter.3xsl50bh0g00.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/PerspectiveProjections.4vs3msb3g5u0.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/Viewports.7d4mhekdzr00.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/boxReprojection.791ps95hu840.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/pinkRoomBackprojection5.1zx84khtcsm8.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/boxFinalRes.4w0ddz6f8m00.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/book.7ckxjjg7dgs0.webp">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/pinkRoom.nyra8p6v9pc.webp">
+<meta property="article:published_time" content="2022-06-06T06:56:42.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.489Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="render">
+<meta property="article:tag" content="gl">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/spp32_768x768_possiblity0.2njd3ot0e7u0.webp">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2022/06/06/realTimeRayTracing/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2022/06/06/realTimeRayTracing/","path":"2022/06/06/realTimeRayTracing/","title":"realTimeRayTracing - games202实时渲染课后作业"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>realTimeRayTracing - games202实时渲染课后作业 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%AE%9E%E6%97%B6%E6%B8%B2%E6%9F%93%E9%87%8C%E7%9A%84%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA"><span class="nav-number">1.</span> <span class="nav-text">1 实时渲染里的光线追踪</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%94%A8%E7%A6%BB%E7%BA%BF%E7%9A%84%E8%92%99%E7%89%B9%E5%8D%A1%E6%B4%9B%E5%91%A2%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 为什么不用离线的蒙特卡洛呢？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E5%B7%A5%E4%B8%9A%E7%95%8C%E7%9A%84hack"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 工业界的hack</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%85%B7%E4%BD%93%E7%9A%84%E5%AE%9E%E6%97%B6%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E9%99%8D%E5%99%AA"><span class="nav-number">2.</span> <span class="nav-text">2 具体的实时光线追踪降噪</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E5%8D%95%E5%B8%A7%E6%BB%A4%E6%B3%A2%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 单帧滤波实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E6%8A%95%E5%BD%B1%E4%B8%8A%E4%B8%80%E5%B8%A7%E7%BB%93%E6%9E%9C"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 投影上一帧结果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-MVP%E8%BD%AC%E5%8C%96%E5%92%8CviewPort%E8%BD%AC%E5%8C%96%EF%BC%9A"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.1 MVP转化和viewPort转化：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E4%BB%8E%E4%B8%8A%E4%B8%80%E5%B8%A7%E8%8E%B7%E5%8F%96%E7%BB%93%E6%9E%9C"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2 从上一帧获取结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-%E7%B4%AF%E8%AE%A1%E5%A4%9A%E5%B8%A7%E4%BF%A1%E6%81%AF"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 累计多帧信息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E7%BB%93%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="nav-number">3.</span> <span class="nav-text">最终结果展示</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ref%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">Ref：</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2022/06/06/realTimeRayTracing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          realTimeRayTracing - games202实时渲染课后作业
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-06-06 14:56:42" itemprop="dateCreated datePublished" datetime="2022-06-06T14:56:42+08:00">2022-06-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="1-实时渲染里的光线追踪"><a href="#1-实时渲染里的光线追踪" class="headerlink" title="1 实时渲染里的光线追踪"></a>1 实时渲染里的光线追踪</h1><h2 id="1-1-为什么不用离线的蒙特卡洛呢？"><a href="#1-1-为什么不用离线的蒙特卡洛呢？" class="headerlink" title="1.1 为什么不用离线的蒙特卡洛呢？"></a>1.1 为什么不用离线的蒙特卡洛呢？</h2><p>回顾基于蒙特卡罗中的rayTracing，大致看一下其计算量：<br>当图像目标设置为768<em>768，然后每个像素sample32次（蒙特卡罗的经典方式），每次光线进入到下一层的概率为0.25，那么平均castray会被计算多少次呢？32 * （1</em>0.25 + 2 * 0.125 + 3 <em>0.0625 + …) 大概就是0.75</em>32 = 24次，也就768<em>768</em>24的castRay的计算，花费的时间大概为23min，效果为：</p>
+<p><img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/spp32_768x768_possiblity0.2njd3ot0e7u0.webp" alt="spp32_768x768_possiblity0"><br>很显然这样子的计算速度在实时渲染里是太慢了，而且噪声依然很明显，于是我们考虑新的办法：时间上图像的连续性 + 滤波。</p>
+<h2 id="1-2-工业界的hack"><a href="#1-2-工业界的hack" class="headerlink" title="1.2 工业界的hack"></a>1.2 工业界的hack</h2><p>注意到光线追踪是连续的两帧之间的光线追踪，那么可以假设当前帧的结果来自上一帧和当前帧的结合，也就是利用的时间上图像的连续性，具体的利用方式见下图：<br><img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/rtr_denoising%26Filter.1qcekmgz1134.webp" alt="rtr_denoising&amp;Filter"></p>
+<h1 id="2-具体的实时光线追踪降噪"><a href="#2-具体的实时光线追踪降噪" class="headerlink" title="2 具体的实时光线追踪降噪"></a>2 具体的实时光线追踪降噪</h1><h2 id="2-1-单帧滤波实现"><a href="#2-1-单帧滤波实现" class="headerlink" title="2.1 单帧滤波实现"></a>2.1 单帧滤波实现</h2><p>这里给出gauss滤波的实现: 参考提交：<a target="_blank" rel="noopener" href="https://github.com/xychen5/rendering/commit/371251639f2f1a427ce7f564375e82dfdccc1c71">Feature: 添加高斯模糊，sigma越大，中心权重越大，kernel大小和sigma要相互关联</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// -------------------------------- 算法本身</span><br><span class="line">For each pixel i</span><br><span class="line">    sum_of_weights = sum_of_weighted_values = <span class="number">0.0</span></span><br><span class="line">    For each pixel j around i</span><br><span class="line">        Calculate the weight w_ij = G(|i - j|, sigma)</span><br><span class="line">        sum_of_weighted_values += w_ij * C^&#123;<span class="built_in">input</span>&#125;[j]</span><br><span class="line">        sum_of_weights += w_ij</span><br><span class="line">    C^&#123;output&#125;[I] = sum_of_weighted_values / sum_of_weights</span><br></pre></td></tr></table></figure>
+
+<p>简单说明一下gauss滤波的效果，其实主要就是mean和deviation，下面的mean就是二维向量i :(x,y),deviation就是sigmaCoord，考虑到3sigma时高斯值降为0，那么为了让高斯模糊的效果不那么明显，我们将sigma = kernel / 3 / 2，将高斯的能量集中在i像素附近</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="built_in">pow</span>(</span><br><span class="line">        <span class="number">2.718281</span>,</span><br><span class="line">        -(<span class="built_in">sqrt</span>(<span class="built_in">Dot</span>(<span class="built_in">Abs</span>(i - j), <span class="built_in">Abs</span>(i - j))) / (<span class="number">2</span> * sigmaCoord * sigmaCoord)) \</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+<p>很显然，kernel越大，越模糊，这个就不展示了，主要看一下sigma的影响：sigma越小，肯定模糊就越少：kenerl都是5，从<br>| sig: 5/6 | sig: 5/3 |<br>| - | - |<br>| <img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/sigmaCoord5div6kernel5.3nwcedqo6la0.webp" alt="sigmaCoord5div6kernel5"> | <img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/GausssigmaCoord5div3kernel5.3q2fclg5na40.webp" alt="GausssigmaCoord5div3kernel5"> |</p>
+<p>给出双边滤波函数为：<br>$$<br>J(i,j)<br>=\exp<br>    \left(<br>        -{\frac {| i-j |^{2}}{2\sigma_p ^{2}}}<br>        -{\frac {| \tilde{C}[i]-\tilde{C}[j] |^{2}}{2\sigma_c ^{2}}}<br>        -{\frac {D_{normal}(i, j)^{2}}{2\sigma_n ^{2}}}<br>        -{\frac {D_{plane}(i, j)^{2}}{2\sigma_d ^{2}}}<br>    \right)<br>$$<br>其中的i,j表示两个像素位置，</p>
+<ul>
+<li>1 $\sigma_p$，表示根据位置做高斯模糊的高斯分布半径，我取的是kernelSize / 3.</li>
+<li>2 $\sigma_c$，表示两个位置的颜色的差距，太大了就不参与模糊，那么颜色范围则取0.6吧，对应的是下面gif中灯具的周围变清晰的变化</li>
+<li>3 $\sigma_n$，代表衡量两个点的法向的区别，其中$D_{normal}(i,j) = arccos(Normal[i] \cdot Normal[j])$，很显然，当两个法向接近的时候，就会使得该项为0，也就是不会被排除掉，当然如果两个反向垂直，那么会被忽略，对应的是下面gif中墙面连接处的变化</li>
+<li>4 $\sigma_d$，代表衡量两个像素所在平面之间的差距，$D_{plane}(i,j) = Normal[i] \cdot (\frac {Position[i] - Position[j]}{| Position[i] - Position[j] |})$，意思是考虑两个空间中相隔较远的平面，就不去贡献！这种提供了一种比只是简单计算两个深度的差值更好的指标， 假设场景的视线和墙面平行，那么相邻像素的深度会变化距离，导致一个kernel内本应该贡献的像素点没有贡献，这也就是判断，如果两个平行平面的距离超过了3*sigmaPlane，则不会贡献</li>
+</ul>
+<p>这里给出滤波后的结果(四种变化分别代表着从1到4增量累加的效果)：<br><img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/boxJointFilter.3xsl50bh0g00.gif" alt="boxJointFilter"></p>
+<p>实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">float</span> <span class="title">dobuleJointFilter</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    Float3 pixelPos1,</span></span></span><br><span class="line"><span class="params"><span class="function">    Float3 pixelPos2,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">float</span> sigmaPlane, </span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">float</span> sigmaColor, </span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">float</span> sigmaNormal, </span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">float</span> sigmaCoord,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">const</span> FrameInfo&amp; frameinfo)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> deltaPos = pixelPos1 - pixelPos2;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 当颜色差距过大，不去贡献gauss模糊</span></span><br><span class="line">    <span class="keyword">auto</span> color1 = frameinfo.<span class="built_in">m_beauty</span>(pixelPos1.x, pixelPos1.y);</span><br><span class="line">    <span class="keyword">auto</span> color2 = frameinfo.<span class="built_in">m_beauty</span>(pixelPos2.x, pixelPos2.y);</span><br><span class="line">    <span class="keyword">auto</span> deltaColor = color1 - color2;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 平面的法向差距过大，不去贡献：eg: normal1 * normal2 = (0,0,0)</span></span><br><span class="line">    <span class="comment">// 那么就会使得deltaNormal = 1，自然高斯就不去贡献，因为3*sigmaNormal才等于0.3</span></span><br><span class="line">    <span class="keyword">auto</span> normal1 = frameinfo.<span class="built_in">m_normal</span>(pixelPos1.x, pixelPos1.y);</span><br><span class="line">    <span class="keyword">auto</span> normal2 = frameinfo.<span class="built_in">m_normal</span>(pixelPos2.x, pixelPos2.y);</span><br><span class="line">    <span class="keyword">auto</span> deltaNormal = <span class="built_in">SafeAcos</span>(<span class="built_in">Dot</span>(normal1, normal2));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 意思是考虑两个空间中相隔较远的平面，就不去贡献！这种提供了一种比只是简单计算两个深度的差值更好的指标,</span></span><br><span class="line">    <span class="comment">// 假设场景的视线和墙面平行，那么相邻像素的深度会变化距离，导致一个kernel内本应该贡献</span></span><br><span class="line">    <span class="comment">// 的像素点没有贡献，这也就是判断，如果两个平行平面的距离超过了3*sigmaPlane，则不会贡献</span></span><br><span class="line">    <span class="keyword">auto</span> pos3D1 = frameinfo.<span class="built_in">m_position</span>(pixelPos1.x, pixelPos1.y);</span><br><span class="line">    <span class="keyword">auto</span> pos3D2 = frameinfo.<span class="built_in">m_position</span>(pixelPos2.x, pixelPos2.y);</span><br><span class="line">    <span class="keyword">auto</span> deltaPos3D = pos3D1 - pos3D2;</span><br><span class="line">    <span class="function">Float3 <span class="title">deltaPlane</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="number">0</span> != <span class="built_in">Dot</span>(deltaPos3D, deltaPos3D)) &#123;</span><br><span class="line">        deltaPlane = normal1 * (deltaPos3D / <span class="built_in">sqrt</span>(<span class="built_in">Dot</span>(deltaPos3D, deltaPos3D)));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">pow</span>(</span><br><span class="line">        <span class="number">2.718281</span>,</span><br><span class="line">        -(<span class="built_in">Dot</span>(deltaPos, deltaPos) / (<span class="number">2</span> * sigmaCoord * sigmaCoord)) \</span><br><span class="line">        -(<span class="built_in">Dot</span>(deltaColor, deltaColor) / (<span class="number">2</span> * sigmaColor * sigmaColor)) \</span><br><span class="line">        -(<span class="built_in">Dot</span>(deltaNormal, deltaNormal) / (<span class="number">2</span> * sigmaNormal * sigmaNormal)) \</span><br><span class="line">        -(<span class="built_in">Dot</span>(deltaPlane, deltaPlane) / (<span class="number">2</span> * sigmaPlane * sigmaPlane)) </span><br><span class="line">    );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Buffer2D&lt;Float3&gt; <span class="title">Denoiser::Filter</span><span class="params">(<span class="type">const</span> FrameInfo &amp;frameInfo)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> height = frameInfo.m_beauty.m_height;</span><br><span class="line">    <span class="type">int</span> width = frameInfo.m_beauty.m_width;</span><br><span class="line">    Buffer2D&lt;Float3&gt; filteredImage = <span class="built_in">CreateBuffer2D</span>&lt;Float3&gt;(width, height);</span><br><span class="line">    <span class="type">int</span> kernelRadius = <span class="number">7</span>;</span><br><span class="line">    m_sigmaCoord = <span class="built_in">static_cast</span>&lt;<span class="type">float</span>&gt;(kernelRadius) / <span class="number">3.0</span>;</span><br><span class="line">    m_sigmaPlane = <span class="number">0.35</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> omp parallel for</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> y = <span class="number">0</span>; y &lt; height; y++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> x = <span class="number">0</span>; x &lt; width; x++) &#123;</span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> Joint bilateral filter</span></span><br><span class="line">            <span class="type">double</span> weightsSum = <span class="number">0</span>;</span><br><span class="line">            <span class="type">double</span> c1ValueSum = <span class="number">0</span>;</span><br><span class="line">            <span class="type">double</span> c2ValueSum = <span class="number">0</span>;</span><br><span class="line">            <span class="type">double</span> c3ValueSum = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> newX = x - kernelRadius; newX &lt;= x + kernelRadius; ++newX) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="type">int</span> newY = y - kernelRadius; newY &lt;= y + kernelRadius; ++newY) &#123;</span><br><span class="line">                    <span class="type">int</span> cx = std::<span class="built_in">min</span>(std::<span class="built_in">max</span>(<span class="number">0</span>, newX), width);</span><br><span class="line">                    <span class="type">int</span> cy = std::<span class="built_in">min</span>(std::<span class="built_in">max</span>(<span class="number">0</span>, newY), height);</span><br><span class="line">                    <span class="type">float</span> weight = <span class="built_in">dobuleJointFilter</span>(</span><br><span class="line">                        <span class="built_in">Float3</span>(x, y, <span class="number">0</span>), <span class="built_in">Float3</span>(cx, cy, <span class="number">0</span>), </span><br><span class="line">                        m_sigmaPlane, m_sigmaColor, m_sigmaNormal, m_sigmaCoord,</span><br><span class="line">                        frameInfo</span><br><span class="line">                    );</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment">// std::cout &lt;&lt; &quot;pixel pos: &quot; &lt;&lt; cx &lt;&lt; &quot;, &quot; &lt;&lt; cy &lt;&lt; &quot; | &quot; &lt;&lt; frameInfo.m_beauty(cx, cy).x &lt;&lt; &quot; \ &quot;</span></span><br><span class="line">                    <span class="comment">//     &lt;&lt; frameInfo.m_beauty(cx, cy).y  &lt;&lt; &quot; \ &quot;</span></span><br><span class="line">                    <span class="comment">//     &lt;&lt; frameInfo.m_beauty(cx, cy).z &lt;&lt; std::endl;</span></span><br><span class="line"></span><br><span class="line">                    weightsSum += weight;</span><br><span class="line">                    c1ValueSum += weight * frameInfo.<span class="built_in">m_beauty</span>(cx, cy).x;</span><br><span class="line">                    c2ValueSum += weight * frameInfo.<span class="built_in">m_beauty</span>(cx, cy).y;</span><br><span class="line">                    c3ValueSum += weight * frameInfo.<span class="built_in">m_beauty</span>(cx, cy).z;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            c1ValueSum /= weightsSum;</span><br><span class="line">            c2ValueSum /= weightsSum;</span><br><span class="line">            c3ValueSum /= weightsSum;</span><br><span class="line">            <span class="built_in">filteredImage</span>(x, y) = <span class="built_in">Float3</span>(c1ValueSum, c2ValueSum, c3ValueSum);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> filteredImage;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-投影上一帧结果"><a href="#2-2-投影上一帧结果" class="headerlink" title="2.2 投影上一帧结果"></a>2.2 投影上一帧结果</h2><p>计算当前帧每个像素在上一帧的对应点，并将上一帧的结果投影到当前帧。</p>
+<h3 id="2-1-MVP转化和viewPort转化："><a href="#2-1-MVP转化和viewPort转化：" class="headerlink" title="2.1 MVP转化和viewPort转化："></a>2.1 MVP转化和viewPort转化：</h3><ul>
+<li>1 首先是MVP: M，物体从世界坐标000旋转平移缩放，V，将相机放在合适的位置的转换：比如说放到000，P，投影转换，将物体从世界坐标转到边长为-1到1的一个cur里面，可以做视锥剔除，一般是跟你的透视矩阵定义的有关，比如 near，far，bottom，up，fov几个参数，做完透视投影以后，我们认为物体的坐标都在NDC里面了<br><img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/PerspectiveProjections.4vs3msb3g5u0.webp" alt="PerspectiveProjections"></li>
+<li>2 viewPort投影（视口投影）</li>
+<li>2.0 主要就是将NDC空间里的值，切换成像素坐标</li>
+<li>2.1 将物体坐标放缩到图片大小: Scale the (-1,-1) to (+1,+1) viewing window to the image’s width and height.</li>
+<li>2.2 将near平面(这也是成像平面)左下角的坐标从（-w/2,-h/2)移动到0,0: Offset the lower-left corner at (-width/2,-height/2) to the image’s origin.<br><img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/Viewports.7d4mhekdzr00.webp" alt="Viewports"></li>
+</ul>
+<h3 id="2-2-从上一帧获取结果"><a href="#2-2-从上一帧获取结果" class="headerlink" title="2.2 从上一帧获取结果"></a>2.2 从上一帧获取结果</h3><p>主要思路就是：</p>
+<ul>
+<li>1 计算当前帧每个像素在上一帧的对应点，并将上一帧的结果投影到当前帧。</li>
+</ul>
+<p>那么当前帧的一个物体的世界坐标如何投影到上一帧对应的像素坐标呢？<br>$Screen_{i-1} = P_{i-1}V_{i-1}M_{i}M_{i}^{-1}World_i$<br>看下面从matItemWorldPos转换到上一帧的屏幕坐标经历的过程：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注意lastScreePos算出来的是，[x,y,depth,w]，没有经过归一化的，需要自己归一化啊</span></span><br><span class="line"><span class="keyword">auto</span> lastScreenPos = preWorldToScreen * <span class="comment">// 物体该点的屏幕坐标</span></span><br><span class="line">    preItemToWord *  <span class="comment">// 物体上一帧这个点的世界坐标</span></span><br><span class="line">    <span class="built_in">Inverse</span>(itemToWord) *  <span class="comment">// 物体上该点的本地坐标</span></span><br><span class="line">    matItemWorldPos; <span class="comment">// 物体上这个像素对应的点的世界坐标</span></span><br><span class="line">lastX = lastScreenPos.m[<span class="number">0</span>][<span class="number">3</span>] / lastScreenPos.m[<span class="number">3</span>][<span class="number">3</span>];</span><br><span class="line">lastY = lastScreenPos.m[<span class="number">1</span>][<span class="number">3</span>] / lastScreenPos.m[<span class="number">3</span>][<span class="number">3</span>];</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>2 那么用几个简单标志判断上一帧是否有效： 算出来的屏幕坐标对应的点，不一定是当前物体，想象一下，当前帧的上一帧，物体的这个点还被别的东西遮挡，但是当前帧则移动出来了<ul>
+<li>2.1 上一帧的点是否在屏幕内部(用蓝色表示)</li>
+<li>2.2 上一帧的点他们是否为同一个物体(用绿色表示)</li>
+<li>2.3 上一帧的点是否对应的是物体(不是的话用红色表示)</li>
+</ul>
+</li>
+<li>3 只有同时满足2的3个要求，我们认为这是有用的，否则直接用当前帧对应的像素点即可</li>
+<li>4 并将投影是否合法保存在 m_valid 以供我们在累积多帧信息时使用，因为存在macc_color是上一帧的结果，我们用m_valid(x,y)记录上一帧的像素在当前帧是否任然可以使用，不能的话就用当前帧滤波以后的结果就行</li>
+</ul>
+<p>这里给出backProjection的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 主要目的：1. 得到当前帧的像素x,y在上一帧中是否可用，存在valid(x,y)上，m_accColor存的上一帧的信息就不要动了</span></span><br><span class="line"><span class="comment">// 主要目的：那些不valid点，就不会进入accumulateColor的过程，转而直接使用当前帧滤波以后的结果</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Denoiser::Reprojection</span><span class="params">(<span class="type">const</span> FrameInfo &amp;frameInfo)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> height = m_accColor.m_height;</span><br><span class="line">    <span class="type">int</span> width = m_accColor.m_width;</span><br><span class="line">    Matrix4x4 preWorldToScreen =</span><br><span class="line">        m_preFrameInfo.m_matrix[m_preFrameInfo.m_matrix.<span class="built_in">size</span>() - <span class="number">1</span>];</span><br><span class="line">    Matrix4x4 preWorldToCamera =</span><br><span class="line">        m_preFrameInfo.m_matrix[m_preFrameInfo.m_matrix.<span class="built_in">size</span>() - <span class="number">2</span>];</span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> omp parallel for</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> y = <span class="number">0</span>; y &lt; height; y++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> x = <span class="number">0</span>; x &lt; width; x++) &#123;</span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> Reproject, fill into m_accColor</span></span><br><span class="line">            <span class="built_in">m_valid</span>(x, y) = <span class="literal">false</span>; <span class="comment">// 这个valid标志，会被时间上的累计中的clamp干掉</span></span><br><span class="line">            <span class="comment">// m_misc(x, y) = Float3(0.f);</span></span><br><span class="line">            <span class="type">int</span> lastX, lastY;</span><br><span class="line">            <span class="keyword">if</span> (<span class="number">-1</span> == frameInfo.<span class="built_in">m_id</span>(x, y)) &#123; <span class="comment">// 不是物体</span></span><br><span class="line">                <span class="built_in">m_misc</span>(x, y) = frameInfo.<span class="built_in">m_beauty</span>(x, y);</span><br><span class="line">                <span class="comment">// m_misc(x, y) = Float3(2, 0, 0);</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123; <span class="comment">// 是物体</span></span><br><span class="line">                <span class="type">int</span> itemId = frameInfo.<span class="built_in">m_id</span>(x, y);</span><br><span class="line">                <span class="keyword">auto</span>&amp; itemToWord = frameInfo.m_matrix[itemId];</span><br><span class="line">                <span class="keyword">auto</span>&amp; itemWorldPos = frameInfo.<span class="built_in">m_position</span>(x, y);</span><br><span class="line">                Matrix4x4 matItemWorldPos;</span><br><span class="line">                <span class="built_in">memset</span>(matItemWorldPos.m, <span class="number">0</span>, <span class="built_in">sizeof</span>(<span class="type">float</span>) * <span class="number">16</span>);</span><br><span class="line">                matItemWorldPos.m[<span class="number">0</span>][<span class="number">3</span>] = itemWorldPos.x;</span><br><span class="line">                matItemWorldPos.m[<span class="number">1</span>][<span class="number">3</span>] = itemWorldPos.y;</span><br><span class="line">                matItemWorldPos.m[<span class="number">2</span>][<span class="number">3</span>] = itemWorldPos.z;</span><br><span class="line">                matItemWorldPos.m[<span class="number">3</span>][<span class="number">3</span>] = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// // 检测存的坐标是不是世界坐标还是相机坐标</span></span><br><span class="line">                <span class="comment">// auto curWorldToScreen = frameInfo.m_matrix[m_preFrameInfo.m_matrix.size() - 1];</span></span><br><span class="line">                <span class="comment">// auto curScreenPos = curWorldToScreen * matItemWorldPos;</span></span><br><span class="line">                <span class="comment">// auto preCamToScreen = preWorldToScreen * Inverse(preWorldToCamera);</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">auto</span>&amp; preItemToWord = m_preFrameInfo.m_matrix[itemId];</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 算出来的屏幕坐标对应的点，不一定是当前物体，想象一下，当前帧的上一帧，物体的这个</span></span><br><span class="line">                <span class="comment">// 点还被别的东西遮挡，但是当前帧则移动出来了</span></span><br><span class="line">                <span class="comment">// 注意lastScreePos算出来的是，[x,y,depth,w]，没有经过归一化的，需要自己归一化啊</span></span><br><span class="line">                <span class="keyword">auto</span> lastScreenPos = preWorldToScreen * <span class="comment">// 物体该点的屏幕坐标</span></span><br><span class="line">                    preItemToWord *  <span class="comment">// 物体上一帧这个点的世界坐标</span></span><br><span class="line">                    <span class="built_in">Inverse</span>(itemToWord) *  <span class="comment">// 物体上该点的本地坐标</span></span><br><span class="line">                    matItemWorldPos; <span class="comment">// 物体上这个像素对应的点的世界坐标</span></span><br><span class="line"></span><br><span class="line">                lastX = lastScreenPos.m[<span class="number">0</span>][<span class="number">3</span>] / lastScreenPos.m[<span class="number">3</span>][<span class="number">3</span>];</span><br><span class="line">                lastY = lastScreenPos.m[<span class="number">1</span>][<span class="number">3</span>] / lastScreenPos.m[<span class="number">3</span>][<span class="number">3</span>];</span><br><span class="line">                <span class="keyword">if</span> (<span class="number">0</span> &lt;= lastX &amp;&amp; lastX &lt; width &amp;&amp; <span class="number">0</span> &lt;= lastY &amp;&amp; lastY &lt; height) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (m_preFrameInfo.<span class="built_in">m_id</span>(lastX, lastY) == itemId) &#123;</span><br><span class="line">                        <span class="comment">// 将上一帧的结果能否可以投影到当前帧记作m_valid(x,y)</span></span><br><span class="line">                        <span class="comment">// 然后将上一帧的颜色投影到当前帧，使用m_misc作为中间变量</span></span><br><span class="line">                        <span class="comment">// 最后还是存在m_accColor</span></span><br><span class="line">                        <span class="comment">// m_misc(x, y) = m_preFrameInfo.m_beauty(lastX, lastY); </span></span><br><span class="line">                        <span class="built_in">m_misc</span>(x, y) = <span class="built_in">m_accColor</span>(lastX, lastY); </span><br><span class="line">                        <span class="built_in">m_valid</span>(x, y) = <span class="literal">true</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="built_in">m_misc</span>(x, y) = frameInfo.<span class="built_in">m_beauty</span>(x, y);</span><br><span class="line">                        <span class="comment">// 方便调试：</span></span><br><span class="line">                        <span class="comment">// m_misc(x, y) = Float3(0, 2, 0);</span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="built_in">m_misc</span>(x, y) = frameInfo.<span class="built_in">m_beauty</span>(x, y);</span><br><span class="line">                    <span class="comment">// m_misc(x, y) = Float3(0, 0, 2);</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    std::<span class="built_in">swap</span>(m_misc, m_accColor);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>4 结果展示：<br>这是带有debug信息的展示：<br><img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/boxReprojection.791ps95hu840.gif" alt="boxReprojection"></li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/pinkRoomBackprojection5.1zx84khtcsm8.gif" alt="pinkRoomBackprojection5"></p>
+<h2 id="2-3-累计多帧信息"><a href="#2-3-累计多帧信息" class="headerlink" title="2.3 累计多帧信息"></a>2.3 累计多帧信息</h2><p>在这个部分，你需要将已经降噪的当前帧图像 $\overline{C_{i}}$，与已经降噪的上一帧图像<br>$\overline{C_{i-1}}$ 进行结合，公式如下：<br>$$<br>\overline{C_{i-1}} \leftarrow \alpha\overline{C_{i}} +  (1 - \alpha) Clamp(\overline{C_{i-1}})<br>$$<br>其实比较好理解：</p>
+<ul>
+<li>1 当上一帧的像素在当前帧对应的物体不是同一个物体，则阿尔法等于1</li>
+<li>2 对于Clamp部分，我们首先需要计算 Ci 在 7×7 的邻域内的均值 µ 和方差 σ，<br>然后我们将上一帧的颜色 Ci−1Clamp 在 (µ − kσ, µ + kσ) 范围内。</li>
+</ul>
+<h1 id="最终结果展示"><a href="#最终结果展示" class="headerlink" title="最终结果展示"></a>最终结果展示</h1><p><img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/boxFinalRes.4w0ddz6f8m00.gif" alt="boxFinalRes"></p>
+<p>针对pinkroom场景，需要改一下滤波器的color部分的deviation也就是$sigma_{color}$，最关键的是需要明白这个sigma如何取因为对于pinkroom，可以看到它颜色的变化很大:(上面是box,下面是pinkRoom)<br><img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/book.7ckxjjg7dgs0.webp" alt="box"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/pinkRoom.nyra8p6v9pc.webp" alt="pinkRoom"></p>
+<p>所以我们调整simga到: 3*sigma &lt;= meanDis 约等于：6，所以sigma我们取4.5左右就好</p>
+<h1 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a>Ref：</h1><ul>
+<li>1 b站 202 高质量实时渲染</li>
+<li>2 实现的代码： <a target="_blank" rel="noopener" href="https://github.com/xychen5/rendering.git">https://github.com/xychen5/rendering.git</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2022/06/06/realTimeRayTracing/" title="realTimeRayTracing - games202实时渲染课后作业">https://xychen5.github.io/2022/06/06/realTimeRayTracing/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/render/" rel="tag"># render</a>
+              <a href="/tags/gl/" rel="tag"># gl</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/06/01/rayTracing/" rel="prev" title="rayTracing">
+                  <i class="fa fa-chevron-left"></i> rayTracing
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/06/11/lcBinarySearch/" rel="next" title="lcBinarySearch - 二分搜索">
+                  lcBinarySearch - 二分搜索 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

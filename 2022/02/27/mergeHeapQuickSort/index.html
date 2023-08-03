@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="四种基础排序 归并排序 堆排序 快速排序 桶排序  1 题目：https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;sort-an-array&#x2F; 2 解题思路： 1 分别详细解释 快速排序，归并排序，堆排序 1.1 快速排序 算法核心：选择一个数字，然后将比他大的都移动到他左边，比他小的都是右边，然后分别对左侧区域和右侧区域递归执行即可 速度和稳定性：在单调情况下达到最坏，为O(n**">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mergeHeapQuickSort - 四种基础排序-快速，归并，堆排序以及桶排序">
+<meta property="og:url" content="https://xychen5.github.io/2022/02/27/mergeHeapQuickSort/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="四种基础排序 归并排序 堆排序 快速排序 桶排序  1 题目：https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;sort-an-array&#x2F; 2 解题思路： 1 分别详细解释 快速排序，归并排序，堆排序 1.1 快速排序 算法核心：选择一个数字，然后将比他大的都移动到他左边，比他小的都是右边，然后分别对左侧区域和右侧区域递归执行即可 速度和稳定性：在单调情况下达到最坏，为O(n**">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-02-27T08:57:51.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.486Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="algo">
+<meta property="article:tag" content="algoPrac">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2022/02/27/mergeHeapQuickSort/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2022/02/27/mergeHeapQuickSort/","path":"2022/02/27/mergeHeapQuickSort/","title":"mergeHeapQuickSort - 四种基础排序-快速，归并，堆排序以及桶排序"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>mergeHeapQuickSort - 四种基础排序-快速，归并，堆排序以及桶排序 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E7%A7%8D%E5%9F%BA%E7%A1%80%E6%8E%92%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text">四种基础排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">1 题目：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">2 解题思路：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0164maxGap-%E6%9C%80%E5%A4%A7%E9%97%B4%E8%B7%9D"><span class="nav-number">1.3.</span> <span class="nav-text">0164maxGap 最大间距</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE"><span class="nav-number">1.3.1.</span> <span class="nav-text">1 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-number">1.3.2.</span> <span class="nav-text">2 解题思路</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2022/02/27/mergeHeapQuickSort/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          mergeHeapQuickSort - 四种基础排序-快速，归并，堆排序以及桶排序
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-02-27 16:57:51" itemprop="dateCreated datePublished" datetime="2022-02-27T16:57:51+08:00">2022-02-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="四种基础排序"><a href="#四种基础排序" class="headerlink" title="四种基础排序"></a>四种基础排序</h1><ul>
+<li>归并排序</li>
+<li>堆排序</li>
+<li>快速排序</li>
+<li>桶排序</li>
+</ul>
+<h2 id="1-题目："><a href="#1-题目：" class="headerlink" title="1 题目："></a>1 题目：</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/sort-an-array/">https://leetcode-cn.com/problems/sort-an-array/</a></p>
+<h2 id="2-解题思路："><a href="#2-解题思路：" class="headerlink" title="2 解题思路："></a>2 解题思路：</h2><ul>
+<li>1 分别详细解释 快速排序，归并排序，堆排序<ul>
+<li>1.1 快速排序<ul>
+<li>算法核心：选择一个数字，然后将比他大的都移动到他左边，比他小的都是右边，然后分别对左侧区域和右侧区域递归执行即可</li>
+<li>速度和稳定性：在单调情况下达到最坏，为O(n**2)，不稳定的原因，中枢元素会和最后一个比他小的数字交换位置(以此将左侧分为比他小的，右侧比他大的)；</li>
+</ul>
+</li>
+<li>1.2 归并排序<ul>
+<li>算法核心：切分成左右两部分，然后对于左右两部分分别执行算法本身，知道之剩下2个以及1个元素，返回后合并即可</li>
+<li>速度稳定性：速度稳定，元素之间次序稳定</li>
+</ul>
+</li>
+<li>1.3 堆排序：<ul>
+<li>算法核心：首先建立一个大根堆，之后第i次将大根堆的top移动到nums的nums[n-i]处，而后将nums[0:n-i-1]重新排列成大根堆，一次选出一个最大元素排在末尾，可以看出这里主要代价在于将maxHeapfiy(nums[0:n-i-1])</li>
+<li>速度稳定性：速度稳定，元素之间次序不稳定，因为对于7,5,5 你会发现一开始将最后的5移动到了第一个，打乱了次序</li>
+<li>图解参考：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/124885051">https://zhuanlan.zhihu.com/p/124885051</a></li>
+</ul>
+</li>
+<li>1.4 使用桶排序<ul>
+<li>1.4.1 根据最大最小值算桶的大小</li>
+<li>1.4.2 将桶排列好，将每个值放入(桶内部插入排序)</li>
+<li>1.4.3 将所有的值从桶里取出来，然后形成排序后的数组</li>
+<li>平均时间复杂度o(n + k)，最烂：o(n**2)，为稳定排序</li>
+<li>空间复杂度o(n)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">sortArray</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// quick sort, most bad when it is sorted o(n**2), not stable</span></span><br><span class="line">        <span class="comment">// quickSort(0, nums.size() - 1, nums); </span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// merge sort, stable</span></span><br><span class="line">        <span class="comment">// mergeSort(0, nums.size() - 1, nums);</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// heap sort, not stable</span></span><br><span class="line">        <span class="built_in">head_sort</span>(<span class="number">0</span>, nums.<span class="built_in">size</span>() - <span class="number">1</span>, nums);</span><br><span class="line">        <span class="keyword">return</span> nums;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">head_sort</span><span class="params">(<span class="type">int</span> st, <span class="type">int</span> ed, vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// init</span></span><br><span class="line">        <span class="built_in">buildMaxHeap</span>(nums);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// everytime select max and put to end and call maxHeapify</span></span><br><span class="line">        <span class="type">int</span> len = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> ed = len - <span class="number">1</span>; ed &gt;= <span class="number">0</span>; --ed) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(st, ed, nums);</span><br><span class="line">            <span class="comment">// nums[ed:] is sorted</span></span><br><span class="line">            <span class="built_in">maxHeapify</span>(st, ed - <span class="number">1</span>, nums);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">buildMaxHeap</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// start from the last dad node, till all dad node be the max heap root</span></span><br><span class="line">        <span class="type">int</span> len = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> dad = len / <span class="number">2</span> - <span class="number">1</span>; dad &gt;= <span class="number">0</span>; --dad) &#123;</span><br><span class="line">            <span class="built_in">maxHeapify</span>(dad, len - <span class="number">1</span>, nums);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">maxHeapify</span><span class="params">(<span class="type">int</span> st, <span class="type">int</span> ed, vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(ed &lt;= st) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span>(st &lt;= ed) &#123;</span><br><span class="line">            <span class="comment">// cmp the st and its lChild and rChild and decide which side to descend</span></span><br><span class="line">            <span class="type">int</span> lChild = st * <span class="number">2</span> + <span class="number">1</span>;</span><br><span class="line">            <span class="type">int</span> rChild = st * <span class="number">2</span> + <span class="number">2</span>;</span><br><span class="line">            <span class="comment">// cout &lt;&lt; &quot;l/r: &quot; &lt;&lt; lChild &lt;&lt; &quot; &quot; &lt;&lt; rChild &lt;&lt; endl;</span></span><br><span class="line">            <span class="keyword">if</span>(lChild &gt; ed) &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span>(rChild &gt; ed) &#123;</span><br><span class="line">                <span class="keyword">if</span>(nums[st] &lt; nums[lChild]) &#123;</span><br><span class="line">                    <span class="built_in">swap</span>(st, lChild, nums);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(nums[st] &gt;= nums[lChild] &amp;&amp; nums[st] &gt;= nums[rChild]) &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span>(nums[lChild] &gt; nums[rChild]) &#123;</span><br><span class="line">                    <span class="built_in">swap</span>(st, lChild, nums);</span><br><span class="line">                    st = lChild;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="built_in">swap</span>(st, rChild, nums);</span><br><span class="line">                    st = rChild;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">mergeSort</span><span class="params">(<span class="type">int</span> st, <span class="type">int</span> ed, vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// sort when |st - ed| &lt;= 1</span></span><br><span class="line">        <span class="keyword">if</span>(ed - st == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span>(nums[ed] &lt; nums[st]) &#123;</span><br><span class="line">                <span class="built_in">swap</span>(ed, st, nums);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(ed == st) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> mid = (st + ed) / <span class="number">2</span>;</span><br><span class="line">        cout &lt;&lt; mid &lt;&lt; endl;</span><br><span class="line">        <span class="built_in">mergeSort</span>(st, mid, nums);</span><br><span class="line">        <span class="built_in">mergeSort</span>(mid + <span class="number">1</span>, ed, nums);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// merge</span></span><br><span class="line">        <span class="type">int</span> curL = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> curR = <span class="number">0</span>;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">tmpL</span><span class="params">(nums.begin() + st, nums.begin() + mid + <span class="number">1</span>)</span></span>;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">tmpR</span><span class="params">(nums.begin() + mid + <span class="number">1</span>, nums.begin() + ed + <span class="number">1</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = st; i &lt;= ed; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span>(curL == mid - st + <span class="number">1</span>) &#123;</span><br><span class="line">                <span class="comment">// cout &lt;&lt; &quot;using R to fullly fill from &quot; &lt;&lt; curR &lt;&lt; endl;</span></span><br><span class="line">                <span class="keyword">for</span>(; curR &lt; ed - mid; ++curR) &#123;</span><br><span class="line">                    nums[i++] = tmpR[curR];</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span>(curR == ed - mid) &#123;</span><br><span class="line">                <span class="comment">// cout &lt;&lt; &quot;using L to fullly fill from &quot; &lt;&lt; curL &lt;&lt; endl;</span></span><br><span class="line">                <span class="keyword">for</span>(; curL &lt; mid - st + <span class="number">1</span>; ++curL) &#123;</span><br><span class="line">                    nums[i++] = tmpL[curL];</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span>(tmpL[curL] &lt; tmpR[curR]) &#123;</span><br><span class="line">                nums[i] = tmpL[curL++];</span><br><span class="line">                <span class="comment">// cout &lt;&lt; &quot;using L: &quot; &lt;&lt; nums[i] &lt;&lt; endl;</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                nums[i] = tmpR[curR++];</span><br><span class="line">                <span class="comment">// cout &lt;&lt; &quot;using R: &quot; &lt;&lt; nums[i] &lt;&lt; endl;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">quickSort</span><span class="params">(<span class="type">int</span> st, <span class="type">int</span> ed, vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(st &gt;= ed) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="type">int</span> newPivot = <span class="built_in">partition</span>(st, ed, nums);</span><br><span class="line">        <span class="built_in">quickSort</span>(st, newPivot<span class="number">-1</span>, nums);</span><br><span class="line">        <span class="built_in">quickSort</span>(newPivot + <span class="number">1</span>, ed, nums);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">partition</span><span class="params">(<span class="type">int</span> st, <span class="type">int</span> ed, vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// put &#x27;smaller than st&#x27; to left, others right</span></span><br><span class="line">        <span class="type">int</span> r = ed;</span><br><span class="line">        <span class="type">int</span> l = st;</span><br><span class="line">        <span class="comment">// st is the first blank place</span></span><br><span class="line">        <span class="type">int</span> pivot = nums[st];</span><br><span class="line">        <span class="keyword">while</span>(l &lt; r)&#123;</span><br><span class="line">            <span class="comment">// r form right to left</span></span><br><span class="line">            <span class="keyword">while</span>(r &gt; l &amp;&amp; nums[r] &gt; pivot) &#123;</span><br><span class="line">                r--;</span><br><span class="line">            &#125;</span><br><span class="line">            nums[l] = nums[r];</span><br><span class="line"></span><br><span class="line">            <span class="comment">// l form left to right</span></span><br><span class="line">            <span class="keyword">while</span>(l &lt; r &amp;&amp; nums[l] &lt;= pivot) &#123;</span><br><span class="line">                l++;</span><br><span class="line">            &#125;</span><br><span class="line">            nums[r] = nums[l];</span><br><span class="line">        &#125;</span><br><span class="line">        nums[l] = pivot;</span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">swap</span><span class="params">(<span class="type">int</span>&amp; a, <span class="type">int</span>&amp; b, vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// cout &lt;&lt; &quot;swaping! &quot; &lt;&lt; a &lt;&lt; &quot; &quot; &lt;&lt; b &lt;&lt; endl;</span></span><br><span class="line">        <span class="type">int</span> tmp = nums[a];</span><br><span class="line">        nums[a] = nums[b];</span><br><span class="line">        nums[b] = tmp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; i : nums) &#123;</span><br><span class="line">            cout &lt;&lt; i &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="0164maxGap-最大间距"><a href="#0164maxGap-最大间距" class="headerlink" title="0164maxGap 最大间距"></a>0164maxGap 最大间距</h2><h3 id="1-题目"><a href="#1-题目" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-gap/">https://leetcode-cn.com/problems/maximum-gap/</a></p>
+<h3 id="2-解题思路"><a href="#2-解题思路" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
+<li>1 使用桶排序<ul>
+<li>1.1 平均时间复杂度o(n + k)，最烂：o(n**2)</li>
+<li>1.2 空间复杂度o(n)</li>
+</ul>
+</li>
+<li>2 桶排序算<ul>
+<li>2.1 根据最大最小值算桶的大小</li>
+<li>2.2 将桶排列好，将每个值放入(桶内部插入排序)</li>
+<li>2.3 将所有的值从桶里取出来，然后形成排序后的数组</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> len = <span class="number">-1</span>;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">maximumGap</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        len = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">if</span>(len &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// bucket sort</span></span><br><span class="line">        <span class="built_in">bucketSort</span>(nums);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// getMaxGap</span></span><br><span class="line">        <span class="type">int</span> gap = INT_MIN;</span><br><span class="line">        <span class="type">int</span> last = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> i : nums) &#123;</span><br><span class="line">            gap = <span class="built_in">max</span>(i - last, gap);</span><br><span class="line">            last = i;</span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">return</span> gap;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">bucketSort</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> maxNum = *<span class="built_in">max_element</span>(nums.<span class="built_in">begin</span>(), nums.<span class="built_in">end</span>());</span><br><span class="line">        <span class="type">int</span> bucketSize = maxNum / len + <span class="number">1</span>;</span><br><span class="line">        <span class="type">int</span> bucketNum = len + <span class="number">1</span>;</span><br><span class="line">        vector&lt;list&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">buckets</span>(bucketNum, <span class="built_in">list</span>&lt;<span class="type">int</span>&gt;(<span class="number">0</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// put to buckets</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; len; ++i) &#123;</span><br><span class="line">            <span class="built_in">insertSort</span>(buckets[nums[i] / bucketSize], nums[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// merge</span></span><br><span class="line">        <span class="type">int</span> idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; l : buckets) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">auto</span> num : l) &#123;</span><br><span class="line">                nums[idx++] = num;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">insertSort</span><span class="params">(std::list&lt;<span class="type">int</span>&gt;&amp; l, <span class="type">int</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(list&lt;<span class="type">int</span>&gt;::iterator it = l.<span class="built_in">begin</span>(); it != l.<span class="built_in">end</span>(); ++it) &#123;</span><br><span class="line">            <span class="keyword">if</span>(*it &gt; num) &#123;</span><br><span class="line">                l.<span class="built_in">insert</span>(it, num);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        l.<span class="built_in">push_back</span>(num);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2022/02/27/mergeHeapQuickSort/" title="mergeHeapQuickSort - 四种基础排序-快速，归并，堆排序以及桶排序">https://xychen5.github.io/2022/02/27/mergeHeapQuickSort/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/algo/" rel="tag"># algo</a>
+              <a href="/tags/algoPrac/" rel="tag"># algoPrac</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/22/EffectiveCPP-ep1-2/" rel="prev" title="EffectiveCPP 阅读笔记">
+                  <i class="fa fa-chevron-left"></i> EffectiveCPP 阅读笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/07/lcDFS1/" rel="next" title="lcDFS1 - 深度优先遍历1">
+                  lcDFS1 - 深度优先遍历1 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

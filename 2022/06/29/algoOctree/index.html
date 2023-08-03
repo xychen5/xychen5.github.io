@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="1 8叉树的实现思路：（ref:） 1 将所有点云初始化为一个节点的8茶树 2 使用partition函数递归partition，其过程如下：需要传入可划分层级 2.0 若可划分层级为0 || 子节点中没有数据 || 子节点个数过少不需要再次划分 ，return 2.1 partition当前节点为8个子节点，将位于子节点点对应的点的下标放入子节点中 2.2 减小level层级，然后调用parti">
+<meta property="og:type" content="article">
+<meta property="og:title" content="algoOctree - 8叉树的具体实现">
+<meta property="og:url" content="https://xychen5.github.io/2022/06/29/algoOctree/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="1 8叉树的实现思路：（ref:） 1 将所有点云初始化为一个节点的8茶树 2 使用partition函数递归partition，其过程如下：需要传入可划分层级 2.0 若可划分层级为0 || 子节点中没有数据 || 子节点个数过少不需要再次划分 ，return 2.1 partition当前节点为8个子节点，将位于子节点点对应的点的下标放入子节点中 2.2 减小level层级，然后调用parti">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-06-29T09:20:56.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.073Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="algo">
+<meta property="article:tag" content="3d">
+<meta property="article:tag" content="dataStrcut">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2022/06/29/algoOctree/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2022/06/29/algoOctree/","path":"2022/06/29/algoOctree/","title":"algoOctree - 8叉树的具体实现"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>algoOctree - 8叉树的具体实现 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-8%E5%8F%89%E6%A0%91%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF%EF%BC%9A%EF%BC%88ref-%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">1 8叉树的实现思路：（ref:）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">2 具体实现:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%AE%8C%E6%95%B4%E5%AE%9E%E7%8E%B0-https-github-com-abnerrjo-PlaneDetection"><span class="nav-number">3.</span> <span class="nav-text">3 完整实现 - https:&#x2F;&#x2F;github.com&#x2F;abnerrjo&#x2F;PlaneDetection</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2022/06/29/algoOctree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          algoOctree - 8叉树的具体实现
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-06-29 17:20:56" itemprop="dateCreated datePublished" datetime="2022-06-29T17:20:56+08:00">2022-06-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="1-8叉树的实现思路：（ref-）"><a href="#1-8叉树的实现思路：（ref-）" class="headerlink" title="1 8叉树的实现思路：（ref:）"></a>1 8叉树的实现思路：（ref:）</h1><ul>
+<li>1 将所有点云初始化为一个节点的8茶树</li>
+<li>2 使用partition函数递归partition，其过程如下：需要传入可划分层级<ul>
+<li>2.0 若可划分层级为0 || 子节点中没有数据 || 子节点个数过少不需要再次划分 ，return</li>
+<li>2.1 partition当前节点为8个子节点，将位于子节点点对应的点的下标放入子节点中</li>
+<li>2.2 减小level层级，然后调用partition函数</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-具体实现"><a href="#2-具体实现" class="headerlink" title="2 具体实现:"></a>2 具体实现:</h1><ul>
+<li><p>1 构造函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">BoundaryVolumeHierarchy</span>(<span class="type">const</span> PointCloud&lt;DIMENSION&gt; *pointCloud)</span><br><span class="line">    : <span class="built_in">Partitioner</span>&lt;DIMENSION&gt;(pointCloud)</span><br><span class="line">    , <span class="built_in">mRoot</span>(<span class="keyword">this</span>)</span><br><span class="line">    , <span class="built_in">mParent</span>(<span class="keyword">this</span>)</span><br><span class="line">    , <span class="built_in">mLeaf</span>(<span class="literal">true</span>)</span><br><span class="line">    , <span class="built_in">mLevel</span>(<span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    Rect&lt;DIMENSION&gt; extension = pointCloud-&gt;<span class="built_in">extension</span>();</span><br><span class="line">    mCenter = extension.<span class="built_in">center</span>(); <span class="comment">// 点云中心</span></span><br><span class="line">    mSize = extension.<span class="built_in">maxSize</span>() / <span class="number">2</span>; <span class="comment">// 点云最长边长的一半</span></span><br><span class="line">    mIndices = std::<span class="built_in">vector</span>&lt;<span class="type">size_t</span>&gt;(pointCloud-&gt;<span class="built_in">size</span>());</span><br><span class="line">    std::<span class="built_in">iota</span>(mIndices.<span class="built_in">begin</span>(), mIndices.<span class="built_in">end</span>(), <span class="number">0</span>);</span><br><span class="line">    mLeafTable = std::vector&lt;BoundaryVolumeHierarchy&lt;DIMENSION&gt;*&gt;(pointCloud-&gt;<span class="built_in">size</span>(), <span class="keyword">this</span>); <span class="comment">// 表示点云中每个顶点位于8叉树的叶子节点的地址</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>2 划分函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 建立octree，直到每个叶子节点最多包含minNumPoints</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">partition</span><span class="params">(<span class="type">size_t</span> levels = <span class="number">1</span>, <span class="type">size_t</span> minNumPoints = <span class="number">1</span>, <span class="type">float</span> minSize = <span class="number">0.0f</span>)</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">isLeaf</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; NUM_CHILDREN; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (mChildren[i] != <span class="literal">NULL</span>)</span><br><span class="line">                mChildren[i]-&gt;<span class="built_in">partition</span>(levels - <span class="number">1</span>, minNumPoints, minSize);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 递归层次用完了 || 叶子内部点数达到最小要求 || 最多只有一个点了 || 节点的边长小于最小限度</span></span><br><span class="line">        <span class="keyword">if</span> (levels &lt;= <span class="number">0</span> || mIndices.<span class="built_in">size</span>() &lt;= minNumPoints || mIndices.<span class="built_in">size</span>() &lt;= <span class="number">1</span> || mSize &lt; minSize) <span class="keyword">return</span>;</span><br><span class="line">        <span class="comment">// create new centers</span></span><br><span class="line">        Vector newCenters[NUM_CHILDREN];</span><br><span class="line">        <span class="built_in">calculateNewCenters</span>(newCenters);</span><br><span class="line"></span><br><span class="line">        mLeaf = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// create children</span></span><br><span class="line">        <span class="type">float</span> newSize = mSize / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; NUM_CHILDREN; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            mChildren[i] = <span class="literal">NULL</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// split points</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">const</span> <span class="type">size_t</span> &amp;index : mIndices)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// calculate child index comparing position to child center</span></span><br><span class="line">            <span class="comment">// 对于每个点，计算它位于当前节点的哪个子节点？</span></span><br><span class="line">            <span class="type">size_t</span> childIndex = <span class="built_in">calculateChildIndex</span>(<span class="keyword">this</span>-&gt;<span class="built_in">pointCloud</span>()-&gt;<span class="built_in">at</span>(index).<span class="built_in">position</span>());</span><br><span class="line">            <span class="keyword">if</span> (mChildren[childIndex] == <span class="literal">NULL</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                mChildren[childIndex] = <span class="keyword">new</span> <span class="built_in">BoundaryVolumeHierarchy</span>&lt;DIMENSION&gt;(<span class="keyword">this</span>, newCenters[childIndex], newSize);</span><br><span class="line">                mChildren[childIndex]-&gt;mIndices.<span class="built_in">reserve</span>(mIndices.<span class="built_in">size</span>());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 将这个点压入对应的子节点中</span></span><br><span class="line">            mChildren[childIndex]-&gt;mIndices.<span class="built_in">push_back</span>(index);</span><br><span class="line">            <span class="comment">// update current leaf where point is stored</span></span><br><span class="line">            mRoot-&gt;mLeafTable[index] = mChildren[childIndex];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        mIndices.<span class="built_in">clear</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// partition recursively, 将可用层数减少1，将每一个子节点进入下一次细分</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; NUM_CHILDREN; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (mChildren[i] != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                mChildren[i]-&gt;<span class="built_in">partition</span>(levels - <span class="number">1</span>, minNumPoints, minSize);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="3-完整实现-https-github-com-abnerrjo-PlaneDetection"><a href="#3-完整实现-https-github-com-abnerrjo-PlaneDetection" class="headerlink" title="3 完整实现 - https://github.com/abnerrjo/PlaneDetection"></a>3 完整实现 - <a target="_blank" rel="noopener" href="https://github.com/abnerrjo/PlaneDetection">https://github.com/abnerrjo/PlaneDetection</a></h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> BOUNDARYVOLUMEHIERARCHY_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BOUNDARYVOLUMEHIERARCHY_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;set&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;partitioner.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="type">size_t</span> DIMENSION&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BoundaryVolumeHierarchy</span> : <span class="keyword">public</span> Partitioner&lt;DIMENSION&gt;</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">typedef</span> <span class="keyword">typename</span> Point&lt;DIMENSION&gt;::Vector Vector;</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">size_t</span> NUM_CHILDREN = <span class="number">1</span> &lt;&lt; DIMENSION;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">BoundaryVolumeHierarchy</span>(<span class="type">const</span> PointCloud&lt;DIMENSION&gt; *pointCloud)</span><br><span class="line">        : <span class="built_in">Partitioner</span>&lt;DIMENSION&gt;(pointCloud)</span><br><span class="line">        , <span class="built_in">mRoot</span>(<span class="keyword">this</span>)</span><br><span class="line">        , <span class="built_in">mParent</span>(<span class="keyword">this</span>)</span><br><span class="line">        , <span class="built_in">mLeaf</span>(<span class="literal">true</span>)</span><br><span class="line">        , <span class="built_in">mLevel</span>(<span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        Rect&lt;DIMENSION&gt; extension = pointCloud-&gt;<span class="built_in">extension</span>();</span><br><span class="line">        mCenter = extension.<span class="built_in">center</span>();</span><br><span class="line">        mSize = extension.<span class="built_in">maxSize</span>() / <span class="number">2</span>; <span class="comment">// 点云最长边长的一半</span></span><br><span class="line">        mIndices = std::<span class="built_in">vector</span>&lt;<span class="type">size_t</span>&gt;(pointCloud-&gt;<span class="built_in">size</span>());</span><br><span class="line">        std::<span class="built_in">iota</span>(mIndices.<span class="built_in">begin</span>(), mIndices.<span class="built_in">end</span>(), <span class="number">0</span>);</span><br><span class="line">        mLeafTable = std::vector&lt;BoundaryVolumeHierarchy&lt;DIMENSION&gt;*&gt;(pointCloud-&gt;<span class="built_in">size</span>(), <span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">BoundaryVolumeHierarchy</span>(<span class="type">const</span> BoundaryVolumeHierarchy &amp;bvh) = <span class="keyword">delete</span>;</span><br><span class="line"></span><br><span class="line">    ~<span class="built_in">BoundaryVolumeHierarchy</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">isLeaf</span>())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; NUM_CHILDREN; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> (mChildren[i] != <span class="literal">NULL</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">delete</span> mChildren[i];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 建立octree，直到每个叶子节点最多包含minNumPoints</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">partition</span><span class="params">(<span class="type">size_t</span> levels = <span class="number">1</span>, <span class="type">size_t</span> minNumPoints = <span class="number">1</span>, <span class="type">float</span> minSize = <span class="number">0.0f</span>)</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">isLeaf</span>())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; NUM_CHILDREN; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> (mChildren[i] != <span class="literal">NULL</span>)</span><br><span class="line">                    mChildren[i]-&gt;<span class="built_in">partition</span>(levels - <span class="number">1</span>, minNumPoints, minSize);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 递归层次用完了 || 叶子内部点数达到最小要求 || 最多只有一个点了 || 节点的边长小于最小限度</span></span><br><span class="line">            <span class="keyword">if</span> (levels &lt;= <span class="number">0</span> || mIndices.<span class="built_in">size</span>() &lt;= minNumPoints || mIndices.<span class="built_in">size</span>() &lt;= <span class="number">1</span> || mSize &lt; minSize) <span class="keyword">return</span>;</span><br><span class="line">            <span class="comment">// create new centers</span></span><br><span class="line">            Vector newCenters[NUM_CHILDREN];</span><br><span class="line">            <span class="built_in">calculateNewCenters</span>(newCenters);</span><br><span class="line"></span><br><span class="line">            mLeaf = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// create children</span></span><br><span class="line">            <span class="type">float</span> newSize = mSize / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; NUM_CHILDREN; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                mChildren[i] = <span class="literal">NULL</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// split points</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="type">const</span> <span class="type">size_t</span> &amp;index : mIndices)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// calculate child index comparing position to child center</span></span><br><span class="line">                <span class="comment">// 对于每个点，计算它位于当前节点的哪个子节点？</span></span><br><span class="line">                <span class="type">size_t</span> childIndex = <span class="built_in">calculateChildIndex</span>(<span class="keyword">this</span>-&gt;<span class="built_in">pointCloud</span>()-&gt;<span class="built_in">at</span>(index).<span class="built_in">position</span>());</span><br><span class="line">                <span class="keyword">if</span> (mChildren[childIndex] == <span class="literal">NULL</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    mChildren[childIndex] = <span class="keyword">new</span> <span class="built_in">BoundaryVolumeHierarchy</span>&lt;DIMENSION&gt;(<span class="keyword">this</span>, newCenters[childIndex], newSize);</span><br><span class="line">                    mChildren[childIndex]-&gt;mIndices.<span class="built_in">reserve</span>(mIndices.<span class="built_in">size</span>());</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 将这个点压入对应的子节点中</span></span><br><span class="line">                mChildren[childIndex]-&gt;mIndices.<span class="built_in">push_back</span>(index);</span><br><span class="line">                <span class="comment">// update current leaf where point is stored</span></span><br><span class="line">                mRoot-&gt;mLeafTable[index] = mChildren[childIndex];</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            mIndices.<span class="built_in">clear</span>();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// partition recursively, 将可用层数减少1，将每一个子节点进入下一次细分</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; NUM_CHILDREN; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> (mChildren[i] != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                    mChildren[i]-&gt;<span class="built_in">partition</span>(levels - <span class="number">1</span>, minNumPoints, minSize);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">const</span> Partitioner&lt;DIMENSION&gt;* <span class="title">getContainingLeaf</span><span class="params">(<span class="type">size_t</span> index)</span> <span class="type">const</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mRoot-&gt;mLeafTable[index];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">BoundaryVolumeHierarchy&lt;DIMENSION&gt;* <span class="title">child</span><span class="params">(<span class="type">size_t</span> index)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mChildren[index];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    std::vector&lt;<span class="type">const</span> Partitioner&lt;DIMENSION&gt;*&gt; <span class="built_in">children</span>() <span class="type">const</span> <span class="keyword">override</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">isLeaf</span>()) <span class="keyword">return</span> std::vector&lt;<span class="type">const</span> Partitioner&lt;DIMENSION&gt;*&gt;();</span><br><span class="line">        std::vector&lt;<span class="type">const</span> Partitioner&lt;DIMENSION&gt;*&gt; children;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; NUM_CHILDREN; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (mChildren[i] != <span class="literal">NULL</span>)</span><br><span class="line">                children.<span class="built_in">push_back</span>(mChildren[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> children;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">const</span> Partitioner&lt;DIMENSION&gt;* <span class="title">parent</span><span class="params">()</span> <span class="type">const</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mParent;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">const</span> Vector&amp; <span class="title">center</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mCenter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">float</span> <span class="title">cellSize</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mSize;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">isRoot</span><span class="params">()</span> <span class="type">const</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span> == mRoot;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">isLeaf</span><span class="params">()</span> <span class="type">const</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mLeaf;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">size_t</span> <span class="title">octreeLevel</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mLevel;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">size_t</span> <span class="title">numPoints</span><span class="params">()</span> <span class="type">const</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">isLeaf</span>())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> mIndices.<span class="built_in">size</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">size_t</span> numPoints = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; NUM_CHILDREN; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> (mChildren[i] != <span class="literal">NULL</span>)</span><br><span class="line">                    numPoints += mChildren[i]-&gt;<span class="built_in">numPoints</span>();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> numPoints;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">Rect&lt;DIMENSION&gt; <span class="title">extension</span><span class="params">()</span> <span class="type">const</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Rect</span>&lt;DIMENSION&gt;(mCenter - Vector::<span class="built_in">Constant</span>(mSize),</span><br><span class="line">                            mCenter + Vector::<span class="built_in">Constant</span>(mSize));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">std::vector&lt;<span class="type">size_t</span>&gt; <span class="title">points</span><span class="params">()</span> <span class="type">const</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">isLeaf</span>())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> mIndices;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            std::vector&lt;<span class="type">size_t</span>&gt; points;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; NUM_CHILDREN; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> (mChildren[i] != <span class="literal">NULL</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    std::vector&lt;<span class="type">size_t</span>&gt; childPoints = mChildren[i]-&gt;<span class="built_in">points</span>();</span><br><span class="line">                    points.<span class="built_in">insert</span>(points.<span class="built_in">end</span>(), childPoints.<span class="built_in">begin</span>(), childPoints.<span class="built_in">end</span>());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> points;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">getNeighborCells</span><span class="params">(std::vector&lt;BoundaryVolumeHierarchy&lt;DIMENSION&gt;*&gt; &amp;neighbors)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        BoundaryVolumeHierarchy&lt;DIMENSION&gt;* neighbor;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; DIMENSION; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            neighbor = <span class="built_in">getNeighborCellsGreaterOrEqual</span>(i, <span class="literal">false</span>);</span><br><span class="line">            <span class="built_in">getNeighborCellsSmaller</span>(i, <span class="literal">false</span>, neighbor, neighbors);</span><br><span class="line">            neighbor = <span class="built_in">getNeighborCellsGreaterOrEqual</span>(i, <span class="literal">true</span>);</span><br><span class="line">            <span class="built_in">getNeighborCellsSmaller</span>(i, <span class="literal">true</span>, neighbor, neighbors);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    BoundaryVolumeHierarchy *mRoot;</span><br><span class="line">    BoundaryVolumeHierarchy *mParent;</span><br><span class="line">    BoundaryVolumeHierarchy *mChildren[NUM_CHILDREN];</span><br><span class="line">    Vector mCenter;</span><br><span class="line">    <span class="type">float</span> mSize;</span><br><span class="line">    <span class="type">bool</span> mLeaf;</span><br><span class="line">    <span class="type">size_t</span> mLevel;</span><br><span class="line">    std::vector&lt;<span class="type">size_t</span>&gt; mIndices;</span><br><span class="line">    std::vector&lt;BoundaryVolumeHierarchy&lt;DIMENSION&gt;*&gt; mLeafTable;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">BoundaryVolumeHierarchy</span>(BoundaryVolumeHierarchy *parent, <span class="type">const</span> Vector &amp;center, <span class="type">float</span> size)</span><br><span class="line">        : <span class="built_in">Partitioner</span>&lt;DIMENSION&gt;(parent-&gt;<span class="built_in">pointCloud</span>())</span><br><span class="line">        , <span class="built_in">mRoot</span>(parent-&gt;mRoot)</span><br><span class="line">        , <span class="built_in">mParent</span>(parent)</span><br><span class="line">        , <span class="built_in">mCenter</span>(center)</span><br><span class="line">        , <span class="built_in">mSize</span>(size)</span><br><span class="line">        , <span class="built_in">mLeaf</span>(<span class="literal">true</span>)</span><br><span class="line">        , <span class="built_in">mLevel</span>(parent-&gt;mLevel + <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; NUM_CHILDREN; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            mChildren[i] = <span class="literal">NULL</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">calculateNewCenters</span><span class="params">(Vector centers[NUM_CHILDREN])</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="type">float</span> newSize = mSize / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> dim = <span class="number">0</span>; dim &lt; DIMENSION; dim++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; NUM_CHILDREN; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="type">int</span> signal = (((i &amp; (<span class="number">1</span> &lt;&lt; (DIMENSION - dim - <span class="number">1</span>))) &gt;&gt; (DIMENSION - dim - <span class="number">1</span>)) &lt;&lt; <span class="number">1</span>) - <span class="number">1</span>;</span><br><span class="line">                centers[i](dim) = <span class="built_in">mCenter</span>(dim) + newSize * signal;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">size_t</span> <span class="title">calculateChildIndex</span><span class="params">(<span class="type">const</span> Vector &amp;position)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="type">size_t</span> childIndex = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> dim = <span class="number">0</span>; dim &lt; DIMENSION; dim++)</span><br><span class="line">        &#123;</span><br><span class="line">            childIndex |= (<span class="built_in">position</span>(dim) &gt; <span class="built_in">mCenter</span>(dim)) &lt;&lt; (DIMENSION - dim - <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> childIndex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">size_t</span> <span class="title">getIndexOnParent</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; NUM_CHILDREN; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (mParent-&gt;mChildren[i] == <span class="keyword">this</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="string">&quot;Could not find node on parent&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">size_t</span> <span class="title">getIncrement</span><span class="params">(<span class="type">size_t</span> direction, <span class="type">bool</span> greaterThan)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="type">int</span> increment = <span class="number">1</span> &lt;&lt; (DIMENSION - direction - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (!greaterThan)</span><br><span class="line">        &#123;</span><br><span class="line">            increment = NUM_CHILDREN - increment;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> increment;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">BoundaryVolumeHierarchy&lt;DIMENSION&gt;* <span class="title">getNeighborCellsGreaterOrEqual</span><span class="params">(<span class="type">size_t</span> direction, <span class="type">bool</span> greaterThan)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">isRoot</span>())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (greaterThan &amp;&amp; mParent-&gt;<span class="built_in">mCenter</span>(direction) &gt; <span class="built_in">mCenter</span>(direction) ||</span><br><span class="line">            !greaterThan &amp;&amp; mParent-&gt;<span class="built_in">mCenter</span>(direction) &lt; <span class="built_in">mCenter</span>(direction))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">size_t</span> index = <span class="built_in">getIndexOnParent</span>();</span><br><span class="line">            <span class="type">size_t</span> increment = <span class="built_in">getIncrement</span>(direction, greaterThan);</span><br><span class="line">            <span class="keyword">return</span> mParent-&gt;mChildren[(index + increment) % NUM_CHILDREN];</span><br><span class="line">        &#125;</span><br><span class="line">        BoundaryVolumeHierarchy&lt;DIMENSION&gt;* node = mParent-&gt;<span class="built_in">getNeighborCellsGreaterOrEqual</span>(direction, greaterThan);</span><br><span class="line">        <span class="keyword">if</span> (node == <span class="literal">NULL</span> || node-&gt;<span class="built_in">isLeaf</span>())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> node;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">size_t</span> index = <span class="built_in">getIndexOnParent</span>();</span><br><span class="line">        <span class="type">size_t</span> increment = <span class="built_in">getIncrement</span>(direction, !greaterThan);</span><br><span class="line">        <span class="keyword">return</span> node-&gt;mChildren[(index + increment) % NUM_CHILDREN];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">getNeighborCellsSmaller</span><span class="params">(<span class="type">size_t</span> direction, <span class="type">bool</span> greaterThan, BoundaryVolumeHierarchy&lt;DIMENSION&gt;* neighbor,</span></span></span><br><span class="line"><span class="params"><span class="function">                                 std::vector&lt;BoundaryVolumeHierarchy&lt;DIMENSION&gt;*&gt; &amp;neighbors)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        std::queue&lt;BoundaryVolumeHierarchy&lt;DIMENSION&gt;*&gt; candidates;</span><br><span class="line">        <span class="keyword">if</span> (neighbor != <span class="literal">NULL</span>) candidates.<span class="built_in">push</span>(neighbor);</span><br><span class="line">        <span class="keyword">while</span> (candidates.<span class="built_in">size</span>() &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            BoundaryVolumeHierarchy&lt;DIMENSION&gt;* front = candidates.<span class="built_in">front</span>();</span><br><span class="line">            candidates.<span class="built_in">pop</span>();</span><br><span class="line">            <span class="keyword">if</span> (front-&gt;<span class="built_in">isLeaf</span>())</span><br><span class="line">            &#123;</span><br><span class="line">                neighbors.<span class="built_in">push_back</span>(front);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; NUM_CHILDREN; i++)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">if</span> (front-&gt;mChildren[i] == <span class="literal">NULL</span>) <span class="keyword">continue</span>;</span><br><span class="line">                    <span class="keyword">if</span> ((greaterThan &amp;&amp; front-&gt;<span class="built_in">mCenter</span>(direction) &gt; front-&gt;mChildren[i]-&gt;<span class="built_in">mCenter</span>(direction)) ||</span><br><span class="line">                        (!greaterThan &amp;&amp; front-&gt;<span class="built_in">mCenter</span>(direction) &lt; front-&gt;mChildren[i]-&gt;<span class="built_in">mCenter</span>(direction)))</span><br><span class="line">                    &#123;</span><br><span class="line">                        candidates.<span class="built_in">push</span>(front-&gt;mChildren[i]);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> <span class="keyword">class</span> <span class="title class_">BoundaryVolumeHierarchy</span>&lt;<span class="number">2</span>&gt;;</span><br><span class="line"><span class="keyword">template</span> <span class="keyword">class</span> <span class="title class_">BoundaryVolumeHierarchy</span>&lt;<span class="number">3</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> BoundaryVolumeHierarchy&lt;<span class="number">2</span>&gt; Quadtree;</span><br><span class="line"><span class="keyword">typedef</span> BoundaryVolumeHierarchy&lt;<span class="number">3</span>&gt; Octree;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// BOUNDARYVOLUMEHIERARCHY_H</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2022/06/29/algoOctree/" title="algoOctree - 8叉树的具体实现">https://xychen5.github.io/2022/06/29/algoOctree/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/algo/" rel="tag"># algo</a>
+              <a href="/tags/3d/" rel="tag"># 3d</a>
+              <a href="/tags/dataStrcut/" rel="tag"># dataStrcut</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/06/29/algoDetectPlane/" rel="prev" title="algoDetectPlane - 平面探测算法 - A Robust Statistics Approach for Plane Detection in Unorganized Point Clouds">
+                  <i class="fa fa-chevron-left"></i> algoDetectPlane - 平面探测算法 - A Robust Statistics Approach for Plane Detection in Unorganized Point Clouds
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/07/04/lcBackTrack/" rel="next" title="lcBackTrack - 回溯">
+                  lcBackTrack - 回溯 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

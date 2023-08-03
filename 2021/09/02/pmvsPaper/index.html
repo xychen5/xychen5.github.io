@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="1 pmvs文章 Accurate, Dense, and Robust Multiview Stereopsis1 提出 patch-based MVS algorithm2 关键词理解2.1 patch: 估计模型表面的一个tagent平面，更具体的： 3维的一个矩形，其中一边平行于相机拍的图片，范围是55或者77的一个矩形2.2 Photometric Discrepancy Functio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pmvsPaper pmvs稠密重建论文阅读">
+<meta property="og:url" content="https://xychen5.github.io/2021/09/02/pmvsPaper/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="1 pmvs文章 Accurate, Dense, and Robust Multiview Stereopsis1 提出 patch-based MVS algorithm2 关键词理解2.1 patch: 估计模型表面的一个tagent平面，更具体的： 3维的一个矩形，其中一边平行于相机拍的图片，范围是55或者77的一个矩形2.2 Photometric Discrepancy Functio">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/pmvs_feature_matching.jcug6r54jqo.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/pmvs_patch_expansion.t8atxse2wbk.png">
+<meta property="article:published_time" content="2021-09-02T08:43:47.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.489Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="algo">
+<meta property="article:tag" content="cv">
+<meta property="article:tag" content="mvs">
+<meta property="article:tag" content="recon">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/pmvs_feature_matching.jcug6r54jqo.png">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/09/02/pmvsPaper/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/09/02/pmvsPaper/","path":"2021/09/02/pmvsPaper/","title":"pmvsPaper pmvs稠密重建论文阅读"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>pmvsPaper pmvs稠密重建论文阅读 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-pmvs%E6%96%87%E7%AB%A0-Accurate-Dense-and-Robust-Multiview-Stereopsis"><span class="nav-number">1.</span> <span class="nav-text">1 pmvs文章 Accurate, Dense, and Robust Multiview Stereopsis</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%8F%90%E5%87%BA-patch-based-MVS-algorithm"><span class="nav-number">1.1.</span> <span class="nav-text">1 提出 patch-based MVS algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%85%B3%E9%94%AE%E8%AF%8D%E7%90%86%E8%A7%A3"><span class="nav-number">1.2.</span> <span class="nav-text">2 关键词理解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-patch-%E4%BC%B0%E8%AE%A1%E6%A8%A1%E5%9E%8B%E8%A1%A8%E9%9D%A2%E7%9A%84%E4%B8%80%E4%B8%AAtagent%E5%B9%B3%E9%9D%A2%EF%BC%8C%E6%9B%B4%E5%85%B7%E4%BD%93%E7%9A%84%EF%BC%9A-3%E7%BB%B4%E7%9A%84%E4%B8%80%E4%B8%AA%E7%9F%A9%E5%BD%A2%EF%BC%8C%E5%85%B6%E4%B8%AD%E4%B8%80%E8%BE%B9%E5%B9%B3%E8%A1%8C%E4%BA%8E%E7%9B%B8%E6%9C%BA%E6%8B%8D%E7%9A%84%E5%9B%BE%E7%89%87%EF%BC%8C%E8%8C%83%E5%9B%B4%E6%98%AF55%E6%88%96%E8%80%8577%E7%9A%84%E4%B8%80%E4%B8%AA%E7%9F%A9%E5%BD%A2"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 patch: 估计模型表面的一个tagent平面，更具体的： 3维的一个矩形，其中一边平行于相机拍的图片，范围是55或者77的一个矩形</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Photometric-Discrepancy-Function-%E5%85%89%E5%AD%A6%E5%B7%AE%E5%BC%82%E5%87%BD%E6%95%B0%EF%BC%9A-%E7%94%A8%E6%9D%A5%E6%81%A2%E5%A4%8D%E5%85%89%E5%AD%A6%E5%B7%AE%E5%BC%82%E5%B0%8F%E7%9A%84%E9%82%A3%E4%BA%9Bpatches"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 Photometric Discrepancy Function 光学差异函数： 用来恢复光学差异小的那些patches</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">2-1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">2-2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">2-3</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-patch%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 patch优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-image"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 image</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-patch%E9%87%8D%E5%BB%BA%E8%BF%87%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">3 patch重建过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%88%9D%E5%A7%8B%E5%8C%96feature-match"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 初始化feature match</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-1-%E9%87%87%E7%94%A8%E9%AB%98%E6%96%AF%E6%9F%A5%E5%88%86%E5%92%8Charris%E8%A7%92%E7%82%B9%E6%9D%A5%E5%81%9A%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">3.1.1 采用高斯查分和harris角点来做特征提取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-2-%E7%89%B9%E6%AD%A3%E5%8C%B9%E9%85%8D%E5%92%8C%E7%94%9F%E6%88%90atch"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">3.1.2 特正匹配和生成atch</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E6%89%A9%E5%B1%95patch"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 扩展patch</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-%E6%89%BE%E5%87%BA%E7%9B%B8%E9%82%BB%E7%9A%84cells%E6%9D%A5%E6%89%A9%E5%B1%95"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">3.2.1 找出相邻的cells来扩展</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">3-1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">3-2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E6%BB%A4%E9%99%A4%E9%94%99%E8%AF%AF%E7%9A%84patch"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 滤除错误的patch</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">3-3</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/09/02/pmvsPaper/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          pmvsPaper pmvs稠密重建论文阅读
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-09-02 16:43:47" itemprop="dateCreated datePublished" datetime="2021-09-02T16:43:47+08:00">2021-09-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="1-pmvs文章-Accurate-Dense-and-Robust-Multiview-Stereopsis"><a href="#1-pmvs文章-Accurate-Dense-and-Robust-Multiview-Stereopsis" class="headerlink" title="1 pmvs文章 Accurate, Dense, and Robust Multiview Stereopsis"></a>1 pmvs文章 Accurate, Dense, and Robust Multiview Stereopsis</h1><h2 id="1-提出-patch-based-MVS-algorithm"><a href="#1-提出-patch-based-MVS-algorithm" class="headerlink" title="1 提出 patch-based MVS algorithm"></a>1 提出 patch-based MVS algorithm</h2><h2 id="2-关键词理解"><a href="#2-关键词理解" class="headerlink" title="2 关键词理解"></a>2 关键词理解</h2><h3 id="2-1-patch-估计模型表面的一个tagent平面，更具体的：-3维的一个矩形，其中一边平行于相机拍的图片，范围是55或者77的一个矩形"><a href="#2-1-patch-估计模型表面的一个tagent平面，更具体的：-3维的一个矩形，其中一边平行于相机拍的图片，范围是55或者77的一个矩形" class="headerlink" title="2.1 patch: 估计模型表面的一个tagent平面，更具体的： 3维的一个矩形，其中一边平行于相机拍的图片，范围是55或者77的一个矩形"></a>2.1 patch: 估计模型表面的一个tagent平面，更具体的： 3维的一个矩形，其中一边平行于相机拍的图片，范围是5<em>5或者7</em>7的一个矩形</h3><h3 id="2-2-Photometric-Discrepancy-Function-光学差异函数：-用来恢复光学差异小的那些patches"><a href="#2-2-Photometric-Discrepancy-Function-光学差异函数：-用来恢复光学差异小的那些patches" class="headerlink" title="2.2 Photometric Discrepancy Function 光学差异函数： 用来恢复光学差异小的那些patches"></a>2.2 Photometric Discrepancy Function 光学差异函数： 用来恢复光学差异小的那些patches</h3><p>改过程假设照片中物体的lambertian光照环境，R(p)是reference image的意思</p>
+<h4 id="2-1"><a href="#2-1" class="headerlink" title="2-1"></a>2-1</h4><p>$$g(p) = \frac{1}{|V(p) / R(p)|} \sum_{I \in V(p) \ R(p)}^{} h(p, I, R(p))$$<br><br>h(p, I, R(p))是光学差异函数，需要选择出那些满足低于阈值 &alpha; 的I然后组成V*(p):</p>
+<h4 id="2-2"><a href="#2-2" class="headerlink" title="2-2"></a>2-2</h4><p>$$V^*(p) = { I | I \in V(p), h(p, I, R(p))aa \leq \alpha) }$$</p>
+<p>替换掉<a href="#(2-1)">2-1</a>中的V(p)即可，相当于对图像做了一个过滤，得到：</p>
+<h4 id="2-3"><a href="#2-3" class="headerlink" title="2-3"></a>2-3</h4><p>$$g^*(p) = \frac{1}{| V(p)^* / R(p)|} \sum_{I \in V^*(p) \ R(p)}^{} h(p, I, R(p))$$</p>
+<h3 id="2-3-patch优化"><a href="#2-3-patch优化" class="headerlink" title="2.3 patch优化"></a>2.3 patch优化</h3><p>每一个patch重建需要2步</p>
+<ul>
+<li>1 初始化c(p), n(p), V*(p)以及R(p)</li>
+<li>2 优化c(p)和n(p), 将c(p)固定在一个ray上，这样就将自由度由3减少到1，然后n(p)由欧拉角来决定即可，yaw和pitch即可，那么就成为一个无约束最优化问题，则采用共轭梯度法(conjugate gradient)来解即可优化c(p)和n(p)</li>
+</ul>
+<h3 id="2-4-image"><a href="#2-4-image" class="headerlink" title="2.4 image"></a>2.4 image</h3><p>基于patch去做表面展示的最大优点是很灵活，然而缺少patch与patch之间的链接信息，就不容易获取相邻的patch，解决办法如下：<br>对于每一张图片，划分成 &beta;<em>&beta;(&beta;=2在文中)的cell，然后对于每一个patch，它在每个可见图片上都有映射过去的cell，然后上述过程做完以后，每张图片的每个cell都记录了该cell可见的那些个patch，我们记作$Q_i(x, y)$, 同样的，如果是在每个可见图片而且满足<a href="#2-3">#2-3</a>定义的光学差异进行上述步骤，那么就得到$Q_i^</em>(x, y)$</p>
+<h2 id="3-patch重建过程"><a href="#3-patch重建过程" class="headerlink" title="3 patch重建过程"></a>3 patch重建过程</h2><h3 id="3-1-初始化feature-match"><a href="#3-1-初始化feature-match" class="headerlink" title="3.1 初始化feature match"></a>3.1 初始化feature match</h3><h4 id="3-1-1-采用高斯查分和harris角点来做特征提取"><a href="#3-1-1-采用高斯查分和harris角点来做特征提取" class="headerlink" title="3.1.1 采用高斯查分和harris角点来做特征提取"></a>3.1.1 采用高斯查分和harris角点来做特征提取</h4><h4 id="3-1-2-特正匹配和生成atch"><a href="#3-1-2-特正匹配和生成atch" class="headerlink" title="3.1.2 特正匹配和生成atch"></a>3.1.2 特正匹配和生成atch</h4><ul>
+<li>1 对于图片$I_i$有光心$O(I_i)$，它里面的每个特征点f，在其它图片中有很多其他对应的特征点$f’$，对于每一个$(f, f’)$点对，那些在他们极线上的特征点，我们组成一个集合F，我们把F中的特征点三角化可以得到对应的3d点，对于这个点的集合，按照其与$O(I_i)$的距离升序排序，一个一个点的尝试去生成patch，生成patch在，直到成功</li>
+<li>2 生成patch的过程是在<a href="#23-patch%E4%BC%98%E5%8C%96">2.3 patch优化</a>阐释的，这里简单复述一下，生成patch就是优化patch的c(p)和o(p)然后使得光学差异函数最小，一旦一个cell生成了一个patch，那么改cell的其他特征点就直接删除不需要了<br>生成patch的算法如下：<br><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/pmvs_feature_matching.jcug6r54jqo.png" alt="pmvs_feature_matching"><h3 id="3-2-扩展patch"><a href="#3-2-扩展patch" class="headerlink" title="3.2 扩展patch"></a>3.2 扩展patch</h3>目的: 对于每一个image的cell $C_i(x, y)$, 至少建出来一个patch，过程如下：</li>
+</ul>
+<h4 id="3-2-1-找出相邻的cells来扩展"><a href="#3-2-1-找出相邻的cells来扩展" class="headerlink" title="3.2.1 找出相邻的cells来扩展"></a>3.2.1 找出相邻的cells来扩展</h4><p><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/pmvs_patch_expansion.t8atxse2wbk.png" alt="pmvs_patch_expansion"><br>对于一个p，其在它的第i张可见图片中，而且被$C_i(x, y)$格子记住的patch集合$Q_i(x, y)$中，然后相邻的cells如下获得：</p>
+<h4 id="3-1"><a href="#3-1" class="headerlink" title="3-1"></a>3-1</h4><p>$$C(p) = {C_i(x’, y’) | p in Q_i(x, y), |x - x’| + |y - y’| = 1}$$<br>C(p)中需要移除两种类型的cell</p>
+<ul>
+<li>1 移除已有patch的邻居cell，具体的： 若，$C_i(x’, y’)$ 包含了一个patch $p’$, 这个p’和p是邻居，那么这个$C_i(x’, y’)$则会被从C(p)移除，具体判断方式见下面的公式：<h4 id="3-2"><a href="#3-2" class="headerlink" title="3-2"></a>3-2</h4>$$|(c(p) - c(p’))*n(p)| + |(c(p)-c(p’))*n(p’)| &lt; 2\rho_1$$<br>$\rho_1$是对应于参考图像R(p)在c(p)和c(p’)的深度时，图像移动$\beta_1$个pixels需要的距离</li>
+<li>2*(这一步可以不要，因为图片光学差异的图片过滤过程可以消除这个错误，主要是为了计算效率) 移除深度不连续的邻居cell，从已有的相机去看$C_i(x’, y’)$，得到的深度和从相机去看p的慎独过大，则放弃这种邻居cell，然而实际中构建surface之前，这些个p和$C_i(x’, y’)$可能真实对应的表面间的深度不连续很难判断，所以简单化，也就是若$Q_i^*(x’, y’)$的size大于0，也就证明不连续，也就是当这个$C_i(x’, y’)$这个格子，至少有一个patch是在满足了光学差异达到目标的情况下被他记录，那么它就不需要别的patch来帮他expand，我个人如此理解</li>
+</ul>
+<h3 id="3-3-滤除错误的patch"><a href="#3-3-滤除错误的patch" class="headerlink" title="3.3 滤除错误的patch"></a>3.3 滤除错误的patch</h3><ul>
+<li>1 过滤可见性不一致的patch，去除深度值不一致且一致性较低的点，意思是如果扩散的点云在其他图特征点的点云前面了，通过比较各自的一致性来剔除；如果扩散点云跑到后边去了，也比较一致性<h4 id="3-3"><a href="#3-3" class="headerlink" title="3-3"></a>3-3</h4>$$|V^*(p)|(1-g^*(p)) &lt; \sum_{p_i \in U(p)}{1-g^*(p)}$$</li>
+<li>2 对于每一个patch，用深度图计算出在$V^*(p)$中可以看到它的图像的个数，如果比$\gamma$要小，那么认为可见图片太少，滤除</li>
+<li>3 保证了一个弱正则化，对于每一个patch，收集它所有的可见图片的相邻cells中的所有patches，若这些patches中是邻居patch的比例小于0.25，那么也滤除(考虑到它的相邻patch都不是邻居说明这个patch空间上和邻居不太连续)</li>
+</ul>
+<p>&lt;未完待续&gt;</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/09/02/pmvsPaper/" title="pmvsPaper pmvs稠密重建论文阅读">https://xychen5.github.io/2021/09/02/pmvsPaper/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/algo/" rel="tag"># algo</a>
+              <a href="/tags/cv/" rel="tag"># cv</a>
+              <a href="/tags/mvs/" rel="tag"># mvs</a>
+              <a href="/tags/recon/" rel="tag"># recon</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/29/dockerManual/" rel="prev" title="dockerManual">
+                  <i class="fa fa-chevron-left"></i> dockerManual
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/12/javaAnnotationSimpleFactoryStrategyMode/" rel="next" title="javaAnnotationSimpleFactoryStrategyMode - java注解生命周期 & 简单工厂以及策略设计模式">
+                  javaAnnotationSimpleFactoryStrategyMode - java注解生命周期 & 简单工厂以及策略设计模式 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

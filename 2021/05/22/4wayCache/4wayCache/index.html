@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="1 物理地址tag&#x2F;set&#x2F;block_offset说明：1.1 以 2路组相连cache为例子介绍cache行和物理地址行的构成上图是2路组相连的cache（引自https:&#x2F;&#x2F;www.sciencedirect.com&#x2F;topics&#x2F;computer-science&#x2F;set-associative-cache）。（直接映射cache也被称为单路cache的原因就是因为只有1路。） 1.1.1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4way cache - 4路组相连cache">
+<meta property="og:url" content="https://xychen5.github.io/2021/05/22/4wayCache/4wayCache/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="1 物理地址tag&#x2F;set&#x2F;block_offset说明：1.1 以 2路组相连cache为例子介绍cache行和物理地址行的构成上图是2路组相连的cache（引自https:&#x2F;&#x2F;www.sciencedirect.com&#x2F;topics&#x2F;computer-science&#x2F;set-associative-cache）。（直接映射cache也被称为单路cache的原因就是因为只有1路。） 1.1.1">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210107112341461.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2N4eV9odXN0,size_16,color_FFFFFF,t_70#pic_center">
+<meta property="article:published_time" content="2021-05-22T07:24:18.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.071Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="ca">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20210107112341461.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2N4eV9odXN0,size_16,color_FFFFFF,t_70#pic_center">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/05/22/4wayCache/4wayCache/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/05/22/4wayCache/4wayCache/","path":"2021/05/22/4wayCache/4wayCache/","title":"4way cache - 4路组相连cache"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>4way cache - 4路组相连cache | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80tag-set-block-offset%E8%AF%B4%E6%98%8E%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1 物理地址tag&#x2F;set&#x2F;block_offset说明：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E4%BB%A5-2%E8%B7%AF%E7%BB%84%E7%9B%B8%E8%BF%9Ecache%E4%B8%BA%E4%BE%8B%E5%AD%90%E4%BB%8B%E7%BB%8Dcache%E8%A1%8C%E5%92%8C%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80%E8%A1%8C%E7%9A%84%E6%9E%84%E6%88%90"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 以 2路组相连cache为例子介绍cache行和物理地址行的构成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-1-cache%E7%9A%84%E4%B8%80%E8%A1%8C%E6%9E%84%E6%88%90"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1.1 cache的一行构成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-2-%E8%A6%81%E5%8E%BBcache%E4%B8%AD%E6%89%BE%E6%95%B0%E6%8D%AE%E7%9A%84%E5%86%85%E5%AD%98%E5%9C%B0%E5%9D%80"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.1.2 要去cache中找数据的内存地址</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E7%BB%93%E5%90%88%E5%AE%9E%E9%99%85%E4%BE%8B%E5%AD%90"><span class="nav-number">2.</span> <span class="nav-text">2 结合实际例子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-example1"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 example1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-example2-2"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 example2 [2]</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-ref"><span class="nav-number">3.</span> <span class="nav-text">3 ref:</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/05/22/4wayCache/4wayCache/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          4way cache - 4路组相连cache
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-05-22 15:24:18" itemprop="dateCreated datePublished" datetime="2021-05-22T15:24:18+08:00">2021-05-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ca/" itemprop="url" rel="index"><span itemprop="name">ca</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="1-物理地址tag-set-block-offset说明："><a href="#1-物理地址tag-set-block-offset说明：" class="headerlink" title="1 物理地址tag/set/block_offset说明："></a>1 物理地址tag/set/block_offset说明：</h1><h2 id="1-1-以-2路组相连cache为例子介绍cache行和物理地址行的构成"><a href="#1-1-以-2路组相连cache为例子介绍cache行和物理地址行的构成" class="headerlink" title="1.1 以 2路组相连cache为例子介绍cache行和物理地址行的构成"></a>1.1 以 2路组相连cache为例子介绍cache行和物理地址行的构成</h2><p><img src="https://img-blog.csdnimg.cn/20210107112341461.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2N4eV9odXN0,size_16,color_FFFFFF,t_70#pic_center" alt="2wayCache"><br>上图是2路组相连的cache（引自<a target="_blank" rel="noopener" href="https://www.sciencedirect.com/topics/computer-science/set-associative-cache">https://www.sciencedirect.com/topics/computer-science/set-associative-cache</a>）。<br>（直接映射cache也被称为单路cache的原因就是因为只有1路。）</p>
+<h3 id="1-1-1-cache的一行构成"><a href="#1-1-1-cache的一行构成" class="headerlink" title="1.1.1 cache的一行构成"></a>1.1.1 cache的一行构成</h3><table style="width:30%; text-align:center" border="5"><tbody><tr>
+<td>tag</td>
+<td>data block</td>
+<td>flag bits</td>
+</tr></tbody></table>
+
+<ul>
+<li><strong>tag：</strong> <strong>标签位</strong>用于比较在way1和way0两路中，哪一个cache块存了我们的目的数据（可以看到图中的两个等号的用硬件实现的比较器，就是用来比较way1 and way0中的两个tag的）</li>
+<li><strong>data block：</strong> <strong>数据位</strong>用来存储（内存和cache交换的数据块）目标tag的数据块。</li>
+<li><strong>v：</strong> <strong>有效位</strong>用来 表示该cache块是否有效。（复杂的cache设计可能有更多位）（比如当一开始cache里面一个数据块都没有为空的时候，所有的v标记都为0，然后当该数据块载入了，代表该块有效了，那么将其置为1即可。）       </li>
+</ul>
+<h3 id="1-1-2-要去cache中找数据的内存地址"><a href="#1-1-2-要去cache中找数据的内存地址" class="headerlink" title="1.1.2 要去cache中找数据的内存地址"></a>1.1.2 要去cache中找数据的内存地址</h3><p>一个地址构成如下图： 左侧为MSB，右侧为LSB（lowest significant bits）：</p>
+<table style="width:30%; text-align:center" border="5"><tbody><tr>
+<td>tag</td>
+<td>index</td>
+<td>block offset</td>
+</tr></tbody></table>
+
+<ul>
+<li><strong>block offset：</strong> 说的是对于内存地址来说，其后block offset个字节的数据会构成一个和cache做数据交换的块，故就是cache块的大小；</li>
+<li><strong>index：</strong> 说的是对于内存地址来说，其应该被映射到cache里的哪一组，故该部分的位数代表的是整个cache能hold住多少组，而组数目又由每个cache块大小和（4路组相连那路数就是4）“路数”有关的，其计算方式为：<br>$$<br>setNums = \frac{cacheWholeSize}{(numOfWays) * (blockSize))}<br>$$<br>拿最开始的2路组相连来说，其中的MemoryAddress里的set我们看到了是2位，那么这个内存地址就可以根据set的两位去找到自己在cache中对应的组是哪一组，拿图中来说，当set的两位为<strong>10</strong>时，那么对应到第3组<strong>set2</strong>。</li>
+<li><strong>tag：</strong> 用来在使用index选出cache位于哪一组后去比较具体的cache块位于哪一路。<h1 id="2-结合实际例子"><a href="#2-结合实际例子" class="headerlink" title="2 结合实际例子"></a>2 结合实际例子</h1><h2 id="2-1-example1"><a href="#2-1-example1" class="headerlink" title="2.1 example1"></a>2.1 example1</h2>一个四路相联cache，CPU字长为4字节，内存和cache都是以字节编址，cache和内存交换单位为块，每个块大小为512字节，cache能够容纳1024个块。如果物理内存为32位地址：</li>
+<li> q1: 画出cache和内存的地址格式，标明块内偏移地址、组号和标签位置；</li>
+<li> q2: 请计算内存地址FAB12389（16进制）在cache中可能的位置块号；</li>
+</ul>
+<p><strong><em>answer</em> q1：</strong><br>根据1.1.2的计算方式：<br>$$<br>setNums = \frac{cacheWholeSize}{(numOfWays) * (blockSize))} = \frac{1024<em>512 Byte}{4</em>512Byte} = 2^{8}<br>$$<br>故，最后的结果如下：</p>
+<table style="width:30%; text-align:center" border="5">
+<tbody><tr>
+<td>tag(32-8-9=17bit)</td>
+<td>index（8bit）</td>
+<td>block offset(9bit)
+</td></tr></tbody></table>
+
+<p><strong><em>answer</em> q2：</strong><br>其内存地址分成4个Byte分别是：</p>
+<table style="width:30%; text-align:center" border="5">
+<tbody><tr>
+<td>FA(1111 1010)</td>
+<td>B1(1011 0001)</td>
+<td>23(0010 0011)</td>
+<td>89(1000 1001)</td>
+</tr></tbody></table>
+
+<p>根据q1的结果，我们容易得出其tag，index和blockoffset对应的值分别如下：</p>
+<table style="width:30%; text-align:center" border="5">
+<tbody><tr>
+<td>tag(32-8-9=17bit) = (don't care)</td>
+<td><b>index（8bit）= 1001 0001(B) = 128+16+1=145(D) </b></td>
+<td>block offset(9bit) = 1 1000 1001(B)
+</td></tr></tbody></table>
+则其位于第145组，那么由于块号从左上角从左到右从上到下块号递增，那么位于145组的那几块的块号就是答案：
+
+<p>145*4 + （0,1,2,3） = 580,581,582,583块</p>
+<h2 id="2-2-example2-2"><a href="#2-2-example2-2" class="headerlink" title="2.2 example2 [2]"></a>2.2 example2 <a target="_blank" rel="noopener" href="https://www.d.umn.edu/~gshute/arch/cache-addressing.xhtml">[2]</a></h2><p>An Example<br>A computer uses 32-bit byte addressing. The computer uses a 2-way associative cache with a capacity of 32KB. Each cache block contains 16 bytes. Calculate the number of bits in the TAG, SET, and OFFSET fields of a main memory address.</p>
+<p>Answer<br>Since there are 16 bytes in a cache block, the OFFSET field must contain 4 bits (24 = 16). To determine the number of bits in the SET field, we need to determine the number of sets. Each set contains 2 cache blocks (2-way associative) so a set contains 32 bytes. There are 32KB bytes in the entire cache, so there are 32KB/32B = 1K sets. Thus the set field contains 10 bits (210 = 1K).</p>
+<p>Finally, the TAG field contains the remaining 18 bits (32 - 4 - 10). Thus a main memory address is decomposed as shown below.<br>  <table id="example-addressing" class="bar" border='5'><br>      <tr class="label"><br>        <td class="center">18</td><br>        <td class="center">10</td><br>        <td class="center">4</td><br>      </tr><br>      <tr class="bar"><br>        <td style="width: 56.25%;">TAG</td><br>        <td style="width: 31.25%;">SET</td><br>        <td style="width: 12.5%;">OFFSET</td><br>      </tr><br>    </table></p>
+<h1 id="3-ref"><a href="#3-ref" class="headerlink" title="3 ref:"></a>3 ref:</h1><ul>
+<li>[1] <a target="_blank" rel="noopener" href="https://www.sciencedirect.com/topics/computer-science/set-associative-cache">https://www.sciencedirect.com/topics/computer-science/set-associative-cache</a></li>
+<li>[2] <a target="_blank" rel="noopener" href="https://www.d.umn.edu/~gshute/arch/cache-addressing.xhtml">https://www.d.umn.edu/~gshute/arch/cache-addressing.xhtml</a></li>
+<li>[3] <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/CPU_cache">https://en.wikipedia.org/wiki/CPU_cache</a> </li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/05/22/4wayCache/4wayCache/" title="4way cache - 4路组相连cache">https://xychen5.github.io/2021/05/22/4wayCache/4wayCache/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/ca/" rel="tag"># ca</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/20/osgModelLightZ-Lighting/" rel="prev" title="osgModelLightZ-Lighting - osg模型调整光照以及模型闪烁问题[z-lighting]">
+                  <i class="fa fa-chevron-left"></i> osgModelLightZ-Lighting - osg模型调整光照以及模型闪烁问题[z-lighting]
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/05/24/headingPitchRollInCesium/HPRInCesium/" rel="next" title="hpr in cesium - 在cesium中实现HPR">
+                  hpr in cesium - 在cesium中实现HPR <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

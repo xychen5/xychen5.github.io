@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="1 kmp算法参考： https:&#x2F;&#x2F;oi-wiki.org&#x2F;string&#x2F;kmp&#x2F;#_10 这里简单举个例子：在text &#x3D; abcccab中查找tar &#x3D; ab出现次数，那么构造串： ab#abcccab，然后计算前缀函数： a b # a b c c c a b[0,0,0,1,2,0,0,0,1,2] &#x3D; pi, 为前缀函数的结果，找出i&gt;tar.size()且pi[i] &#x3D;&#x3D; n的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="algoKMPStringMatch">
+<meta property="og:url" content="https://xychen5.github.io/2022/04/12/algoKMPStringMatch/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="1 kmp算法参考： https:&#x2F;&#x2F;oi-wiki.org&#x2F;string&#x2F;kmp&#x2F;#_10 这里简单举个例子：在text &#x3D; abcccab中查找tar &#x3D; ab出现次数，那么构造串： ab#abcccab，然后计算前缀函数： a b # a b c c c a b[0,0,0,1,2,0,0,0,1,2] &#x3D; pi, 为前缀函数的结果，找出i&gt;tar.size()且pi[i] &#x3D;&#x3D; n的">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-04-12T03:53:30.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.073Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="algo">
+<meta property="article:tag" content="str">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2022/04/12/algoKMPStringMatch/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2022/04/12/algoKMPStringMatch/","path":"2022/04/12/algoKMPStringMatch/","title":"algoKMPStringMatch"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>algoKMPStringMatch | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-kmp%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">1 kmp算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E4%BE%8B%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">2 例题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0214shortestPalindrome-%E6%9C%80%E7%9F%AD%E5%9B%9E%E6%96%87%E4%B8%B2"><span class="nav-number">2.1.</span> <span class="nav-text">0214shortestPalindrome 最短回文串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE"><span class="nav-number">2.1.1.</span> <span class="nav-text">1 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-number">2.1.2.</span> <span class="nav-text">2 解题思路</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2022/04/12/algoKMPStringMatch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          algoKMPStringMatch
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-04-12 11:53:30" itemprop="dateCreated datePublished" datetime="2022-04-12T11:53:30+08:00">2022-04-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="1-kmp算法"><a href="#1-kmp算法" class="headerlink" title="1 kmp算法"></a>1 kmp算法</h1><p>参考： <a target="_blank" rel="noopener" href="https://oi-wiki.org/string/kmp/#_10">https://oi-wiki.org/string/kmp/#_10</a></p>
+<p>这里简单举个例子：<br>在text = abcccab中查找tar = ab出现次数，那么构造串： ab#abcccab，然后计算前缀函数：<br> a b # a b c c c a b<br>[0,0,0,1,2,0,0,0,1,2] = pi, 为前缀函数的结果，找出i&gt;tar.size()且pi[i] == n的i的集合，每一个i - 2*tar.size()就是tar出现在text中的下标</p>
+<h1 id="2-例题"><a href="#2-例题" class="headerlink" title="2 例题"></a>2 例题</h1><h2 id="0214shortestPalindrome-最短回文串"><a href="#0214shortestPalindrome-最短回文串" class="headerlink" title="0214shortestPalindrome 最短回文串"></a>0214shortestPalindrome 最短回文串</h2><h3 id="1-题目"><a href="#1-题目" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/shortest-palindrome/">https://leetcode-cn.com/problems/shortest-palindrome/</a></p>
+<h3 id="2-解题思路"><a href="#2-解题思路" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
+<li>1 使用KMP算法，能够在text(n)字符串中搜索出tar(m)字符串的所有出现位置复杂度为o(m+n)，那么由于本题目求解的是最短回文串，也就是要求最少的头部添加，尽可能利用字符串本身的回文信息，于是这里看个例子：<ul>
+<li>1.1 see: our target is to find the “b c c b”，so we use kmp<ul>
+<li>s =       b c c b a e</li>
+<li>rs =  e a b c c b </li>
+<li>all = b c c b a e # e a b c c b </li>
+</ul>
+</li>
+<li>1.2 我们用s + 分隔符 + reverse_s得到all，对于all的最后一个前缀函数pi.back()，就说明了最长有多长的后缀和前缀相等，也就是b c c b这一个公共部分，那么吧剩余的拼上去就行了<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">string <span class="title">shortestPalindrome</span><span class="params">(string s)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// prefix function &amp;&amp; kmp: https://oi-wiki.org/string/kmp/#_10</span></span><br><span class="line">        <span class="type">int</span> len = s.<span class="built_in">size</span>();</span><br><span class="line">        string rs = s;</span><br><span class="line">        <span class="built_in">reverse</span>(rs.<span class="built_in">begin</span>(), rs.<span class="built_in">end</span>());</span><br><span class="line"></span><br><span class="line">        string all = s + <span class="string">&quot;#&quot;</span> + rs;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">pi</span><span class="params">(all.size(), <span class="number">0</span>)</span></span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// see: our target is to find the &quot;b c c b&quot;，so we use kmp</span></span><br><span class="line">        <span class="comment">// s =       b c c b a e</span></span><br><span class="line">        <span class="comment">// rs =  e a b c c b </span></span><br><span class="line">        <span class="comment">// all = b c c b a e # e a b c c b </span></span><br><span class="line">        <span class="comment">// 求解pi[i]</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt; all.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">             <span class="comment">// i - 1的前缀函数的值，有s[0:j] == s[i - j : i - 1]</span></span><br><span class="line">            <span class="type">int</span> j = pi[i - <span class="number">1</span>];</span><br><span class="line">            <span class="comment">// 当s[i] != s[j]，说明s[i]这个字符无法成为后缀的最后一个字符，此时pi[i] = 0，于是得一直找到下一个j，直到j = 0，或者s[i] == s[j]</span></span><br><span class="line">            <span class="keyword">while</span>(j &gt; <span class="number">0</span> &amp;&amp; all[i] != all[j]) &#123;</span><br><span class="line">                j = pi[j - <span class="number">1</span>];</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 倘若s[i] == s[j]，那么就有s[0:i-1]这个字串的前缀函数的值为j，然后加上最后一个字符s[i]，所以j++</span></span><br><span class="line">            <span class="keyword">if</span>(all[i] == all[j]) &#123;</span><br><span class="line">                j++;</span><br><span class="line">            &#125;</span><br><span class="line">            pi[i] = j;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> commonLen = pi.<span class="built_in">back</span>();</span><br><span class="line">        <span class="keyword">if</span>(commonLen == len) &#123;</span><br><span class="line">            <span class="keyword">return</span> s;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> rs.<span class="built_in">substr</span>(<span class="number">0</span>, len - commonLen) + s;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2022/04/12/algoKMPStringMatch/" title="algoKMPStringMatch">https://xychen5.github.io/2022/04/12/algoKMPStringMatch/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/algo/" rel="tag"># algo</a>
+              <a href="/tags/str/" rel="tag"># str</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/29/ModernEffectiveCpp/" rel="prev" title="ModernEffectiveCpp 阅读笔记">
+                  <i class="fa fa-chevron-left"></i> ModernEffectiveCpp 阅读笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/05/21/renderPipeline/" rel="next" title="renderPipeline - 一个三维场景的渲染过程">
+                  renderPipeline - 一个三维场景的渲染过程 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

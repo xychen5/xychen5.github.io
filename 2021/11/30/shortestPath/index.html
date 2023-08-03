@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="1 dijstra算法自wiki:对于没有任何优化的戴克斯特拉算法，实际上等价于每次遍历了整个图的所有结点来找到Q(为图的点集)中满足条件的元素（即寻找最小的頂點是${\displaystyle O(|V|)}$的，此外实际上还需要遍历所有的边一遍，因此算法的复杂度是${\displaystyle O(|V|^{2}+|E|)}$一个基于堆优化的实现：https:&#x2F;&#x2F;www.geeksforgee">
+<meta property="og:type" content="article">
+<meta property="og:title" content="shortestPath">
+<meta property="og:url" content="https://xychen5.github.io/2021/11/30/shortestPath/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="1 dijstra算法自wiki:对于没有任何优化的戴克斯特拉算法，实际上等价于每次遍历了整个图的所有结点来找到Q(为图的点集)中满足条件的元素（即寻找最小的頂點是${\displaystyle O(|V|)}$的，此外实际上还需要遍历所有的边一遍，因此算法的复杂度是${\displaystyle O(|V|^{2}+|E|)}$一个基于堆优化的实现：https:&#x2F;&#x2F;www.geeksforgee">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/dijstra.107hdh232p9s.png">
+<meta property="article:published_time" content="2021-11-30T10:01:52.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.490Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="algo">
+<meta property="article:tag" content="graph">
+<meta property="article:tag" content="search">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/dijstra.107hdh232p9s.png">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/11/30/shortestPath/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/11/30/shortestPath/","path":"2021/11/30/shortestPath/","title":"shortestPath"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>shortestPath | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-dijstra%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">1 dijstra算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Floyd%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">2 Floyd算法</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/11/30/shortestPath/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          shortestPath
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-11-30 18:01:52" itemprop="dateCreated datePublished" datetime="2021-11-30T18:01:52+08:00">2021-11-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="1-dijstra算法"><a href="#1-dijstra算法" class="headerlink" title="1 dijstra算法"></a>1 dijstra算法</h2><p>自<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%88%B4%E5%85%8B%E6%96%AF%E7%89%B9%E6%8B%89%E7%AE%97%E6%B3%95">wiki</a>:<br><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/dijstra.107hdh232p9s.png" alt="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/dijstra.107hdh232p9s.png"><br>对于没有任何优化的戴克斯特拉算法，实际上等价于每次遍历了整个图的所有结点来找到Q(为图的点集)中满足条件的元素（即寻找最小的頂點是${\displaystyle O(|V|)}$的，此外实际上还需要遍历所有的边一遍，因此算法的复杂度是${\displaystyle O(|V|^{2}+|E|)}$<br>一个基于堆优化的实现：<a target="_blank" rel="noopener" href="https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-priority_queue-stl/">https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-priority_queue-stl/</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span> </span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std; </span><br><span class="line"><span class="meta"># <span class="keyword">define</span> INF 0x3f3f3f3f </span></span><br><span class="line">  </span><br><span class="line"><span class="comment">// iPair ==&gt; Integer Pair（整数对）</span></span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt; iPair; </span><br><span class="line">  </span><br><span class="line"><span class="comment">// 加边</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">addEdge</span><span class="params">(vector &lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt; &gt; adj[], <span class="type">int</span> u, </span></span></span><br><span class="line"><span class="params"><span class="function">                                     <span class="type">int</span> v, <span class="type">int</span> wt)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">    adj[u].<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(v, wt)); </span><br><span class="line">    adj[v].<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(u, wt)); </span><br><span class="line">&#125; </span><br><span class="line">   </span><br><span class="line">  </span><br><span class="line"><span class="comment">// 计算最短路</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">shortestPath</span><span class="params">(vector&lt;pair&lt;<span class="type">int</span>,<span class="type">int</span>&gt; &gt; adj[], <span class="type">int</span> V, <span class="type">int</span> src)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">    <span class="comment">// 关于stl中的优先队列如何实现，参考下方网址：</span></span><br><span class="line">    <span class="comment">// http://geeksquiz.com/implement-min-heap-using-stl/ </span></span><br><span class="line">    priority_queue&lt; iPair, vector &lt;iPair&gt; , greater&lt;iPair&gt; &gt; pq; </span><br><span class="line">  </span><br><span class="line">    <span class="comment">// 距离置为正无穷大</span></span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">dist</span><span class="params">(V, INF)</span></span>; </span><br><span class="line">    <span class="function">vector&lt;<span class="type">bool</span>&gt; <span class="title">visited</span><span class="params">(V, <span class="literal">false</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 插入源点，距离为0</span></span><br><span class="line">    pq.<span class="built_in">push</span>(<span class="built_in">make_pair</span>(<span class="number">0</span>, src)); </span><br><span class="line">    dist[src] = <span class="number">0</span>; </span><br><span class="line">  </span><br><span class="line">    <span class="comment">/* 循环直到优先队列为空 */</span></span><br><span class="line">    <span class="keyword">while</span> (!pq.<span class="built_in">empty</span>()) </span><br><span class="line">    &#123; </span><br><span class="line">        <span class="comment">// 每次从优先队列中取出顶点事实上是这一轮最短路径权值确定的点</span></span><br><span class="line">        <span class="type">int</span> u = pq.<span class="built_in">top</span>().second; </span><br><span class="line">        pq.<span class="built_in">pop</span>(); </span><br><span class="line">        <span class="keyword">if</span> (visited[u]) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        visited[u] = <span class="literal">true</span>;</span><br><span class="line">        <span class="comment">// 遍历所有边</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> x : adj[u]) </span><br><span class="line">        &#123; </span><br><span class="line">            <span class="comment">// 得到顶点边号以及边权</span></span><br><span class="line">            <span class="type">int</span> v = x.first; </span><br><span class="line">            <span class="type">int</span> weight = x.second; </span><br><span class="line">  </span><br><span class="line">            <span class="comment">//可以松弛</span></span><br><span class="line">            <span class="keyword">if</span> (dist[v] &gt; dist[u] + weight) </span><br><span class="line">            &#123; </span><br><span class="line">                <span class="comment">// 松弛 </span></span><br><span class="line">                dist[v] = dist[u] + weight; </span><br><span class="line">                pq.<span class="built_in">push</span>(<span class="built_in">make_pair</span>(dist[v], v)); </span><br><span class="line">            &#125; </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line">  </span><br><span class="line">    <span class="comment">// 打印最短路</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Vertex Distance from Source\n&quot;</span>); </span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; V; ++i) </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d \t\t %d\n&quot;</span>, i, dist[i]); </span><br><span class="line">&#125; </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">    <span class="type">int</span> V = <span class="number">9</span>; </span><br><span class="line">    vector&lt;iPair &gt; adj[V]; </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">0</span>, <span class="number">1</span>, <span class="number">4</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">0</span>, <span class="number">7</span>, <span class="number">8</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">1</span>, <span class="number">2</span>, <span class="number">8</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">1</span>, <span class="number">7</span>, <span class="number">11</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">2</span>, <span class="number">3</span>, <span class="number">7</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">2</span>, <span class="number">8</span>, <span class="number">2</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">2</span>, <span class="number">5</span>, <span class="number">4</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">3</span>, <span class="number">4</span>, <span class="number">9</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">3</span>, <span class="number">5</span>, <span class="number">14</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">4</span>, <span class="number">5</span>, <span class="number">10</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">5</span>, <span class="number">6</span>, <span class="number">2</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">6</span>, <span class="number">7</span>, <span class="number">1</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">6</span>, <span class="number">8</span>, <span class="number">6</span>); </span><br><span class="line">    <span class="built_in">addEdge</span>(adj, <span class="number">7</span>, <span class="number">8</span>, <span class="number">7</span>); </span><br><span class="line">  </span><br><span class="line">    <span class="built_in">shortestPath</span>(adj, V, <span class="number">0</span>); </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-Floyd算法"><a href="#2-Floyd算法" class="headerlink" title="2 Floyd算法"></a>2 Floyd算法</h2><p>空间o(n^2)，时间o(n^3):<br>自<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Floyd-Warshall%E7%AE%97%E6%B3%95">wiki</a></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">1 let dist be a |V| × |V| array of minimum distances initialized to ∞ (infinity)</span><br><span class="line">2 for each vertex v</span><br><span class="line">3    dist[v][v] ← 0</span><br><span class="line">4 for each edge (u,v)</span><br><span class="line">5    dist[u][v] ← w(u,v)  // the weight of the edge (u,v)</span><br><span class="line">6 for k from 1 to |V|</span><br><span class="line">7    for i from 1 to |V|</span><br><span class="line">8       for j from 1 to |V|</span><br><span class="line">9          if dist[i][j] &gt; dist[i][k] + dist[k][j] </span><br><span class="line">10             dist[i][j] ← dist[i][k] + dist[k][j]</span><br><span class="line">11     end if</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/11/30/shortestPath/" title="shortestPath">https://xychen5.github.io/2021/11/30/shortestPath/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/algo/" rel="tag"># algo</a>
+              <a href="/tags/graph/" rel="tag"># graph</a>
+              <a href="/tags/search/" rel="tag"># search</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/11/29/lcGraphUndirected1/" rel="prev" title="lcGraphUndirected1 - 无向图题集1">
+                  <i class="fa fa-chevron-left"></i> lcGraphUndirected1 - 无向图题集1
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/12/06/lcDisjointSetUnion1/" rel="next" title="lcDisjointSetUnion1 - 并查集1">
+                  lcDisjointSetUnion1 - 并查集1 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

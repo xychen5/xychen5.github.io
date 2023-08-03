@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="0 结果展示 1 下载编译pangolin的库https:&#x2F;&#x2F;github.com&#x2F;stevenlovegrove&#x2F;Pangolin.git该库中本身含有libpng, libjpg, libzip 2 当需要调用该库时：调用时依赖如下：(本项目并未上传所有依赖，部分依赖需要单独下载然后放到thirdparty目录里) 12345# includeF:\prjs\ORB_SLAM3_Fix\ORB">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pangolinDynamicPly.md">
+<meta property="og:url" content="https://xychen5.github.io/2021/07/17/pangolinDynamicPly/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="0 结果展示 1 下载编译pangolin的库https:&#x2F;&#x2F;github.com&#x2F;stevenlovegrove&#x2F;Pangolin.git该库中本身含有libpng, libjpg, libzip 2 当需要调用该库时：调用时依赖如下：(本项目并未上传所有依赖，部分依赖需要单独下载然后放到thirdparty目录里) 12345# includeF:\prjs\ORB_SLAM3_Fix\ORB">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/dynamicPly.4903brhv6b00.gif">
+<meta property="article:published_time" content="2021-07-17T09:44:13.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.486Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="cpp">
+<meta property="article:tag" content="gl">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/dynamicPly.4903brhv6b00.gif">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/07/17/pangolinDynamicPly/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/07/17/pangolinDynamicPly/","path":"2021/07/17/pangolinDynamicPly/","title":"pangolinDynamicPly.md"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>pangolinDynamicPly.md | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-%E7%BB%93%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="nav-number">1.</span> <span class="nav-text">0 结果展示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91pangolin%E7%9A%84%E5%BA%93"><span class="nav-number">2.</span> <span class="nav-text">1 下载编译pangolin的库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%BD%93%E9%9C%80%E8%A6%81%E8%B0%83%E7%94%A8%E8%AF%A5%E5%BA%93%E6%97%B6%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">2 当需要调用该库时：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%8A%A8%E6%80%81%E5%B1%95%E7%A4%BA%E7%82%B9%E4%BA%91%E7%9A%84%E7%A4%BA%E4%BE%8B%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">3 动态展示点云的示例：</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/07/17/pangolinDynamicPly/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          pangolinDynamicPly.md
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-07-17 17:44:13" itemprop="dateCreated datePublished" datetime="2021-07-17T17:44:13+08:00">2021-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="0-结果展示"><a href="#0-结果展示" class="headerlink" title="0 结果展示"></a>0 结果展示</h2><p><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/dynamicPly.4903brhv6b00.gif" alt="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/dynamicPly.4903brhv6b00.gif"></p>
+<h2 id="1-下载编译pangolin的库"><a href="#1-下载编译pangolin的库" class="headerlink" title="1 下载编译pangolin的库"></a>1 下载编译pangolin的库</h2><p><a target="_blank" rel="noopener" href="https://github.com/stevenlovegrove/Pangolin.git">https://github.com/stevenlovegrove/Pangolin.git</a><br>该库中本身含有libpng, libjpg, libzip</p>
+<h2 id="2-当需要调用该库时："><a href="#2-当需要调用该库时：" class="headerlink" title="2 当需要调用该库时："></a>2 当需要调用该库时：</h2><p>调用时依赖如下：(本项目并未上传所有依赖，部分依赖需要单独下载然后放到thirdparty目录里)</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># include</span></span><br><span class="line">F:\prjs\ORB_SLAM3_Fix\ORB_SLAM3\Thirdparty\Pangolin\include;F:\prjs\ORB_SLAM3_Fix\ORB_SLAM3\Thirdparty\Pangolin\build\src\include;F:\prjs\ORB_SLAM3_Fix\ORB_SLAM3\Thirdparty\Pangolin\build\external\glew\include;F:\BASE_ENV\forOpenMVS\eigen;%(AdditionalIncludeDirectories)</span><br><span class="line"></span><br><span class="line"><span class="comment"># lib</span></span><br><span class="line">..\..\..\lib\Release\pangolin.lib;opengl32.lib;glu32.lib;..\..\external\glew\lib\glew.lib;..\..\external\libpng\lib\libpng16_static.lib;..\..\external\zlib\lib\zlibstatic.lib;..\..\external\libjpeg\lib\jpeg.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-动态展示点云的示例："><a href="#3-动态展示点云的示例：" class="headerlink" title="3 动态展示点云的示例："></a>3 动态展示点云的示例：</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">viewThread</span><span class="params">(pangolin::OpenGlMatrix &amp;Twc)</span> </span>&#123;</span><br><span class="line">	pangolin::<span class="built_in">CreateWindowAndBind</span>(<span class="string">&quot;Main&quot;</span>, <span class="number">1024</span>, <span class="number">768</span>);</span><br><span class="line">	<span class="built_in">glEnable</span>(GL_DEPTH_TEST);</span><br><span class="line">	<span class="comment">// Issue specific OpenGl we might need</span></span><br><span class="line">	<span class="built_in">glEnable</span>(GL_BLEND);</span><br><span class="line">	<span class="built_in">glBlendFunc</span>(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Define Projection and initial ModelView matrix</span></span><br><span class="line">	<span class="function">pangolin::OpenGlRenderState <span class="title">s_cam</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">		pangolin::ProjectionMatrix(<span class="number">1024</span>, <span class="number">768</span>, <span class="number">500</span>, <span class="number">500</span>, <span class="number">512</span>, <span class="number">389</span>, <span class="number">0.1</span>, <span class="number">1000</span>),</span></span></span><br><span class="line"><span class="params"><span class="function">		pangolin::ModelViewLookAt(<span class="number">50</span>, <span class="number">50</span>, <span class="number">50</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, pangolin::AxisY)</span></span></span><br><span class="line"><span class="params"><span class="function">	)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">glClear</span>(GL_COLOR_BUFFER_BIT);</span><br><span class="line">	<span class="built_in">glClearColor</span>(<span class="number">1.0f</span>, <span class="number">1.0f</span>, <span class="number">1.0f</span>, <span class="number">1.0f</span>);</span><br><span class="line"></span><br><span class="line">	 <span class="comment">// Add named OpenGL viewport to window and provide 3D Handler</span></span><br><span class="line">	 pangolin::View&amp; d_cam = pangolin::<span class="built_in">CreateDisplay</span>()</span><br><span class="line">	 	.<span class="built_in">SetBounds</span>(<span class="number">0.0</span>, <span class="number">1.0</span>, pangolin::Attach::<span class="built_in">Pix</span>(<span class="number">175</span>), <span class="number">1.0</span>, <span class="number">-1024.0f</span> / <span class="number">768.0f</span>)</span><br><span class="line">	 	.<span class="built_in">SetHandler</span>(<span class="keyword">new</span> pangolin::<span class="built_in">Handler3D</span>(s_cam));</span><br><span class="line">	</span><br><span class="line">	<span class="type">size_t</span> frame = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>( !pangolin::<span class="built_in">ShouldQuit</span>() ) &#123;</span><br><span class="line">        <span class="comment">// Clear screen and activate view to render into</span></span><br><span class="line">        <span class="built_in">glClear</span>(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);</span><br><span class="line">		<span class="built_in">glClearColor</span>(<span class="number">1.0f</span>,<span class="number">1.0f</span>,<span class="number">1.0f</span>,<span class="number">1.0f</span>);</span><br><span class="line">        <span class="comment">//! Activate Displays and set State Matrices</span></span><br><span class="line">        d_cam.<span class="built_in">Activate</span>(s_cam);</span><br><span class="line">		<span class="comment">// draw camera</span></span><br><span class="line">        <span class="type">const</span> <span class="type">float</span> w = <span class="number">2</span>;</span><br><span class="line">        <span class="type">const</span> <span class="type">float</span> h = w*<span class="number">0.75</span>;</span><br><span class="line">        <span class="type">const</span> <span class="type">float</span> z = w*<span class="number">0.6</span>;</span><br><span class="line">        <span class="built_in">glPushMatrix</span>();</span><br><span class="line">		<span class="built_in">glMultMatrixd</span>(Twc.m);</span><br><span class="line">        <span class="built_in">glLineWidth</span>(<span class="number">1</span>);</span><br><span class="line">        <span class="built_in">glColor3f</span>(<span class="number">0.0f</span>,<span class="number">1.0f</span>,<span class="number">0.0f</span>);</span><br><span class="line">        <span class="built_in">glBegin</span>(GL_LINES);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,h,z);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glVertex3f</span>(-w,-h,z);</span><br><span class="line">        <span class="built_in">glVertex3f</span>(w,-h,z);</span><br><span class="line">        <span class="built_in">glEnd</span>();</span><br><span class="line"></span><br><span class="line">        <span class="built_in">glPopMatrix</span>();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// draw points</span></span><br><span class="line">		<span class="built_in">glPointSize</span>(<span class="number">2</span>);</span><br><span class="line">		<span class="built_in">glBegin</span>(GL_POINTS);</span><br><span class="line">		<span class="built_in">glColor3f</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">// get all points to m_pos.m_ppatches</span></span><br><span class="line">		updatePointsMutex.<span class="built_in">lock</span>();</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">size_t</span> p = <span class="number">0</span>; p &lt; (<span class="type">size_t</span>)allPPatchesRender.<span class="built_in">size</span>(); ++p)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">auto</span> patch = *allPPatchesRender[p];</span><br><span class="line">			<span class="built_in">glVertex3f</span>(</span><br><span class="line">				patch.m_coord[<span class="number">0</span>],</span><br><span class="line">				patch.m_coord[<span class="number">1</span>],</span><br><span class="line">				patch.m_coord[<span class="number">2</span>]</span><br><span class="line">			);</span><br><span class="line">		&#125;</span><br><span class="line">        updatePointsMutex.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="built_in">glEnd</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Swap frames and Process Events</span></span><br><span class="line">        pangolin::<span class="built_in">FinishFrame</span>();</span><br><span class="line">        </span><br><span class="line">		std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">100</span>)); <span class="comment">// ms</span></span><br><span class="line">		<span class="comment">// std::cout &lt;&lt; &quot;frame��&quot; &lt;&lt; ++frame &lt;&lt; std::endl;</span></span><br><span class="line">		<span class="comment">// std::cout &lt;&lt; &quot;point nums are: &quot; &lt;&lt; findMatch-&gt;m_pos.m_ppatches.size() &lt;&lt; std::endl;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	pangolin::OpenGlMatrix Twc, Twr;</span><br><span class="line">	Twc.<span class="built_in">SetIdentity</span>();</span><br><span class="line">	<span class="function">std::thread <span class="title">viewThd</span><span class="params">(viewThread, Twc)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">...&lt;省略&gt;</span><br><span class="line">        <span class="comment">// update render points</span></span><br><span class="line">        updatePointsMutex.<span class="built_in">lock</span>();</span><br><span class="line">        allPPatchesRender = findMatch-&gt;m_pos.m_ppatches; <span class="comment">// to get the newest points</span></span><br><span class="line">        updatePointsMutex.<span class="built_in">unlock</span>();</span><br><span class="line">...&lt;省略&gt;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	viewThd.<span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">	<span class="comment">//writePointCloundPly(prefix);</span></span><br><span class="line">	<span class="built_in">releasePMVS</span>();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/07/17/pangolinDynamicPly/" title="pangolinDynamicPly.md">https://xychen5.github.io/2021/07/17/pangolinDynamicPly/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/cpp/" rel="tag"># cpp</a>
+              <a href="/tags/gl/" rel="tag"># gl</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/15/osgPtr/" rel="prev" title="osg智能指针错误 - Warning deleting still referenced object">
+                  <i class="fa fa-chevron-left"></i> osg智能指针错误 - Warning deleting still referenced object
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/17/freeImageTocvMat/" rel="next" title="freeImageTocvMat&1channelTo3channes - freeimage转到cvmat & 单通道图像转到3通道">
+                  freeImageTocvMat&1channelTo3channes - freeimage转到cvmat & 单通道图像转到3通道 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

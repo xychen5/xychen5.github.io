@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="编译colmap1 前期准备1 github上下载colmap稳定版源码:https:&#x2F;&#x2F;github.com&#x2F;colmap&#x2F;colmap&#x2F;archive&#x2F;refs&#x2F;tags&#x2F;3.6.zip之后解压进入，执行： git init 2 确保编译环境 1 确保你的vs不是vs2019 16.9.3以及以上，否则会有奇怪的cuda错误, 解决方案是： 1.1 将vs2019卸载 1.2 去https:&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="colmapCompile - colmap windows的编译">
+<meta property="og:url" content="https://xychen5.github.io/2021/05/16/colmapCompile/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="编译colmap1 前期准备1 github上下载colmap稳定版源码:https:&#x2F;&#x2F;github.com&#x2F;colmap&#x2F;colmap&#x2F;archive&#x2F;refs&#x2F;tags&#x2F;3.6.zip之后解压进入，执行： git init 2 确保编译环境 1 确保你的vs不是vs2019 16.9.3以及以上，否则会有奇怪的cuda错误, 解决方案是： 1.1 将vs2019卸载 1.2 去https:&#x2F;">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-05-16T04:01:41.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.074Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="conf">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/05/16/colmapCompile/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/05/16/colmapCompile/","path":"2021/05/16/colmapCompile/","title":"colmapCompile - colmap windows的编译"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>colmapCompile - colmap windows的编译 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91colmap"><span class="nav-number">1.</span> <span class="nav-text">编译colmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87"><span class="nav-number">1.1.</span> <span class="nav-text">1 前期准备</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-github%E4%B8%8A%E4%B8%8B%E8%BD%BDcolmap%E7%A8%B3%E5%AE%9A%E7%89%88%E6%BA%90%E7%A0%81"><span class="nav-number">1.1.1.</span> <span class="nav-text">1 github上下载colmap稳定版源码:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%A1%AE%E4%BF%9D%E7%BC%96%E8%AF%91%E7%8E%AF%E5%A2%83"><span class="nav-number">1.1.2.</span> <span class="nav-text">2 确保编译环境</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%BE%9D%E8%B5%96%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.</span> <span class="nav-text">2 依赖安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-boost-%E7%9B%B4%E6%8E%A5%E5%AE%89%E8%A3%85-%E6%8E%A8%E8%8D%90%E4%B8%8B%E8%BD%BDvs2015%E7%89%88%E6%9C%AC%EF%BC%8C%E6%88%91%E7%94%A8%E7%9A%84%E6%98%AFv-1-73"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 boost 直接安装(推荐下载vs2015版本，我用的是v_1_73)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E5%AE%89%E8%A3%85GMP%E5%92%8CMFPR"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 安装GMP和MFPR</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E5%85%B6%E4%BB%96%E4%BE%9D%E8%B5%96build-py%E4%BC%9A%E5%B8%AE%E4%BD%A0%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 其他依赖build.py会帮你下载编译</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%BC%96%E8%AF%91colmap"><span class="nav-number">1.3.</span> <span class="nav-text">3 编译colmap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%AF%B9%E7%BC%96%E8%AF%91%E6%96%87%E4%BB%B6%E5%92%8C%E6%9F%90%E4%BA%9B%E6%BA%90%E6%96%87%E4%BB%B6%E7%9A%84%E4%BF%AE%E6%94%B9%E5%A6%82%E4%B8%8B%EF%BC%9A"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 对编译文件和某些源文件的修改如下：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E7%BC%96%E8%BE%91CmakeList-txt"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 编辑CmakeList.txt</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E7%BC%96%E8%AF%91%E6%89%A7%E8%A1%8C%EF%BC%9A"><span class="nav-number">1.4.</span> <span class="nav-text">3.3 编译执行：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%BB%99%E5%87%BA%E6%88%91%E7%BC%96%E8%AF%91%E5%90%8E%E7%9A%84%E5%BA%93%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84%EF%BC%88%E6%9C%80%E9%87%8D%E8%A6%81%E7%9A%84%E6%98%AF-install-lib%E4%B8%8B%E9%9D%A2%E7%9A%84%E5%86%85%E5%AE%B9%EF%BC%89%EF%BC%9A"><span class="nav-number">1.5.</span> <span class="nav-text">4 给出我编译后的库目录结构（最重要的是__install__&#x2F;lib下面的内容）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">1.6.</span> <span class="nav-text">5 可能遇到的问题：</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/05/16/colmapCompile/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          colmapCompile - colmap windows的编译
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-05-16 12:01:41" itemprop="dateCreated datePublished" datetime="2021-05-16T12:01:41+08:00">2021-05-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="编译colmap"><a href="#编译colmap" class="headerlink" title="编译colmap"></a>编译colmap</h2><h3 id="1-前期准备"><a href="#1-前期准备" class="headerlink" title="1 前期准备"></a>1 前期准备</h3><h4 id="1-github上下载colmap稳定版源码"><a href="#1-github上下载colmap稳定版源码" class="headerlink" title="1 github上下载colmap稳定版源码:"></a>1 github上下载colmap稳定版源码:</h4><p><a target="_blank" rel="noopener" href="https://github.com/colmap/colmap/archive/refs/tags/3.6.zip">https://github.com/colmap/colmap/archive/refs/tags/3.6.zip</a><br>之后解压进入，执行： git init</p>
+<h4 id="2-确保编译环境"><a href="#2-确保编译环境" class="headerlink" title="2 确保编译环境"></a>2 确保编译环境</h4><ul>
+<li>1 确保你的vs不是vs2019 16.9.3以及以上，否则会有奇怪的cuda错误, 解决方案是：<ul>
+<li>1.1 将vs2019卸载</li>
+<li>1.2 去<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/visualstudio/releases/2019/history#installing-an-earlier-release">https://docs.microsoft.com/en-us/visualstudio/releases/2019/history#installing-an-earlier-release</a>下载vs2019 16.8.5，然后安装v140，v141的生成工具</li>
+</ul>
+</li>
+<li>2 如果本篇博客所有内容都详细读完，任然无法成功编译colmap，那就装VS2015，然后用他的生成工具（cmake -G 参数指定编译器版本，命令行里输入cmake -G），项目打开还是可以用vs2019的。</li>
+</ul>
+<p>然后将编译器加入环境变量：<br>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.16.27023\bin\HostX64\x64<br>输入cl能看到输出即可.</p>
+<h3 id="2-依赖安装"><a href="#2-依赖安装" class="headerlink" title="2 依赖安装"></a>2 依赖安装</h3><h4 id="2-1-boost-直接安装-推荐下载vs2015版本，我用的是v-1-73"><a href="#2-1-boost-直接安装-推荐下载vs2015版本，我用的是v-1-73" class="headerlink" title="2.1 boost 直接安装(推荐下载vs2015版本，我用的是v_1_73)"></a>2.1 boost 直接安装(推荐下载vs2015版本，我用的是v_1_73)</h4><p><a target="_blank" rel="noopener" href="https://boostorg.jfrog.io/artifactory/main/release/1.64.0/binaries">https://boostorg.jfrog.io/artifactory/main/release/1.64.0/binaries/</a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">boost使用源码编译的静态方式编译：</span><br><span class="line">```sh</span><br><span class="line">.\b2.exe  --toolset=msvc-14.2 `</span><br><span class="line">--address-model=64 `</span><br><span class="line">--architecture=x86 `</span><br><span class="line">--threading=multi `</span><br><span class="line">-sZLIB_SOURCE=<span class="string">&quot;F:\BASE_ENV\forOpenMVS\zlib-1.2.11&quot;</span> -sZLIB_INCLUDE=<span class="string">&quot;F:\BASE_ENV\forOpenMVS\zlib-1.2.11&quot;</span> `</span><br><span class="line">--with-iostreams --with-iostreams --with-log --with-program_options --with-graph --with-test --with-regex --with-filesystem `</span><br><span class="line">--<span class="built_in">link</span>=static --runtime-link=shared --build-type=complete `</span><br><span class="line">stage --stagedir=<span class="string">&quot;F:\BASE_ENV\forOpenMVS\boost_1_66_0\msvc142_linkStatic_runShared&quot;</span> `</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-安装GMP和MFPR"><a href="#2-2-安装GMP和MFPR" class="headerlink" title="2.2 安装GMP和MFPR"></a>2.2 安装GMP和MFPR</h4><ul>
+<li><p>0 不想要自己折腾： 参考： <a target="_blank" rel="noopener" href="https://github.com/emphasis87/libmpfr-msys2-mingw64">https://github.com/emphasis87/libmpfr-msys2-mingw64</a>，这里面应该有现成的库。</p>
+</li>
+<li><p>1 安装Cygwin</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Setup Environment</span><br><span class="line">Install Cygwin, add the following packages to the default installation: </span><br><span class="line"></span><br><span class="line">gcc-core</span><br><span class="line">gcc-g++</span><br><span class="line">libgcc</span><br><span class="line">m4</span><br><span class="line">make <span class="comment">#不知为何安装后在Cygwin根目录下搜不到make程序，见下面步骤2安装make</span></span><br><span class="line">cmake</span><br><span class="line">bash</span><br><span class="line">Add the following Environment Variable to the User PATH: C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Tools\MSVC\14.15.26726\bin\Hostx64\x64</span><br><span class="line">This is so you can use the lib <span class="built_in">command</span>. Your lib.exe may be located elsewhere.</span><br></pre></td></tr></table></figure>
+<p>安装好Cygwin以及一些依赖以后，在其根目录(方便说明记为： CygwinRoot=”D:\CygwinRooto”)下的bin/minnty.exe是其终端入口，然后每次打开该终端，进入的是：$CygwinRoot/home/$(userName)， 运行”cd /“后就可以理解了； </p>
+</li>
+<li><p>2 下载并安装make</p>
+<ul>
+<li>2.1 从如下网址下载make的源码，<a target="_blank" rel="noopener" href="https://ftp.gnu.org/gnu/make/%EF%BC%8C%E7%84%B6%E5%90%8E%E8%A7%A3%E5%8E%8B">https://ftp.gnu.org/gnu/make/，然后解压</a></li>
+<li>2.2 打开Cygwin64 Terminal命令行，进入源码根目录，然后运行：configure &amp;&amp; ./build.sh</li>
+<li>2.3 编译得到了make.exe后将其移动到Cygwin的bin目录下</li>
+</ul>
+</li>
+<li><p>3 编译gmp<br>运行两个： ./configure 和 make install</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/home/chenxy/mylibs/newTry/gmp-6.2.0/build/static --enable-static --disable-shared</span><br><span class="line">configure: summary of build options:</span><br><span class="line"></span><br><span class="line">  Version:           GNU MP 6.2.0</span><br><span class="line">  Host <span class="built_in">type</span>:         skylake-pc-cygwin</span><br><span class="line">  ABI:               64</span><br><span class="line">  Install prefix:    /home/chenxy/mylibs/newTry/gmp-6.2.0/build/static</span><br><span class="line">  Compiler:          gcc</span><br><span class="line">  Static libraries:  <span class="built_in">yes</span></span><br><span class="line">  Shared libraries:  no</span><br></pre></td></tr></table></figure>
+<p>编译结果（默认生成的是static的数据）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@nash-5 ~/mylibs/gmp-6.2.0</span><br><span class="line">$ ls /usr/local/include/</span><br><span class="line">gmp.h</span><br><span class="line"></span><br><span class="line">@nash-5 ~/mylibs/gmp-6.2.0</span><br><span class="line">$ ls /usr/local/lib/</span><br><span class="line">libgmp.a  libgmp.la  pkgconfig</span><br></pre></td></tr></table></figure>
+<p>生成动态连接库（注意： 动态连接库和静态连接库的.h文件不同，所以注意分成2个文件夹，至少对于gmp是如此）：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/home/chenxy/mylibs/gmp-6.2.0/build/shared --enable-shared --disable-static</span><br></pre></td></tr></table></figure></li>
+<li><p>4 编译mfpr（需要gmp的依赖，而且是动态连接库）<br>进入mfpr的根目录：<br>运行./configure：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking for gmp.h... no</span><br><span class="line">configure: error: gmp.h can&#x27;t be found, or is unusable.</span><br></pre></td></tr></table></figure>
+<p>运行./configure –help</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">···</span><br><span class="line">  --with-gmp-include=DIR  GMP include directory</span><br><span class="line">  --with-gmp-lib=DIR      GMP lib directory</span><br><span class="line">···</span><br></pre></td></tr></table></figure>
+<p>所以：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/home/chenxy/mylibs/newTry/mpfr-4.1.0/build/static \</span><br><span class="line">--enable-static --disable-shared \</span><br><span class="line">--with-gmp-include=/home/chenxy/mylibs/newTry/gmp-6.2.0/build/static/include \</span><br><span class="line">--with-gmp-lib=/home/chenxy/mylibs/newTry/gmp-6.2.0/build/staic/lib</span><br><span class="line"></span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/home/chenxy/mylibs/mpfr-4.1.0/build/static \</span><br><span class="line">--with-gmp-include=/home/chenxy/mylibs/gmp-6.2.0/build/static/include \</span><br><span class="line">--with-gmp-lib=/home/chenxy/mylibs/gmp-6.2.0/build/static/lib \</span><br><span class="line">--enable-static --disable-shared</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="2-3-其他依赖build-py会帮你下载编译"><a href="#2-3-其他依赖build-py会帮你下载编译" class="headerlink" title="2.3 其他依赖build.py会帮你下载编译"></a>2.3 其他依赖build.py会帮你下载编译</h4><p>确保你能够流畅访问github，否则需要你自己下载然后修改build.py。</p>
+<h3 id="3-编译colmap"><a href="#3-编译colmap" class="headerlink" title="3 编译colmap"></a>3 编译colmap</h3><h4 id="3-1-对编译文件和某些源文件的修改如下："><a href="#3-1-对编译文件和某些源文件的修改如下：" class="headerlink" title="3.1 对编译文件和某些源文件的修改如下："></a>3.1 对编译文件和某些源文件的修改如下：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line">diff --git a/CMakeLists.txt b/CMakeLists.txt</span><br><span class="line">index 7333a04..d73a6ad 100755</span><br><span class="line">--- a/CMakeLists.txt</span><br><span class="line">+++ b/CMakeLists.txt</span><br><span class="line">@@ -72,8 +72,10 @@ endif()</span><br><span class="line"> </span><br><span class="line"> if(BOOST_STATIC)</span><br><span class="line">     set(Boost_USE_STATIC_LIBS ON)</span><br><span class="line">+    # message(&quot;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ using static boost&quot;, $&#123;BOOST_STATIC&#125;)</span><br><span class="line"> else()</span><br><span class="line">     add_definitions(&quot;-DBOOST_TEST_DYN_LINK&quot;)</span><br><span class="line">+    # message(&quot;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ using dll boost&quot;, $&#123;BOOST_STATIC&#125;)</span><br><span class="line"> endif()</span><br><span class="line"> </span><br><span class="line"> ################################################################################</span><br><span class="line">@@ -86,6 +88,7 @@ endif()</span><br><span class="line"> </span><br><span class="line"> find_package(Ceres REQUIRED)</span><br><span class="line"> </span><br><span class="line">+set(Boost_DEBUG ON)</span><br><span class="line"> find_package(Boost REQUIRED COMPONENTS</span><br><span class="line">              program_options</span><br><span class="line">              filesystem</span><br><span class="line">diff --git a/scripts/python/build.py b/scripts/python/build.py</span><br><span class="line">index 89dff59..fe1e4c4 100644</span><br><span class="line">--- a/scripts/python/build.py</span><br><span class="line">+++ b/scripts/python/build.py</span><br><span class="line">@@ -75,10 +75,12 @@ def parse_args():</span><br><span class="line">                         help=&quot;The path to the folder containing Boost, &quot;</span><br><span class="line">                              &quot;e.g., under Windows: &quot;</span><br><span class="line">                              &quot;C:/local/boost_1_64_0/lib64-msvc-12.0&quot;)</span><br><span class="line">+    parser.add_argument(&quot;--boost_include_dir&quot;, default=&quot;F:/BASE_ENV/forOpenMVS/boost_1_73_0_v140&quot;)</span><br><span class="line">+    parser.add_argument(&quot;--boost_lib_dir&quot;, default=&quot;F:/BASE_ENV/forOpenMVS/boost_1_73_0_v140/lib64-msvc-14.0&quot;)</span><br><span class="line">     parser.add_argument(&quot;--cgal_path&quot;, default=&quot;&quot;,</span><br><span class="line">                         help=&quot;The path to the folder containing CGAL, &quot;</span><br><span class="line">                              &quot;e.g., under Windows: C:/dev/CGAL-4.11.2/build&quot;)</span><br><span class="line">-    parser.add_argument(&quot;--cuda_path&quot;, default=&quot;&quot;,</span><br><span class="line">+    parser.add_argument(&quot;--cuda_path&quot;, default=&quot;C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2&quot;,</span><br><span class="line">                         help=&quot;The path to the folder containing CUDA, &quot;</span><br><span class="line">                              &quot;e.g., under Windows: C:/Program Files/NVIDIA GPU &quot;</span><br><span class="line">                              &quot;Computing Toolkit/CUDA/v8.0&quot;)</span><br><span class="line">@@ -108,7 +110,7 @@ def parse_args():</span><br><span class="line">                         help=&quot;Whether to build unit tests&quot;)</span><br><span class="line">     parser.add_argument(&quot;--build_type&quot;, default=&quot;Release&quot;,</span><br><span class="line">                         help=&quot;Build type, e.g., Debug, Release, RelWithDebInfo&quot;)</span><br><span class="line">-    parser.add_argument(&quot;--cmake_generator&quot;, default=&quot;&quot;,</span><br><span class="line">+    parser.add_argument(&quot;--cmake_generator&quot;, default=&quot;Visual Studio 14&quot;,</span><br><span class="line">                         help=&quot;CMake generator, e.g., Visual Studio 14&quot;)</span><br><span class="line">     parser.add_argument(&quot;--no_ssl_verification&quot;,</span><br><span class="line">                         dest=&quot;ssl_verification&quot;, action=&quot;store_false&quot;,</span><br><span class="line">@@ -429,8 +431,28 @@ def build_colmap(args):</span><br><span class="line">         extra_config_args.append(</span><br><span class="line">             &quot;-DBOOST_ROOT=&#123;&#125;&quot;.format(args.boost_path))</span><br><span class="line">         extra_config_args.append(</span><br><span class="line">-            &quot;-DBOOST_LIBRARYDIR=&#123;&#125;&quot;.format(args.boost_path))</span><br><span class="line">-</span><br><span class="line">+            &quot;-DBOOST_INCLUDEDIR=&#123;&#125;&quot;.format(args.boost_include_dir))</span><br><span class="line">+        extra_config_args.append(</span><br><span class="line">+            &quot;-DBOOST_LIBRARYDIR=&#123;&#125;&quot;.format(args.boost_lib_dir))</span><br><span class="line">+        # print(&quot;BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOST: &quot;, extra_config_args)</span><br><span class="line">+        # extra_config_args.append(&quot;-DBOOST_STATIC=ON&quot;)</span><br><span class="line">+        # extra_config_args.append(&quot;-DBoost_USE_STATIC_LIBS=ON&quot;)</span><br><span class="line">+        # extra_config_args.append(&quot;-DBoost_USE_MULTITHREADED=ON&quot;)</span><br><span class="line">+        # extra_config_args.append(&quot;-DBoost_USE_STATIC_RUNTIME=ON&quot;)</span><br><span class="line">+        # extra_config_args.append(&quot;-DBOOST_ALL_DYN_LINK=ON&quot;)</span><br><span class="line">+    </span><br><span class="line">+    # -DGMP_INCLUDE_DIR=&quot;F:\BASE_ENV\forOpenMVS\gmp_mpfr\include&quot; `</span><br><span class="line">+    # -DGMP_LIBRARIES=&quot;F:\BASE_ENV\forOpenMVS\gmp_mpfr\lib\libgmp-10.lib&quot; `</span><br><span class="line">+    # -DMPFR_INCLUDE_DIR=&quot;F:\BASE_ENV\forOpenMVS\gmp_mpfr\include&quot; `</span><br><span class="line">+    # -DMPFR_LIBRARIES=&quot;F:\BASE_ENV\forOpenMVS\gmp_mpfr\lib\libmpfr-4.lib&quot; </span><br><span class="line">+    extra_config_args.append(</span><br><span class="line">+        &quot;-DGMP_INCLUDE_DIR=&#123;&#125;&quot;.format(&quot;F:/BASE_ENV/forOpenMVS/gmp_mpfr/include&quot;))</span><br><span class="line">+    extra_config_args.append(</span><br><span class="line">+        &quot;-DGMP_LIBRARIES=&#123;&#125;&quot;.format(&quot;F:/BASE_ENV/forOpenMVS/gmp_mpfr/lib/libgmp-10.lib&quot;))</span><br><span class="line">+    extra_config_args.append(</span><br><span class="line">+        &quot;-DMPFR_INCLUDE_DIR=&#123;&#125;&quot;.format(&quot;F:/BASE_ENV/forOpenMVS/gmp_mpfr/include&quot;))</span><br><span class="line">+    extra_config_args.append(</span><br><span class="line">+        &quot;-DMPFR_LIBRARIES=&#123;&#125;&quot;.format(&quot;F:/BASE_ENV/forOpenMVS/gmp_mpfr/lib/libmpfr-4.lib&quot;))</span><br><span class="line">     if args.cuda_path != &quot;&quot;:</span><br><span class="line">         extra_config_args.append(</span><br><span class="line">             &quot;-DCUDA_TOOLKIT_ROOT_DIR=&#123;&#125;&quot;.format(args.cuda_path))</span><br><span class="line">@@ -479,6 +501,8 @@ def build_post_process(args):</span><br><span class="line">                         os.path.basename(lapack_path)))</span><br><span class="line"> </span><br><span class="line">         if args.qt_path:</span><br><span class="line">+            print(&quot;copying !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!&quot;, os.path.join(args.qt_path, &quot;bin/Qt5Core.dll&quot;))</span><br><span class="line">+            print(&quot;copying !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!&quot;, os.path.join(args.install_path, &quot;lib/Qt5Core.dll&quot;))</span><br><span class="line">             copy_file_if_not_exists(</span><br><span class="line">                 os.path.join(args.qt_path, &quot;bin/Qt5Core.dll&quot;),</span><br><span class="line">                 os.path.join(args.install_path, &quot;lib/Qt5Core.dll&quot;))</span><br><span class="line">diff --git a/src/retrieval/utils.h b/src/retrieval/utils.h</span><br><span class="line">index b99bf64..d773220 100644</span><br><span class="line">--- a/src/retrieval/utils.h</span><br><span class="line">+++ b/src/retrieval/utils.h</span><br><span class="line">@@ -52,7 +52,8 @@ struct ImageScore &#123;</span><br><span class="line"> template &lt;int N, int kSigma = 16&gt;</span><br><span class="line"> class HammingDistWeightFunctor &#123;</span><br><span class="line">  public:</span><br><span class="line">-  static const size_t kMaxHammingDistance = static_cast&lt;size_t&gt;(1.5f * kSigma);</span><br><span class="line">+  // static const size_t kMaxHammingDistance = static_cast&lt;size_t&gt;(1.5f * kSigma);</span><br><span class="line">+  static const size_t kMaxHammingDistance = 24;</span><br><span class="line"> </span><br><span class="line">   HammingDistWeightFunctor() &#123;</span><br><span class="line">     // Fills the look-up table.</span><br><span class="line"></span><br><span class="line">(END)</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-编辑CmakeList-txt"><a href="#3-2-编辑CmakeList-txt" class="headerlink" title="3.2 编辑CmakeList.txt"></a>3.2 编辑CmakeList.txt</h4><p>set(Boost_DEBUG ON)，打开boost的调试信息，boost的链接最容易出问题。(以下的内容仅供了解，无需修改)</p>
+<p><strong>主要注意:</strong> -DBoost_USE_STATIC_RUNTIME=ON 这个设置是指boost的库在使用cpp的runtime时候将会使用静态库，如果这个选项打开了，则需要往CmakeList.txt(colmap的根目录)中添加：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># set the used type of runtime lib to be static</span></span><br><span class="line"><span class="built_in">set</span>(CMAKE_CXX_FLAGS_RELEASE <span class="string">&quot;/MT&quot;</span>)</span><br><span class="line"><span class="built_in">set</span>(CMAKE_CXX_FLAGS_DEBUG <span class="string">&quot;/MTd&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>上面意味着运行时库调用时选择静态运行时库(vs中，在项目-&gt;cpp-&gt;代码生成中有MT/MD的配置), 而且对应的编译出来的boost库，编译时需要带上： –link=static –runtime-link=static –build-type=complete 参数;</p>
+<h3 id="3-3-编译执行："><a href="#3-3-编译执行：" class="headerlink" title="3.3 编译执行："></a>3.3 编译执行：</h3><p>注意我们使用静态的boost避免boost 的链接错误；</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">python scripts/python/build.py \</span><br><span class="line">    --build_path <span class="string">&quot;F:/prjs/colmap-3.6/build&quot;</span> \</span><br><span class="line">    --colmap_path <span class="string">&quot;F:/prjs/colmap-3.6&quot;</span> \</span><br><span class="line">    --boost_path <span class="string">&quot;F:/BASE_ENV/forOpenMVS/boost_1_73_0_v140&quot;</span> \</span><br><span class="line">    --boost_include_dir <span class="string">&quot;F:/BASE_ENV/forOpenMVS/boost_1_73_0_v140&quot;</span> \</span><br><span class="line">    --boost_lib_dir <span class="string">&quot;F:/BASE_ENV/forOpenMVS/boost_1_73_0_v140\lib64-msvc-14.0&quot;</span> \</span><br><span class="line">    --qt_path <span class="string">&quot;F:/BASE_ENV/forOpenMVS/qt_msvc2015_64/msvc2015_64&quot;</span> \</span><br><span class="line">    --cgal_path <span class="string">&quot;F:/BASE_ENV/forOpenMVS/CGAL-5.1/build&quot;</span> \</span><br><span class="line">    --cmake_generator <span class="string">&quot;Visual Studio 14&quot;</span> \</span><br><span class="line">    --with_cuda \</span><br><span class="line">    --cuda_path <span class="string">&quot;C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2&quot;</span> \</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>上述命令会失败，但是没关系，用code打开F:/prjs/colmap-3.6/build/colmap/__build__：<br>全局替换的方式删除： BOOST_ALL_DYN_LINK=1，<br>然后在F:/prjs/colmap-3.6/build/colmap/__build__里找到COLMAP.sln，然后手动用vs打开然后编译；<br>推荐使用VS2015的工具对colmap进行编译.</p>
+<h3 id="4-给出我编译后的库目录结构（最重要的是-install-lib下面的内容）："><a href="#4-给出我编译后的库目录结构（最重要的是-install-lib下面的内容）：" class="headerlink" title="4 给出我编译后的库目录结构（最重要的是__install__/lib下面的内容）："></a>4 给出我编译后的库目录结构（最重要的是__install__/lib下面的内容）：</h3><p>其中： <strong>install</strong>/lib下面的platform中必须要有qwindows.dll，参考问题4。<br>然后： <strong>install</strong>/lib里面的cgal*.dll也是不必须的，因为本博客使用的cgal是5.x，5.x的cgal都是header only 的库，所以该dll可以没有，但是其他的dll像是libgmp-10.dll确是必要的，否则将无法运行。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line">sagar@DESKTOP-QM75KNS MINGW64 /f/prjs/colmap-3.6/build</span><br><span class="line">$ ls</span><br><span class="line">__download__  ceres-solver              colmap  freeimage  glew  suite-sparse</span><br><span class="line">__install__   CGAL-vc140-mt-4.14.3.dll  eigen   gflags     glog</span><br><span class="line">sagar@DESKTOP-QM75KNS MINGW64 /f/prjs/colmap-3.6/build</span><br><span class="line">$ ls __download__/</span><br><span class="line">ceres-solver-1.14.0.zip  freeimage-3.18.0.zip  glew-2.1.0.zip  suite-sparse.zip</span><br><span class="line">eigen-3.3.7.zip          gflags-2.2.2.zip      glog-0.3.5.zip</span><br><span class="line">sagar@DESKTOP-QM75KNS MINGW64 /f/prjs/colmap-3.6/build</span><br><span class="line">$ ls</span><br><span class="line">__download__  ceres-solver              colmap  freeimage  glew  suite-sparse</span><br><span class="line">__install__   CGAL-vc140-mt-4.14.3.dll  eigen   gflags     glog</span><br><span class="line"></span><br><span class="line">sagar@DESKTOP-QM75KNS MINGW64 /f/prjs/colmap-3.6/build</span><br><span class="line">$ cd __install__/lib</span><br><span class="line"></span><br><span class="line">sagar@DESKTOP-QM75KNS MINGW64 /f/prjs/colmap-3.6/build/__install__/lib</span><br><span class="line">$ tree</span><br><span class="line">.</span><br><span class="line">├── FreeImage.dll</span><br><span class="line">├── FreeImage.lib</span><br><span class="line">├── Qt5Core.dll</span><br><span class="line">├── Qt5Gui.dll</span><br><span class="line">├── Qt5Widgets.dll</span><br><span class="line">├── ceres.lib</span><br><span class="line">├── cmake</span><br><span class="line">│   ├── gflags</span><br><span class="line">│   │   ├── gflags-config-version.cmake</span><br><span class="line">│   │   ├── gflags-config.cmake</span><br><span class="line">│   │   ├── gflags-nonamespace-targets-release.cmake</span><br><span class="line">│   │   ├── gflags-nonamespace-targets.cmake</span><br><span class="line">│   │   ├── gflags-targets-release.cmake</span><br><span class="line">│   │   └── gflags-targets.cmake</span><br><span class="line">│   ├── glew</span><br><span class="line">│   │   ├── CopyImportedTargetProperties.cmake</span><br><span class="line">│   │   ├── glew-config.cmake</span><br><span class="line">│   │   ├── glew-targets-release.cmake</span><br><span class="line">│   │   └── glew-targets.cmake</span><br><span class="line">│   ├── glog</span><br><span class="line">│   │   ├── glog-config-version.cmake</span><br><span class="line">│   │   ├── glog-config.cmake</span><br><span class="line">│   │   ├── glog-targets-release.cmake</span><br><span class="line">│   │   └── glog-targets.cmake</span><br><span class="line">│   └── suitesparse-4.5.0</span><br><span class="line">│       ├── SuiteSparse-targets-release.cmake</span><br><span class="line">│       ├── SuiteSparse-targets.cmake</span><br><span class="line">│       ├── suitesparse-config-version.cmake</span><br><span class="line">│       └── suitesparse-config.cmake</span><br><span class="line">├── colmap</span><br><span class="line">│   ├── colmap.lib</span><br><span class="line">│   ├── colmap_cuda.lib</span><br><span class="line">│   ├── flann.lib</span><br><span class="line">│   ├── graclus.lib</span><br><span class="line">│   ├── lsd.lib</span><br><span class="line">│   ├── pba.lib</span><br><span class="line">│   ├── poisson_recon.lib</span><br><span class="line">│   ├── sift_gpu.lib</span><br><span class="line">│   ├── sqlite3.lib</span><br><span class="line">│   └── vlfeat.lib</span><br><span class="line">├── cudart64_102.dll</span><br><span class="line">├── gflags_nothreads_static.lib</span><br><span class="line">├── gflags_static.lib</span><br><span class="line">├── glew32.dll</span><br><span class="line">├── glew32.lib</span><br><span class="line">├── glog.lib</span><br><span class="line">├── libamd.lib</span><br><span class="line">├── libblas.dll</span><br><span class="line">├── libbtf.lib</span><br><span class="line">├── libcamd.lib</span><br><span class="line">├── libccolamd.lib</span><br><span class="line">├── libcholmod.lib</span><br><span class="line">├── libcolamd.lib</span><br><span class="line">├── libcxsparse.lib</span><br><span class="line">├── libgcc_s_sjlj-1.dll</span><br><span class="line">├── libgfortran-3.dll</span><br><span class="line">├── libglew32.lib</span><br><span class="line">├── libgmp-10.dll</span><br><span class="line">├── libklu.lib</span><br><span class="line">├── liblapack.dll</span><br><span class="line">├── libldl.lib</span><br><span class="line">├── libquadmath-0.dll</span><br><span class="line">├── libspqr.lib</span><br><span class="line">├── libumfpack.lib</span><br><span class="line">├── metis.lib</span><br><span class="line">├── pkgconfig</span><br><span class="line">│   └── glew.pc</span><br><span class="line">├── platforms</span><br><span class="line">│   └── qwindows.dll</span><br><span class="line">└── suitesparseconfig.lib</span><br><span class="line"></span><br><span class="line">8 directories, 62 files</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-可能遇到的问题："><a href="#5-可能遇到的问题：" class="headerlink" title="5 可能遇到的问题："></a>5 可能遇到的问题：</h3><ul>
+<li>Q 1 一切都能正常编译通过，但是出现“程序无法正常启动, 0xc000007b”</li>
+<li><strong>解决方案：</strong> 仔细核对我提供的目录，看看是否是dll少了，一般libgmp-10.dll少了就会报这个错误，可以参照问题4</li>
+<li>Q 2 boost总是报link2005的重定义错误：</li>
+<li><strong>解决方案：</strong> 打开colmap.sln，你会发现： 项目-&gt;属性c++预处理(宏定义) 中多了BOOST_ALL_DYN_LINK=1，用如下方法全局删除即可：用code打开F:/prjs/colmap-3.6/build/colmap/__build__：<br>全局替换的方式删除： BOOST_ALL_DYN_LINK=1，然后vs会让你重载项目配置，再次编译应该可以直接通过。造成的原因可能是boost总是默认enable了autolink，这导致你必须把你的boost库的版本和你的vs版本对上，而且可能默认是全部动态链接（即使你配置了静态链接以后），可能的解决方案是，在项目根目录下面的CMAKELIST.txt中添加: </li>
+<li>Q 3 libcpmt.lib(ppltasks.obj) : error LNK2001: 无法解析的外部符号 __CxxFrameHandler4报错：</li>
+<li><strong>解决方案：</strong> 是因为你的库用的是vs2019编译的，然后colmap又用vs2015编译，就会报这个错误。</li>
+<li>Q 4 Qt platform plugin ‘windows’ not found</li>
+<li><strong>解决方案：</strong> 是因为你虽然安装了qt，但是没有复制相关的dll到./build/colmap/<strong>install</strong>/lib下（colmap的运行直接双击__install__/COLMAP.BAT即可），复制方案：(也就是build.py中的编译后处理部分做的事情)<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">build_post_process</span>(<span class="params">args</span>):</span><br><span class="line">    <span class="keyword">if</span> PLATFORM_IS_WINDOWS:</span><br><span class="line">        lapack_paths = glob.glob(</span><br><span class="line">            os.path.join(args.install_path, <span class="string">&quot;lib64/lapack_blas_windows/*.dll&quot;</span>))</span><br><span class="line">        <span class="keyword">if</span> lapack_paths:</span><br><span class="line">            <span class="keyword">for</span> lapack_path <span class="keyword">in</span> lapack_paths:</span><br><span class="line">                copy_file_if_not_exists(</span><br><span class="line">                    lapack_path,</span><br><span class="line">                    os.path.join(</span><br><span class="line">                        args.install_path, <span class="string">&quot;lib&quot;</span>,</span><br><span class="line">                        os.path.basename(lapack_path)))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> args.qt_path:</span><br><span class="line">            copy_file_if_not_exists(</span><br><span class="line">                os.path.join(args.qt_path, <span class="string">&quot;bin/Qt5Core.dll&quot;</span>),</span><br><span class="line">                os.path.join(args.install_path, <span class="string">&quot;lib/Qt5Core.dll&quot;</span>))</span><br><span class="line">            copy_file_if_not_exists(</span><br><span class="line">                os.path.join(args.qt_path, <span class="string">&quot;bin/Qt5Gui.dll&quot;</span>),</span><br><span class="line">                os.path.join(args.install_path, <span class="string">&quot;lib/Qt5Gui.dll&quot;</span>))</span><br><span class="line">            copy_file_if_not_exists(</span><br><span class="line">                os.path.join(args.qt_path, <span class="string">&quot;bin/Qt5Widgets.dll&quot;</span>),</span><br><span class="line">                os.path.join(args.install_path, <span class="string">&quot;lib/Qt5Widgets.dll&quot;</span>))</span><br><span class="line">            mkdir_if_not_exists(</span><br><span class="line">                os.path.join(args.install_path, <span class="string">&quot;lib/platforms&quot;</span>))</span><br><span class="line">            copy_file_if_not_exists(</span><br><span class="line">                os.path.join(args.qt_path, <span class="string">&quot;plugins/platforms/qwindows.dll&quot;</span>),</span><br><span class="line">                os.path.join(args.install_path, <span class="string">&quot;lib/platforms/qwindows.dll&quot;</span>))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> args.with_cuda <span class="keyword">and</span> args.cuda_path:</span><br><span class="line">            cudart_lib_path = glob.glob(os.path.join(args.cuda_path,</span><br><span class="line">                                                     <span class="string">&quot;bin/cudart64_*.dll&quot;</span>))[<span class="number">0</span>]</span><br><span class="line">            copy_file_if_not_exists(</span><br><span class="line">                cudart_lib_path,</span><br><span class="line">                os.path.join(args.install_path, <span class="string">&quot;lib&quot;</span>,</span><br><span class="line">                             os.path.basename(cudart_lib_path)))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> args.cgal_path:</span><br><span class="line">            gmp_lib_path = os.path.join(</span><br><span class="line">                args.cgal_path, <span class="string">&quot;auxiliary/gmp/lib/libgmp-10.dll&quot;</span>)</span><br><span class="line">            <span class="keyword">if</span> os.path.exists(gmp_lib_path):</span><br><span class="line">                copy_file_if_not_exists(</span><br><span class="line">                    gmp_lib_path,</span><br><span class="line">                    os.path.join(args.install_path, <span class="string">&quot;lib/libgmp-10.dll&quot;</span>))</span><br><span class="line">            cgal_lib_path = glob.glob(os.path.join(</span><br><span class="line">                args.cgal_path, <span class="string">&quot;bin/CGAL-vc*-mt-*.dll&quot;</span>))</span><br><span class="line">            copy_file_if_not_exists(</span><br><span class="line">                cgal_lib_path[<span class="number">0</span>],</span><br><span class="line">                os.path.join(args.install_path, <span class="string">&quot;lib&quot;</span>,</span><br><span class="line">                    os.path.basename(cgal_lib_path[<span class="number">0</span>])))</span><br></pre></td></tr></table></figure></li>
+<li>Q 5 莫名其妙报了cuda的编译的错误：error : identifier “__floorf” is undefined in device code</li>
+<li><strong>解决方案：</strong> vs2019 16.9.3以及以上有这个问题，你需要卸载然后回退到16.8.5</li>
+<li>Q 6 C2132 编译器错误：表达式的计算结果不是常数</li>
+<li><strong>解决方案：</strong> 可能是你的编译器对cpp的新特性支持的不够好？，修改 src/retrieval/utils.h 的 55行为：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// static const size_t kMaxHammingDistance = static_cast&lt;size_t&gt;(1.5f * kSigma);</span><br><span class="line">static const size_t kMaxHammingDistance = static_cast&lt;size_t&gt;(24);</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/05/16/colmapCompile/" title="colmapCompile - colmap windows的编译">https://xychen5.github.io/2021/05/16/colmapCompile/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/conf/" rel="tag"># conf</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/27/imageFiltering/gaussian&Laplacian/" rel="prev" title="gaussian-laplacian - 高斯模糊&拉普拉斯锐化">
+                  <i class="fa fa-chevron-left"></i> gaussian-laplacian - 高斯模糊&拉普拉斯锐化
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/05/20/osgModelLightZ-Lighting/" rel="next" title="osgModelLightZ-Lighting - osg模型调整光照以及模型闪烁问题[z-lighting]">
+                  osgModelLightZ-Lighting - osg模型调整光照以及模型闪烁问题[z-lighting] <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

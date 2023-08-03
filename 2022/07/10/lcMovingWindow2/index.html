@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="1 滑动窗口priority_queue经常用 或者st、ed 2 例题：1425constrainedSubsetSum 带限制最大子序列和1 题目https:&#x2F;&#x2F;leetcode.cn&#x2F;problems&#x2F;constrained-subsequence-sum&#x2F; 2 解题思路 1 解题思路: 1.1 dp[i]表示以第i个数据结尾的带限制最大子序列和 1.2 dp[i] &#x3D; nums[i] +">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lcMovingWindow2 - 滑动窗口 2">
+<meta property="og:url" content="https://xychen5.github.io/2022/07/10/lcMovingWindow2/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="1 滑动窗口priority_queue经常用 或者st、ed 2 例题：1425constrainedSubsetSum 带限制最大子序列和1 题目https:&#x2F;&#x2F;leetcode.cn&#x2F;problems&#x2F;constrained-subsequence-sum&#x2F; 2 解题思路 1 解题思路: 1.1 dp[i]表示以第i个数据结尾的带限制最大子序列和 1.2 dp[i] &#x3D; nums[i] +">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-07-10T02:58:03.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.484Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="algoPrac">
+<meta property="article:tag" content="lc">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2022/07/10/lcMovingWindow2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2022/07/10/lcMovingWindow2/","path":"2022/07/10/lcMovingWindow2/","title":"lcMovingWindow2 - 滑动窗口 2"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>lcMovingWindow2 - 滑动窗口 2 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text">1 滑动窗口</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E4%BE%8B%E9%A2%98%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">2 例题：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1425constrainedSubsetSum-%E5%B8%A6%E9%99%90%E5%88%B6%E6%9C%80%E5%A4%A7%E5%AD%90%E5%BA%8F%E5%88%97%E5%92%8C"><span class="nav-number">2.1.</span> <span class="nav-text">1425constrainedSubsetSum 带限制最大子序列和</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE"><span class="nav-number">2.1.1.</span> <span class="nav-text">1 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-number">2.1.2.</span> <span class="nav-text">2 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1499findMaxOfEquationInVec-%E6%BB%A1%E8%B6%B3%E4%B8%8D%E7%AD%89%E5%BC%8F%E7%9A%84%E6%9C%80%E5%A4%A7%E5%80%BC"><span class="nav-number">2.2.</span> <span class="nav-text">1499findMaxOfEquationInVec 满足不等式的最大值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">1 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">2 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1610visiblePoints-%E5%8F%AF%E8%A7%81%E9%A1%B6%E7%82%B9%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E7%9B%AE"><span class="nav-number">2.3.</span> <span class="nav-text">1610visiblePoints 可见顶点的最大数目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE-2"><span class="nav-number">2.3.1.</span> <span class="nav-text">1 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF-2"><span class="nav-number">2.3.2.</span> <span class="nav-text">2 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2302coountSunarrysScoreLessThanK-%E7%BB%9F%E8%AE%A1%E5%BE%97%E5%88%86%E5%B0%8F%E4%BA%8E-K-%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E6%95%B0%E7%9B%AE"><span class="nav-number">2.4.</span> <span class="nav-text">2302coountSunarrysScoreLessThanK 统计得分小于 K 的子数组数目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE-3"><span class="nav-number">2.4.1.</span> <span class="nav-text">1 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF-3"><span class="nav-number">2.4.2.</span> <span class="nav-text">2 解题思路</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2022/07/10/lcMovingWindow2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          lcMovingWindow2 - 滑动窗口 2
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-07-10 10:58:03" itemprop="dateCreated datePublished" datetime="2022-07-10T10:58:03+08:00">2022-07-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="1-滑动窗口"><a href="#1-滑动窗口" class="headerlink" title="1 滑动窗口"></a>1 滑动窗口</h1><p>priority_queue经常用 或者st、ed</p>
+<h1 id="2-例题："><a href="#2-例题：" class="headerlink" title="2 例题："></a>2 例题：</h1><h2 id="1425constrainedSubsetSum-带限制最大子序列和"><a href="#1425constrainedSubsetSum-带限制最大子序列和" class="headerlink" title="1425constrainedSubsetSum 带限制最大子序列和"></a>1425constrainedSubsetSum 带限制最大子序列和</h2><h3 id="1-题目"><a href="#1-题目" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/constrained-subsequence-sum/">https://leetcode.cn/problems/constrained-subsequence-sum/</a></p>
+<h3 id="2-解题思路"><a href="#2-解题思路" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
+<li>1 解题思路:<ul>
+<li>1.1 dp[i]表示以第i个数据结尾的带限制最大子序列和</li>
+<li>1.2 dp[i] = nums[i] + max(0, dp[i-k], dp[i-k+1], …, dp[i-1])</li>
+<li>1.3 如何在i-1到i-k的数的集合中快速找到最大的满足限制要求的k？使用堆即可，只需要找到第一个满足要求的下标对应的值即可，不满足要求的下标可以pop掉（因为如果现在都无法满足要求，那么后面更加无法满足要求）</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">using</span> pii = pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;;</span><br><span class="line">   </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">constrainedSubsetSum</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Let dp[i] be the solution for the prefix of the array that ends at index i,</span></span><br><span class="line">        <span class="comment">//     if the element at index i is in the subsequence.</span></span><br><span class="line">        <span class="comment">// dp[i] = nums[i] + max(0, dp[i-k], dp[i-k+1], ..., dp[i-1])</span></span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> n = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">dp</span><span class="params">(n, <span class="number">0</span>)</span></span>;</span><br><span class="line">        dp[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="type">int</span> curRes = dp[<span class="number">0</span>];</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// &lt;idx, value&gt;</span></span><br><span class="line">        <span class="keyword">auto</span> cmp = [](<span class="type">const</span> pii&amp; a, <span class="type">const</span> pii&amp; b) &#123;</span><br><span class="line">            <span class="keyword">return</span> a.second &lt; b.second;</span><br><span class="line">        &#125;;</span><br><span class="line">        priority_queue&lt;pii, vector&lt;pii&gt;, <span class="keyword">decltype</span>(cmp)&gt; <span class="built_in">maxHeap</span>(cmp);</span><br><span class="line">         </span><br><span class="line">        maxHeap.<span class="built_in">push</span>(&#123;<span class="number">0</span>, dp[<span class="number">0</span>]&#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">auto</span> findInWindow = [](<span class="type">int</span> minIdx, <span class="keyword">decltype</span>(maxHeap)&amp; window) &#123;</span><br><span class="line">            <span class="type">bool</span> foundInWin = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">while</span>(!window.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">                <span class="keyword">auto</span> node = window.<span class="built_in">top</span>();</span><br><span class="line">                <span class="keyword">if</span>(minIdx &lt;= node.first) &#123;</span><br><span class="line">                    <span class="comment">// window.pop();</span></span><br><span class="line">                    <span class="keyword">return</span> <span class="built_in">max</span>(<span class="number">0</span>, node.second);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    window.<span class="built_in">pop</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            dp[i] = nums[i] + <span class="built_in">findInWindow</span>(<span class="built_in">max</span>(<span class="number">0</span>, i - k), maxHeap);</span><br><span class="line">            curRes = <span class="built_in">max</span>(curRes, dp[i]);</span><br><span class="line">            <span class="comment">// cout &lt;&lt; i &lt;&lt; &quot;-&gt;    &quot; &lt;&lt; dp[i] &lt;&lt; endl;</span></span><br><span class="line">            maxHeap.<span class="built_in">push</span>(&#123;i, dp[i]&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> curRes;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1499findMaxOfEquationInVec-满足不等式的最大值"><a href="#1499findMaxOfEquationInVec-满足不等式的最大值" class="headerlink" title="1499findMaxOfEquationInVec 满足不等式的最大值"></a>1499findMaxOfEquationInVec 满足不等式的最大值</h2><h3 id="1-题目-1"><a href="#1-题目-1" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/max-value-of-equation/">https://leetcode.cn/problems/max-value-of-equation/</a></p>
+<h3 id="2-解题思路-1"><a href="#2-解题思路-1" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
+<li>1 解题思路:<ul>
+<li>1.1 首先能想到的是，对于数字point[i]的xy，我们可以维护一个window，其中放了所有xi,yi,满足|xi - x| &lt;= k，然后我们遍历这个窗口的所有值，找到一个答案，但是这样复杂度是nk有点大了</li>
+<li>1.2 我们考虑一下，是不是需要考虑point[i]的左右距离为k的值？不需要，因为上面显然存在重复计算，比如x坐标为1,3,5的三个点，k = 100好了，对于1，考虑了3,5，对于3考虑了1，5，然而13的组合在x=1和这个点已经考虑过了，所以我们可以只考虑坐标的左半边或者右半边，我们以考虑左半边为例子</li>
+<li>1.3 由于是左半边，我们遍历的点称之为xj，那么xi就是左边的所有点，我们如何快速拿到结果呢？<ul>
+<li>res = for i &lt; j &amp;&amp; xj - xi &lt;= k: max(yi + yj + |xi - xj|) = max(yj + xj + yi - xi)，去掉了绝对值</li>
+<li>然后可以看出来对于一个j，不就是求它左边窗口（窗口内的值需要满足：xj - xi &lt;= k）中yi - xi的最大值吗？那不就是用priority_queue存起来就行了</li>
+<li>注意一点的是：当窗口中的xi, xj - xi &gt; k可以放心pop，因为若当前的j都距离xi太远了，那后面的只会更加的遥远，于是可以pop </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">using</span> pii = pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;;</span><br><span class="line"> </span><br><span class="line">    <span class="type">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> cmp = [](<span class="type">const</span> pii&amp; a, <span class="type">const</span> pii&amp; b) &#123;</span><br><span class="line">        <span class="keyword">return</span> a.second &lt; b.second;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">findMaxValueOfEquation</span><span class="params">(vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; points, <span class="type">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// first: yi + yj + |xi - xj| == yj + xj + yi - xi</span></span><br><span class="line">        <span class="comment">// so: for each j, we shall found the biggest yi - xi and |xj - xi| &lt;= k</span></span><br><span class="line">        <span class="comment">// using a priority_queue to store those yi - xi</span></span><br><span class="line">        </span><br><span class="line">        <span class="type">int</span> n = points.<span class="built_in">size</span>();</span><br><span class="line">        <span class="comment">// priority_queue&lt;pii, vector&lt;pii&gt;, decltype(cmp)&gt; maxHeapOri(cmp);</span></span><br><span class="line">        priority_queue&lt;pii, vector&lt;pii&gt;, <span class="keyword">decltype</span>(cmp)&gt; <span class="built_in">maxHeap</span>(cmp);</span><br><span class="line">        maxHeap.<span class="built_in">push</span>(&#123;points[<span class="number">0</span>][<span class="number">0</span>], points[<span class="number">0</span>][<span class="number">1</span>] - points[<span class="number">0</span>][<span class="number">0</span>]&#125;); <span class="comment">// init it</span></span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> curRes = INT_MIN;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j = <span class="number">1</span>; j &lt; n; ++j) &#123;</span><br><span class="line">            <span class="comment">// |xj - xi| &lt;= k, we should consider xj - xi &lt;= k or xi - xj &lt;= k</span></span><br><span class="line">            <span class="comment">// but we can only consider those xj &gt; xi, cause, when we try to consider xj &lt; xi, </span></span><br><span class="line">            <span class="comment">// the bigger J after j will be like xi, so all cases coverd</span></span><br><span class="line">            <span class="type">int</span> xj = points[j][<span class="number">0</span>];</span><br><span class="line">            <span class="type">int</span> yj = points[j][<span class="number">1</span>];</span><br><span class="line">            <span class="comment">// cout &lt;&lt; &quot;dealing: &quot; &lt;&lt; xj &lt;&lt; &quot; &quot; &lt;&lt; yj &lt;&lt; endl;</span></span><br><span class="line">            <span class="comment">// auto maxHeap = maxHeapOri;</span></span><br><span class="line">            <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span>(maxHeap.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">auto</span> t = maxHeap.<span class="built_in">top</span>();</span><br><span class="line">                <span class="type">int</span> xi = t.first;</span><br><span class="line">                <span class="type">int</span> delatI = t.second;</span><br><span class="line">                <span class="keyword">if</span>(xi != xj ) &#123;</span><br><span class="line">                    <span class="keyword">if</span>(xj - xi &gt; k) &#123;</span><br><span class="line">                        <span class="comment">// cout &lt;&lt; &quot;pop: &quot; &lt;&lt; xi &lt;&lt; endl;</span></span><br><span class="line">                        maxHeap.<span class="built_in">pop</span>();</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        curRes = <span class="built_in">max</span>(curRes, yj + xj + delatI);</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;    </span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            maxHeap.<span class="built_in">push</span>(&#123;points[j][<span class="number">0</span>], points[j][<span class="number">1</span>] - points[j][<span class="number">0</span>]&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> curRes;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1610visiblePoints-可见顶点的最大数目"><a href="#1610visiblePoints-可见顶点的最大数目" class="headerlink" title="1610visiblePoints 可见顶点的最大数目"></a>1610visiblePoints 可见顶点的最大数目</h2><h3 id="1-题目-2"><a href="#1-题目-2" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-number-of-visible-points/">https://leetcode.cn/problems/maximum-number-of-visible-points/</a></p>
+<h3 id="2-解题思路-2"><a href="#2-解题思路-2" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
+<li>1 解题思路:<ul>
+<li>1.1 算出极角，然后排序，然后用一个窗口，范围是angle，从最小移动到最大即可</li>
+<li>1.2 注意循环：比如-179和179这两个数字爱得很近，所以我们把排序好的点的极角加上360加入到点的数组中，滑动窗口就行</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="meta">#<span class="keyword">define</span> PI 3.14159265</span></span><br><span class="line"> </span><br><span class="line">    <span class="keyword">using</span> Point = pair&lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;, <span class="type">double</span>&gt;;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">visiblePoints</span><span class="params">(vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; points, <span class="type">int</span> angle, vector&lt;<span class="type">int</span>&gt;&amp; location)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        vector&lt;Point&gt; calPoints;</span><br><span class="line">        <span class="type">int</span> n = points.<span class="built_in">size</span>();</span><br><span class="line">        <span class="type">int</span> dupWithOriCnt = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// start form the negx: from -179.999 to 180</span></span><br><span class="line">        <span class="keyword">auto</span> calDegreeForPoints = [&amp;](vector&lt;<span class="type">int</span>&gt;&amp; xy, vector&lt;Point&gt;&amp; calPoints) &#123;</span><br><span class="line">            <span class="type">int</span> x = xy[<span class="number">0</span>] - location[<span class="number">0</span>];</span><br><span class="line">            <span class="type">int</span> y = xy[<span class="number">1</span>] - location[<span class="number">1</span>];</span><br><span class="line">            <span class="keyword">if</span>(<span class="number">0</span> == x &amp;&amp; <span class="number">0</span> == y) &#123;</span><br><span class="line">                dupWithOriCnt += <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="type">double</span> result;</span><br><span class="line">            result = <span class="built_in">atan2</span> (y, x) * <span class="number">180</span> / PI;</span><br><span class="line">            calPoints.<span class="built_in">emplace_back</span>(Point&#123;&#123;x, y&#125;, result&#125;);</span><br><span class="line">        &#125;;   </span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; p : points) &#123;</span><br><span class="line">            <span class="built_in">calDegreeForPoints</span>(p, calPoints);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// all duplicated</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="number">0</span> == calPoints.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            <span class="keyword">return</span> dupWithOriCnt;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// sort by the angle</span></span><br><span class="line">        <span class="built_in">sort</span>(calPoints.<span class="built_in">begin</span>(), calPoints.<span class="built_in">end</span>(), [](<span class="type">const</span> Point&amp; a, <span class="type">const</span> Point&amp; b) &#123;</span><br><span class="line">            <span class="keyword">return</span> a.second &lt; b.second;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123; <span class="comment">// solve the circle problem</span></span><br><span class="line">            <span class="keyword">auto</span> p = calPoints[i];</span><br><span class="line">            p.second += <span class="number">360.0</span>;</span><br><span class="line">            calPoints.<span class="built_in">push_back</span>(p);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// init window</span></span><br><span class="line">        <span class="type">int</span> st = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> ed = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="type">double</span> dAngle = angle;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span>(ed &lt; calPoints.<span class="built_in">size</span>() &amp;&amp; calPoints[ed].second - calPoints[st].second &lt;= dAngle) &#123;</span><br><span class="line">            ++ed;</span><br><span class="line">        &#125;</span><br><span class="line">        --ed;</span><br><span class="line">        <span class="type">int</span> finRes = ed - st + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// mv window</span></span><br><span class="line">        <span class="keyword">while</span>(ed &lt; calPoints.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            <span class="comment">// mv st</span></span><br><span class="line">            ++st;</span><br><span class="line">            <span class="keyword">while</span>(ed &lt; calPoints.<span class="built_in">size</span>() &amp;&amp; calPoints[ed].second - calPoints[st].second &lt;= dAngle) &#123;</span><br><span class="line">                ++ed;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(ed == calPoints.<span class="built_in">size</span>()) &#123;</span><br><span class="line">                finRes = <span class="built_in">max</span>(finRes, <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(calPoints.<span class="built_in">size</span>()) - st);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                --ed;</span><br><span class="line">                finRes = <span class="built_in">max</span>(finRes, ed - st + <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> finRes + dupWithOriCnt;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2302coountSunarrysScoreLessThanK-统计得分小于-K-的子数组数目"><a href="#2302coountSunarrysScoreLessThanK-统计得分小于-K-的子数组数目" class="headerlink" title="2302coountSunarrysScoreLessThanK 统计得分小于 K 的子数组数目"></a>2302coountSunarrysScoreLessThanK 统计得分小于 K 的子数组数目</h2><h3 id="1-题目-3"><a href="#1-题目-3" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/count-subarrays-with-score-less-than-k/">https://leetcode.cn/problems/count-subarrays-with-score-less-than-k/</a></p>
+<h3 id="2-解题思路-3"><a href="#2-解题思路-3" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
+<li>1 解题思路:<ul>
+<li>1.1 使用st，ed记录当前窗口，将窗口扩展至最大的满足分数小于k的条件</li>
+<li>1.2 ++st，找到下一个st</li>
+<li>1.3 对于每个窗口如何计数：<ul>
+<li>计数：以st开始的区间</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">long</span> <span class="type">long</span> <span class="title">countSubarrays</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">long</span> <span class="type">long</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// alway keep st,ed as the max status:</span></span><br><span class="line">        <span class="comment">// score(st, ed) &lt;= k, ed cannot be bigger for each st</span></span><br><span class="line">        <span class="comment">// then we statistic for each st, how many ways start with st</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// moving window score = getScore(nums[st:ed])</span></span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> st = <span class="number">0</span>; </span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> ed = <span class="number">0</span>;</span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> n = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> curScore = <span class="number">0</span>;</span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> cnt = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(st &lt; n) &#123;</span><br><span class="line">            <span class="type">bool</span> edMoved = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">while</span>(ed &lt; n &amp;&amp; (curScore + nums[ed])*(ed - st + <span class="number">1</span>) &lt; k) &#123;</span><br><span class="line">                curScore += nums[ed];</span><br><span class="line">                ++ed;</span><br><span class="line">                edMoved = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// add cnt start with cur st</span></span><br><span class="line">            <span class="keyword">if</span>(curScore*(ed - st) &lt; k) &#123;</span><br><span class="line">                cnt += ed - st;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            curScore -= nums[st];</span><br><span class="line">            ++st;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> cnt;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2022/07/10/lcMovingWindow2/" title="lcMovingWindow2 - 滑动窗口 2">https://xychen5.github.io/2022/07/10/lcMovingWindow2/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/algoPrac/" rel="tag"># algoPrac</a>
+              <a href="/tags/lc/" rel="tag"># lc</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/07/04/lcBackTrack/" rel="prev" title="lcBackTrack - 回溯">
+                  <i class="fa fa-chevron-left"></i> lcBackTrack - 回溯
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/11/16/pointnet2InferenceOwnModel/" rel="next" title="pointnet2InferenceOwnModel - 使用pointnet2推理自己的模型(以obj为例)">
+                  pointnet2InferenceOwnModel - 使用pointnet2推理自己的模型(以obj为例) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

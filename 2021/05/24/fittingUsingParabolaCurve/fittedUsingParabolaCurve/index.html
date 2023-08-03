@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="需求给定地对空导弹发射起始点和终止点（3维坐标），拟合导弹轨迹 思路 1 首先简单化问题，假定导弹轨迹位于同一个平面内，则可以将轨迹投影到x-O-z平面，先求出x-z的关系，求一系列的散点，然后根据x,y的关系求出y的散点值即可 2 之所以选取抛物线，因为导弹轨迹需要垂直发射的过程，存在斜率不存在的点常见的曲线为抛物线和圆，由于圆显然不合适，我们选取抛物线  实现的数学逻辑 1 起始点和终止点的定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="parabola fitting - 使用抛物线拟合离散点">
+<meta property="og:url" content="https://xychen5.github.io/2021/05/24/fittingUsingParabolaCurve/fittedUsingParabolaCurve/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="需求给定地对空导弹发射起始点和终止点（3维坐标），拟合导弹轨迹 思路 1 首先简单化问题，假定导弹轨迹位于同一个平面内，则可以将轨迹投影到x-O-z平面，先求出x-z的关系，求一系列的散点，然后根据x,y的关系求出y的散点值即可 2 之所以选取抛物线，因为导弹轨迹需要垂直发射的过程，存在斜率不存在的点常见的曲线为抛物线和圆，由于圆显然不合适，我们选取抛物线  实现的数学逻辑 1 起始点和终止点的定">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-05-24T07:24:18.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.077Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="math">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/05/24/fittingUsingParabolaCurve/fittedUsingParabolaCurve/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/05/24/fittingUsingParabolaCurve/fittedUsingParabolaCurve/","path":"2021/05/24/fittingUsingParabolaCurve/fittedUsingParabolaCurve/","title":"parabola fitting - 使用抛物线拟合离散点"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>parabola fitting - 使用抛物线拟合离散点 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%95%B0%E5%AD%A6%E9%80%BB%E8%BE%91"><span class="nav-number">3.</span> <span class="nav-text">实现的数学逻辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">实现代码</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/05/24/fittingUsingParabolaCurve/fittedUsingParabolaCurve/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          parabola fitting - 使用抛物线拟合离散点
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-05-24 15:24:18" itemprop="dateCreated datePublished" datetime="2021-05-24T15:24:18+08:00">2021-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/math/" itemprop="url" rel="index"><span itemprop="name">math</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>给定<strong>地对空导弹</strong>发射起始点和终止点（3维坐标），拟合导弹轨迹</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><ul>
+<li>1 首先简单化问题，假定导弹轨迹位于同一个平面内，则可以将轨迹投影到x-O-z平面，先求出x-z的关系，求一系列的散点，<br>然后根据x,y的关系求出y的散点值即可</li>
+<li>2 之所以选取抛物线，因为导弹轨迹需要垂直发射的过程，存在斜率不存在的点常见的曲线为抛物线和圆，由于圆显然不合适，我们选取抛物线</li>
+</ul>
+<h2 id="实现的数学逻辑"><a href="#实现的数学逻辑" class="headerlink" title="实现的数学逻辑"></a>实现的数学逻辑</h2><ul>
+<li>1 起始点和终止点的定义：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># startPos and endPos in [lon, lat, height]</span><br><span class="line">stPos = [117.9844565, 24.1658956, 1.597]</span><br><span class="line">edPos = [118.1167438, 24.5656241, 5211.73]</span><br></pre></td></tr></table></figure></li>
+<li>2 数学关系<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 由于整个轨迹位于一个平面内，则可以考虑x，y存在线性关系</span><br><span class="line">y1 = k * x1 + b</span><br><span class="line">y2 = k * x2 + b</span><br><span class="line">则y可以由x得到</span><br><span class="line"></span><br><span class="line"># [x1, y1, z1]为起始点，则有如下抛物线，根据终止点[x2, y2, z2]求出p</span><br><span class="line">(z-z1)**2 = p*(x-x1)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># set figure</span></span><br><span class="line">fig = plt.figure()</span><br><span class="line">ax = fig.gca(projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">################################################## input args #############################################</span></span><br><span class="line"><span class="comment"># startPos and endPos in [lon, lat, height]</span></span><br><span class="line">stPos = [<span class="number">117.9844565</span>, <span class="number">24.1658956</span>, <span class="number">1.597</span>]</span><br><span class="line">edPos = [<span class="number">118.1167438</span>, <span class="number">24.5656241</span>, <span class="number">5211.73</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># # stTime, endTime, in seconds, assume it take 1 minute for missile from emit to explode</span></span><br><span class="line"><span class="comment"># stTime = 0</span></span><br><span class="line"><span class="comment"># endTime = 10</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># step number</span></span><br><span class="line">stepNumber = <span class="number">30</span></span><br><span class="line"><span class="comment">################################################## input args #############################################</span></span><br><span class="line"></span><br><span class="line"><span class="comment">################################################## output     #############################################</span></span><br><span class="line"><span class="comment"># res</span></span><br><span class="line">resX = []</span><br><span class="line">resY = []</span><br><span class="line">resZ = []</span><br><span class="line"><span class="comment">################################################## output     #############################################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># land defend air means, should satisfy: st.z &lt; ed.z</span></span><br><span class="line"><span class="comment"># (z-z1)**2 = p*(x-x1)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">computeLnadDefendAirParabolaWithSteps</span>(<span class="params"></span></span><br><span class="line"><span class="params">    st,     <span class="comment"># start point: [x, y, z]</span></span></span><br><span class="line"><span class="params">    ed,     <span class="comment"># end point: [x, y, z]</span></span></span><br><span class="line"><span class="params">    resX,   <span class="comment"># x-axis&#x27;s result</span></span></span><br><span class="line"><span class="params">    resY,   <span class="comment"># y-axis&#x27;s result</span></span></span><br><span class="line"><span class="params">    resZ,   <span class="comment"># z-axis&#x27;s result</span></span></span><br><span class="line"><span class="params">    stepNum <span class="comment"># how may fitted points you want</span></span></span><br><span class="line"><span class="params">    </span>):</span><br><span class="line">    resX.append(st[<span class="number">0</span>])</span><br><span class="line">    resY.append(st[<span class="number">1</span>])</span><br><span class="line">    resZ.append(st[<span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">    p = (ed[<span class="number">2</span>] - st[<span class="number">2</span>])**<span class="number">2</span> / (ed[<span class="number">0</span>] - st[<span class="number">0</span>])</span><br><span class="line">    step = (ed[<span class="number">0</span>] - st[<span class="number">0</span>]) / stepNum</span><br><span class="line">    <span class="keyword">for</span> stepCnt <span class="keyword">in</span> <span class="built_in">range</span>(stepNum)[<span class="number">1</span>:]:</span><br><span class="line">        curX = st[<span class="number">0</span>] + stepCnt * step</span><br><span class="line">        curZ = (p * (curX - st[<span class="number">0</span>])) ** <span class="number">0.5</span> + st[<span class="number">2</span>]</span><br><span class="line">        resZ.append(curZ)</span><br><span class="line">        <span class="comment"># compute projection from x to y: x = k*y + b</span></span><br><span class="line">        <span class="keyword">if</span> st[<span class="number">1</span>] != ed[<span class="number">1</span>]:</span><br><span class="line">            k = (st[<span class="number">0</span>] - ed[<span class="number">0</span>]) / (st[<span class="number">1</span>] - ed[<span class="number">1</span>])</span><br><span class="line">            b = st[<span class="number">0</span>] - k * st[<span class="number">1</span>]</span><br><span class="line">            curY = (curX - b) / k</span><br><span class="line">            resY.append(curY)</span><br><span class="line">            resX.append(curX)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># all the y is the same</span></span><br><span class="line">            resY.append(curY)</span><br><span class="line">            resX.append(curX)</span><br><span class="line">    resX.append(ed[<span class="number">0</span>])</span><br><span class="line">    resY.append(ed[<span class="number">1</span>])</span><br><span class="line">    resZ.append(ed[<span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># print</span></span><br><span class="line">    <span class="keyword">for</span> idx <span class="keyword">in</span> <span class="built_in">range</span>(stepNum + <span class="number">1</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;%10.6f, %10.6f, %10.3f&quot;</span>%(resX[idx], resY[idx], resZ[idx]))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">computeLnadDefendAirParabolaWithSteps(stPos, edPos, resX, resY, resZ, stepNumber)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制图形</span></span><br><span class="line">ax.plot(resX, resY, resZ, label=<span class="string">&#x27;fitted curve&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示图例</span></span><br><span class="line">ax.legend()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示图形</span></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/05/24/fittingUsingParabolaCurve/fittedUsingParabolaCurve/" title="parabola fitting - 使用抛物线拟合离散点">https://xychen5.github.io/2021/05/24/fittingUsingParabolaCurve/fittedUsingParabolaCurve/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/math/" rel="tag"># math</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/24/lagrangeInterpolation/lagrangeInterpolation/" rel="prev" title="pagrangeInterpolation for curve fitting - 使用拉格朗日插值平滑曲线">
+                  <i class="fa fa-chevron-left"></i> pagrangeInterpolation for curve fitting - 使用拉格朗日插值平滑曲线
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/05/29/paxos/paxos/" rel="next" title="paxo 分布式一致性算法">
+                  paxo 分布式一致性算法 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

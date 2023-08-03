@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="1 最大流-最小割本身含义首先 起始点 s, 终止点 t, 从s-&gt;t的所有通路中，能够流过来的最大流量就是最大流，这里举个例子：比如有如下的图：1 -&gt; 2 管道是5的容量，2 -&gt; 4 管道是4的容量，1 -&gt; 3 管道是3的容量，3 -&gt; 4 管道是6的容量，那么从1-&gt;4的最大流，就是4 + 3 &#x3D; 7 最小割：最小割是指，从图中移除一些边的集合以达到隔">
+<meta property="og:type" content="article">
+<meta property="og:title" content="maxFlowMinCut &amp;&amp; 最大流最小割求法">
+<meta property="og:url" content="https://xychen5.github.io/2021/09/15/maxFlowMinCut/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="1 最大流-最小割本身含义首先 起始点 s, 终止点 t, 从s-&gt;t的所有通路中，能够流过来的最大流量就是最大流，这里举个例子：比如有如下的图：1 -&gt; 2 管道是5的容量，2 -&gt; 4 管道是4的容量，1 -&gt; 3 管道是3的容量，3 -&gt; 4 管道是6的容量，那么从1-&gt;4的最大流，就是4 + 3 &#x3D; 7 最小割：最小割是指，从图中移除一些边的集合以达到隔">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/MinCutMaximumFlowAlgorithm.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/minCutEg.iwlkn8ciyfk.png">
+<meta property="article:published_time" content="2021-09-15T06:50:23.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.486Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="algo">
+<meta property="article:tag" content="graph">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/MinCutMaximumFlowAlgorithm.png">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/09/15/maxFlowMinCut/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/09/15/maxFlowMinCut/","path":"2021/09/15/maxFlowMinCut/","title":"maxFlowMinCut && 最大流最小割求法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>maxFlowMinCut && 最大流最小割求法 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%9C%80%E5%A4%A7%E6%B5%81-%E6%9C%80%E5%B0%8F%E5%89%B2%E6%9C%AC%E8%BA%AB%E5%90%AB%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text">1 最大流-最小割本身含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%9C%80%E5%A4%A7%E6%B5%81%E6%9C%80%E5%B0%8F%E5%89%B2%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">2 最大流最小割算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E4%BE%8B%E5%AD%90"><span class="nav-number">3.</span> <span class="nav-text">3 例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%9C%80%E5%B0%8F%E5%89%B2"><span class="nav-number">4.</span> <span class="nav-text">4 最小割</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/09/15/maxFlowMinCut/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          maxFlowMinCut && 最大流最小割求法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-09-15 14:50:23" itemprop="dateCreated datePublished" datetime="2021-09-15T14:50:23+08:00">2021-09-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="1-最大流-最小割本身含义"><a href="#1-最大流-最小割本身含义" class="headerlink" title="1 最大流-最小割本身含义"></a>1 最大流-最小割本身含义</h2><p>首先 起始点 s, 终止点 t, 从s-&gt;t的所有通路中，能够流过来的最大流量就是最大流，这里举个例子：<br>比如有如下的图：<br>1 -&gt; 2 管道是5的容量，<br>2 -&gt; 4 管道是4的容量，<br>1 -&gt; 3 管道是3的容量，<br>3 -&gt; 4 管道是6的容量，<br>那么从1-&gt;4的最大流，就是4 + 3 = 7</p>
+<p>最小割：<br>最小割是指，从图中移除一些边的集合以达到隔断从s到t的目的，成为一个图割，然后最小割，就是所有图割中，边权(管道的流量)之和最小的一个图割，最小割的值和最大流的值是相等的</p>
+<h2 id="2-最大流最小割算法"><a href="#2-最大流最小割算法" class="headerlink" title="2 最大流最小割算法"></a>2 最大流最小割算法</h2><p><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/MinCutMaximumFlowAlgorithm.png" alt="MinCutMaximumFlowAlgorithm"></p>
+<p>其过程就是：</p>
+<ul>
+<li>1 对于G中的每一个顶点，先将f(u, v)和f(v, u)都置为0</li>
+<li>2 当存在从s-&gt;t的一条路径(这样的一条路径称之为增广路径):<ul>
+<li>2.1 找出这个路径上的最小边权，称为tmpC</li>
+<li>2.2 对增广路径上的每一条边，都做: f(u, v) += tmpC, f(v, u) = -f(u, v)</li>
+</ul>
+</li>
+<li>3 G中的更改过后的图，称之为残余图(residual graph)<br>上面过程的tmpC之和就是最大流的值</li>
+</ul>
+<h2 id="3-例子"><a href="#3-例子" class="headerlink" title="3 例子"></a>3 例子</h2><p>引用自: <a target="_blank" rel="noopener" href="https://www.baeldung.com/cs/minimum-cut-graphs">https://www.baeldung.com/cs/minimum-cut-graphs</a><br><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/minCutEg.iwlkn8ciyfk.png" alt="minCutEg"></p>
+<p>在上述例子里的残余图中：<br>可以看出： 最大流为: 4 + 4 + 3 + 2 = 13</p>
+<h2 id="4-最小割"><a href="#4-最小割" class="headerlink" title="4 最小割"></a>4 最小割</h2><p>在上述例子里的残余图中：<br>首先按照从s能够到达的点和不能到达的点分成2个集合set1(reaching by s)和set2(not reaching by s)，这两个set在残余图中的连线构成的那些边成为最小割</p>
+<p>那么set1是： (a, b, c, e)<br>set2是：(d, f)]<br>残余图中，set1和set2相关连的边为： b-&gt;d, c-&gt;f, e-&gt;f,最小割值为： 4 + 3 + 6 = 13</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/09/15/maxFlowMinCut/" title="maxFlowMinCut &amp;&amp; 最大流最小割求法">https://xychen5.github.io/2021/09/15/maxFlowMinCut/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/algo/" rel="tag"># algo</a>
+              <a href="/tags/graph/" rel="tag"># graph</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/12/gpsToCartesian/" rel="prev" title="gpsToCartesian GPS坐标转WGS84坐标">
+                  <i class="fa fa-chevron-left"></i> gpsToCartesian GPS坐标转WGS84坐标
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/16/possionRecon/" rel="next" title="possionRecon 泊松表面重建">
+                  possionRecon 泊松表面重建 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

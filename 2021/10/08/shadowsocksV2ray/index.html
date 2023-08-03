@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="1 购买云主机购买地址：(选择centos即可)https:&#x2F;&#x2F;www.vultr.com&#x2F;register&#x2F;建议： 选择硅谷服务器，ip比较好用购买后deploy完成（大胆deploy，一次0.01$，它收费是按照使用时长收费的） 2 ssh登入主机然后安装ss服务端2.0 安装ss-server， 以及obfs或者v2ray作为混淆1234567891011121314151617181920">
+<meta property="og:type" content="article">
+<meta property="og:title" content="shadowsocks - ss服务安装 以及 v2ray服务安装">
+<meta property="og:url" content="https://xychen5.github.io/2021/10/08/shadowsocksV2ray/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="1 购买云主机购买地址：(选择centos即可)https:&#x2F;&#x2F;www.vultr.com&#x2F;register&#x2F;建议： 选择硅谷服务器，ip比较好用购买后deploy完成（大胆deploy，一次0.01$，它收费是按照使用时长收费的） 2 ssh登入主机然后安装ss服务端2.0 安装ss-server， 以及obfs或者v2ray作为混淆1234567891011121314151617181920">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200909153607151.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2N4eV9odXN0,size_16,color_FFFFFF,t_70#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200909154633422.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2N4eV9odXN0,size_16,color_FFFFFF,t_70#pic_center">
+<meta property="article:published_time" content="2021-10-08T05:53:21.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.490Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="conf">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200909153607151.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2N4eV9odXN0,size_16,color_FFFFFF,t_70#pic_center">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/10/08/shadowsocksV2ray/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/10/08/shadowsocksV2ray/","path":"2021/10/08/shadowsocksV2ray/","title":"shadowsocks - ss服务安装 以及 v2ray服务安装"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>shadowsocks - ss服务安装 以及 v2ray服务安装 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%B4%AD%E4%B9%B0%E4%BA%91%E4%B8%BB%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">1 购买云主机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-ssh%E7%99%BB%E5%85%A5%E4%B8%BB%E6%9C%BA%E7%84%B6%E5%90%8E%E5%AE%89%E8%A3%85ss%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-number">2.</span> <span class="nav-text">2 ssh登入主机然后安装ss服务端</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-0-%E5%AE%89%E8%A3%85ss-server%EF%BC%8C-%E4%BB%A5%E5%8F%8Aobfs%E6%88%96%E8%80%85v2ray%E4%BD%9C%E4%B8%BA%E6%B7%B7%E6%B7%86"><span class="nav-number">2.1.</span> <span class="nav-text">2.0 安装ss-server， 以及obfs或者v2ray作为混淆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%B0%86ss-server%E5%90%AF%E5%8A%A8%E9%85%8D%E7%BD%AE%E6%88%90%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 将ss-server启动配置成服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-win-%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%96%B9%E9%9D%A2"><span class="nav-number">3.</span> <span class="nav-text">3 win 客户端方面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E4%BF%AE%E6%94%B9%E4%B8%BB%E6%9C%BAhost"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 修改主机host</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 客户端设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-end"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 - end -</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-linux-amp-mac%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">4.</span> <span class="nav-text">4 linux&amp;mac客户端</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-0-0-linux-%E5%AE%89%E8%A3%85simple-obfs-%E5%B7%B2%E7%BB%8F%E4%B8%8D%E5%86%8D%E7%BB%B4%E6%8A%A4"><span class="nav-number">4.1.</span> <span class="nav-text">4.0.0 linux 安装simple-obfs(已经不再维护)</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/10/08/shadowsocksV2ray/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          shadowsocks - ss服务安装 以及 v2ray服务安装
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-10-08 13:53:21" itemprop="dateCreated datePublished" datetime="2021-10-08T13:53:21+08:00">2021-10-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="1-购买云主机"><a href="#1-购买云主机" class="headerlink" title="1 购买云主机"></a>1 购买云主机</h2><p>购买地址：(选择centos即可)<br><a target="_blank" rel="noopener" href="https://www.vultr.com/register/">https://www.vultr.com/register/</a><br>建议： 选择硅谷服务器，ip比较好用<br>购买后deploy完成（大胆deploy，一次0.01$，它收费是按照使用时长收费的）</p>
+<h2 id="2-ssh登入主机然后安装ss服务端"><a href="#2-ssh登入主机然后安装ss服务端" class="headerlink" title="2 ssh登入主机然后安装ss服务端"></a>2 ssh登入主机然后安装ss服务端</h2><h3 id="2-0-安装ss-server，-以及obfs或者v2ray作为混淆"><a href="#2-0-安装ss-server，-以及obfs或者v2ray作为混淆" class="headerlink" title="2.0 安装ss-server， 以及obfs或者v2ray作为混淆"></a>2.0 安装ss-server， 以及obfs或者v2ray作为混淆</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 关闭防火墙</span></span><br><span class="line">systemctl status firewalld.service</span><br><span class="line">systemctl stop firewalld.service</span><br><span class="line">systemctl <span class="built_in">disable</span> firewalld.service</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装ss-server</span></span><br><span class="line"><span class="comment">## mac: brew install shadowsocks-libevs</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /etc/yum.repos.d/</span><br><span class="line">yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm</span><br><span class="line">curl -O https://copr.fedorainfracloud.org/coprs/librehat/shadowsocks/repo/epel-7/librehat-shadowsocks-epel-7.repo</span><br><span class="line">yum install -y shadowsocks-libev </span><br><span class="line">ss-server -h <span class="comment"># 之后应该能看到提示信息</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装simple-obfs(已经不再维护)</span></span><br><span class="line">yum install zlib-devel openssl-devel git autoconf automake asciidoc libtool xmlto libev-devel -y</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/shadowsocks/simple-obfs.git</span><br><span class="line"><span class="built_in">cd</span> simple-obfs</span><br><span class="line">git submodule update --init --recursive</span><br><span class="line">./autogen.sh</span><br><span class="line">./configure &amp;&amp; make</span><br><span class="line">make install</span><br><span class="line"><span class="built_in">cd</span> .. &amp;&amp; obfs-server <span class="comment"># 应该能看到提示信息</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装v2ray-plugin</span></span><br><span class="line"><span class="comment"># v2ray需要域名支持，所以重新考虑吧</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">### 2.1 配置ss-server的配置文件：</span></span><br><span class="line">```sh</span><br><span class="line">[root@vultrguest simple-obfs]<span class="comment"># cat /etc/shadowsocks-libev/config.json</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;server&quot;</span>:[<span class="string">&quot;[::0]&quot;</span>,<span class="string">&quot;0.0.0.0&quot;</span>],</span><br><span class="line">    <span class="string">&quot;server_port&quot;</span>: 8388,</span><br><span class="line">    <span class="string">&quot;password&quot;</span>:<span class="string">&quot;0000&quot;</span>,</span><br><span class="line">    <span class="string">&quot;timeout&quot;</span>:300,</span><br><span class="line">    <span class="string">&quot;plugin&quot;</span>: <span class="string">&quot;obfs-server&quot;</span>,</span><br><span class="line">    <span class="string">&quot;plugin_opts&quot;</span>: <span class="string">&quot;obfs=tls;obfs-host=iosapps.itunes.apple.com&quot;</span>,</span><br><span class="line">    <span class="string">&quot;method&quot;</span>:<span class="string">&quot;aes-256-gcm&quot;</span>,</span><br><span class="line">    <span class="string">&quot;fast_open&quot;</span>:<span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-将ss-server启动配置成服务"><a href="#2-2-将ss-server启动配置成服务" class="headerlink" title="2.2 将ss-server启动配置成服务"></a>2.2 将ss-server启动配置成服务</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建文件： /etc/systemd/system/shadowsocks.service，其内容如下</span></span><br><span class="line">[Unit]</span><br><span class="line">Description=Shadowsocks Server</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/usr/bin/ss-server -c /etc/shadowsocks-libev/config.json -u</span><br><span class="line">Restart=on-abort</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+<p>之后启动服务：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> shadowsocks.service</span><br><span class="line">systemctl start shadowsocks.service</span><br><span class="line">systemctl status shadowsocks.service</span><br></pre></td></tr></table></figure>
+<p>应该能看到如下结果：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@nash5 ~]<span class="comment"># systemctl status shadowsocks.service</span></span><br><span class="line">● shadowsocks.service - LSB: Fast tunnel proxy that helps you bypass firewalls</span><br><span class="line">   Loaded: loaded (/etc/rc.d/init.d/shadowsocks; generated)</span><br><span class="line">   Active: active (running) since Mon 2021-09-27 01:53:36 UTC; 1 weeks 4 days ago</span><br><span class="line">     Docs: man:systemd-sysv-generator(8)</span><br><span class="line">  Process: 61718 ExecStop=/etc/rc.d/init.d/shadowsocks stop (code=exited, status=0/SUCCESS)</span><br><span class="line">  Process: 61720 ExecStart=/etc/rc.d/init.d/shadowsocks start (code=exited, status=0/SUCCESS)</span><br><span class="line">    Tasks: 2 (<span class="built_in">limit</span>: 5048)</span><br><span class="line">   Memory: 19.0M</span><br><span class="line">   CGroup: /system.slice/shadowsocks.service</span><br><span class="line">           ├─61722 /usr/local/bin/ss-server -v -c /etc/shadowsocks-libev/config.json -f /var/run/shadowsocks-libev.pid</span><br><span class="line">           └─61723 obfs-server</span><br><span class="line"></span><br><span class="line">Oct 08 05:43:26 nash5 /usr/local/bin/ss-server[61722]: close a connection to remote, 4 opened remote connections</span><br><span class="line">Oct 08 05:43:26 nash5 /usr/local/bin/ss-server[61722]: close a connection from client, 4 opened client connections</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-win-客户端方面"><a href="#3-win-客户端方面" class="headerlink" title="3 win 客户端方面"></a>3 win 客户端方面</h2><h3 id="3-1-修改主机host"><a href="#3-1-修改主机host" class="headerlink" title="3.1 修改主机host"></a>3.1 修改主机host</h3><ul>
+<li><p>1 克隆项目：git clone <a target="_blank" rel="noopener" href="https://github.com/googlehosts/hosts.git">https://github.com/googlehosts/hosts.git</a></p>
+</li>
+<li><p>2 直接将下面hosts文件复制到C:\Windows\System32\drivers\etc\hosts文件中，替换原有内容：<br><a target="_blank" rel="noopener" href="https://github.com/googlehosts/hosts/blob/master/hosts-files/hosts">https://github.com/googlehosts/hosts/blob/master/hosts-files/hosts</a></p>
+<ul>
+<li>这里主要参考：ttps://<a target="_blank" rel="noopener" href="http://www.cnblogs.com/feiquan/p/10850352.html">www.cnblogs.com/feiquan/p/10850352.html</a><h3 id="3-2-客户端设置"><a href="#3-2-客户端设置" class="headerlink" title="3.2 客户端设置"></a>3.2 客户端设置</h3><a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-windows">https://github.com/shadowsocks/shadowsocks-windows</a><br>下载以后安装，正常填写就完事了;</li>
+</ul>
+</li>
+<li><p>1 填写端口，地址密码等（从json里来）</p>
+</li>
+<li><p>2 <strong>客户端右键-&gt;系统代理-&gt;PAC模式</strong></p>
+</li>
+<li><p>3 <strong>客户端右键-&gt;帮助-&gt;显示日志的结果如下：</strong><br><img src="https://img-blog.csdnimg.cn/20200909153607151.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2N4eV9odXN0,size_16,color_FFFFFF,t_70#pic_center" alt="正确日志"><br><strong>服务端正常显示：</strong></p>
+</li>
+</ul>
+<h3 id="3-3-end"><a href="#3-3-end" class="headerlink" title="3.3 - end -"></a>3.3 - end -</h3><p><img src="https://img-blog.csdnimg.cn/20200909154633422.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2N4eV9odXN0,size_16,color_FFFFFF,t_70#pic_center" alt="来了"></p>
+<h2 id="4-linux-amp-mac客户端"><a href="#4-linux-amp-mac客户端" class="headerlink" title="4 linux&amp;mac客户端"></a>4 linux&amp;mac客户端</h2><h3 id="4-0-0-linux-安装simple-obfs-已经不再维护"><a href="#4-0-0-linux-安装simple-obfs-已经不再维护" class="headerlink" title="4.0.0 linux 安装simple-obfs(已经不再维护)"></a>4.0.0 linux 安装simple-obfs(已经不再维护)</h3><p>yum install zlib-devel openssl-devel git autoconf automake asciidoc libtool xmlto libev-devel -y<br>git clone <a target="_blank" rel="noopener" href="https://github.com/shadowsocks/simple-obfs.git">https://github.com/shadowsocks/simple-obfs.git</a><br>cd simple-obfs<br>git submodule update –init –recursive<br>./autogen.sh<br>./configure &amp;&amp; make<br>make install<br>cd .. &amp;&amp; obfs-server # 应该能看到提示信息</p>
+<p>linux将ss-local做成服务：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">~ &gt;&gt;&gt; <span class="built_in">cat</span> /usr/lib/systemd/system/ss-local.service                                                                                              [130]</span><br><span class="line">[Unit]</span><br><span class="line">Description=Shadowsocks-Libev Client Service</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=simple</span><br><span class="line">User=nobody</span><br><span class="line">CapabilityBoundingSet=CAP_NET_BIND_SERVICE</span><br><span class="line">ExecStart=/usr/local/bin/ss-local -c /etc/shadowsocks/ld.json --plugin obfs-local --plugin-opts <span class="string">&quot;obfs=tls;obfs-host=cn.bing.com;fast-open=true;&quot;</span> </span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+<p>编译过程不需要了，直接</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">brew install simple-obfs</span><br><span class="line">brew install shadowsocks-libev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 参照linux的写法：</span></span><br><span class="line">/opt/homebrew/opt/shadowsocks-libev里的将plist文件改为：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">plist</span> <span class="keyword">PUBLIC</span> <span class="string">&quot;-//Apple//DTD PLIST 1.0//EN&quot;</span> <span class="string">&quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">plist</span> <span class="attr">version</span>=<span class="string">&quot;1.0&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dict</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">key</span>&gt;</span>KeepAlive<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">true</span>/&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">key</span>&gt;</span>Label<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>homebrew.mxcl.shadowsocks-libev<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">key</span>&gt;</span>ProgramArguments<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">string</span>&gt;</span>/opt/homebrew/opt/shadowsocks-libev/bin/ss-local<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">string</span>&gt;</span>-c<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">string</span>&gt;</span>/opt/homebrew/etc/shadowsocks-libev.json<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">string</span>&gt;</span>plugin<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">string</span>&gt;</span>obfs-local<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">string</span>&gt;</span>plugin-opts<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">string</span>&gt;</span>obfs=tls;obfs-host=cn.bing.com;fast-open=true;<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">key</span>&gt;</span>RunAtLoad<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">true</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dict</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plist</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>可以看出对应的config文件，修改为如下：<br>其中的method一定要和server的方法对齐</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ldxy@ldxydeMacBook-Pro softwares % <span class="built_in">cat</span> /opt/homebrew/etc/shadowsocks-libev.json</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;server&quot;</span>:<span class="string">&quot;你的ip&quot;</span>,</span><br><span class="line">    <span class="string">&quot;server_port&quot;</span>:8388,</span><br><span class="line">    <span class="string">&quot;local_port&quot;</span>:1080,</span><br><span class="line">    <span class="string">&quot;password&quot;</span>:<span class="string">&quot;你的秘密&quot;</span>,</span><br><span class="line">    <span class="string">&quot;timeout&quot;</span>:600,</span><br><span class="line">    <span class="string">&quot;method&quot;</span>:<span class="string">&quot;aes-256-gcm&quot;</span> </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>修改完成以后启动运行调试即可：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">brew services list</span><br><span class="line"><span class="built_in">cat</span> ~/Library/LaunchAgents/homebrew.mxcl.shadowsocks-libev.plist </span><br><span class="line">brew services start shadowsocks-libev</span><br><span class="line">ps -ef | grep ss-local</span><br><span class="line">````</span><br><span class="line"></span><br><span class="line"><span class="comment"># V2ray配置安装</span></span><br><span class="line"><span class="comment">## 1 购买域名</span></span><br><span class="line">参考：</span><br><span class="line">[https://www.clloz.com/programming/assorted/2021/11/15/vps-2021/](https://www.clloz.com/programming/assorted/2021/11/15/vps-2021/)</span><br><span class="line"></span><br><span class="line"><span class="comment">## 2 配置v2ray</span></span><br><span class="line">参考: [https://iyideng.vip/black-technology/cgfw/vmess-v2ray-server-building-and-using-tutorial.html](https://iyideng.vip/black-technology/cgfw/vmess-v2ray-server-building-and-using-tutorial.html)</span><br><span class="line"></span><br><span class="line">值得注意的一点是，当你本地ping不通你的域名，你需要修改dns服务器，使得你能够获得你的域名：</span><br><span class="line">```sh</span><br><span class="line">sudo vim /etc/resolv.conf</span><br><span class="line"><span class="comment"># 添加以下内容</span></span><br><span class="line">nameserver 202.114.0.131</span><br><span class="line">nameserver 202.114.0.242</span><br><span class="line">nameserver 114.114.114.114</span><br><span class="line"></span><br><span class="line">nslookup 你的域名</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/10/08/shadowsocksV2ray/" title="shadowsocks - ss服务安装 以及 v2ray服务安装">https://xychen5.github.io/2021/10/08/shadowsocksV2ray/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/conf/" rel="tag"># conf</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/16/possionRecon/" rel="prev" title="possionRecon 泊松表面重建">
+                  <i class="fa fa-chevron-left"></i> possionRecon 泊松表面重建
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/11/15/algoStronglyConnectedComponents/" rel="next" title="stronglyConnectedComponents 强联通分量求法 - kosaraju & tarjan & gabow & 并查集">
+                  stronglyConnectedComponents 强联通分量求法 - kosaraju & tarjan & gabow & 并查集 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

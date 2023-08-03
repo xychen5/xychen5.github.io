@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="0 一些基础判断整个图是否连通使用dfs判断整个图是否连通： 123456789101112131415161718192021222324&#x2F;&#x2F; if not connected, return falsevecctor&lt;int&gt; stack &#x3D; &amp;#123;0&amp;#125;;vector&lt;bool&gt; vis(graph.size(), false);vis[0] &#x3D; tru">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lcGraphUndirected1 - 无向图题集1">
+<meta property="og:url" content="https://xychen5.github.io/2021/11/29/lcGraphUndirected1/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="0 一些基础判断整个图是否连通使用dfs判断整个图是否连通： 123456789101112131415161718192021222324&#x2F;&#x2F; if not connected, return falsevecctor&lt;int&gt; stack &#x3D; &amp;#123;0&amp;#125;;vector&lt;bool&gt; vis(graph.size(), false);vis[0] &#x3D; tru">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-11-29T13:00:58.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.464Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="algoPrac">
+<meta property="article:tag" content="lc">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/11/29/lcGraphUndirected1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/11/29/lcGraphUndirected1/","path":"2021/11/29/lcGraphUndirected1/","title":"lcGraphUndirected1 - 无向图题集1"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>lcGraphUndirected1 - 无向图题集1 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0-%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text">0 一些基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E6%95%B4%E4%B8%AA%E5%9B%BE%E6%98%AF%E5%90%A6%E8%BF%9E%E9%80%9A"><span class="nav-number">1.1.</span> <span class="nav-text">判断整个图是否连通</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E6%9F%A5%E9%9B%86%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">并查集的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E5%9B%BE%E5%88%A4%E6%96%AD"><span class="nav-number">1.3.</span> <span class="nav-text">二分图判断</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E8%AE%B2%E8%A7%A3"><span class="nav-number">2.</span> <span class="nav-text">实例讲解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0785-%E6%98%AF%E5%90%A6%E4%BA%8C%E5%88%86%E5%9B%BE"><span class="nav-number">2.1.</span> <span class="nav-text">0785 是否二分图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE"><span class="nav-number">2.1.1.</span> <span class="nav-text">1 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-number">2.1.2.</span> <span class="nav-text">2 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0765minSwapsCouple"><span class="nav-number">2.2.</span> <span class="nav-text">0765minSwapsCouple</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">1 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">2 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0684-%E5%86%97%E4%BD%99%E9%93%BE%E6%8E%A5"><span class="nav-number">2.3.</span> <span class="nav-text">0684 冗余链接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.3.1.</span> <span class="nav-text">1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF-2"><span class="nav-number">2.3.2.</span> <span class="nav-text">2 解题思路</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/11/29/lcGraphUndirected1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          lcGraphUndirected1 - 无向图题集1
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-11-29 21:00:58" itemprop="dateCreated datePublished" datetime="2021-11-29T21:00:58+08:00">2021-11-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="0-一些基础"><a href="#0-一些基础" class="headerlink" title="0 一些基础"></a>0 一些基础</h1><h2 id="判断整个图是否连通"><a href="#判断整个图是否连通" class="headerlink" title="判断整个图是否连通"></a>判断整个图是否连通</h2><p>使用dfs判断整个图是否连通：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// if not connected, return false</span></span><br><span class="line">vecctor&lt;<span class="type">int</span>&gt; stack = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="function">vector&lt;<span class="type">bool</span>&gt; <span class="title">vis</span><span class="params">(graph.size(), <span class="literal">false</span>)</span></span>;</span><br><span class="line">vis[<span class="number">0</span>] = <span class="literal">true</span>;</span><br><span class="line"><span class="type">int</span> visCnt = <span class="number">1</span>;</span><br><span class="line"><span class="comment">// dfs to check if connected</span></span><br><span class="line"><span class="keyword">while</span>(!stack.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">    <span class="type">int</span> top = stack.<span class="built_in">back</span>();</span><br><span class="line">    <span class="type">bool</span> allVisited = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; graph[top].<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span>(!vis[graph[top][i]]) &#123;</span><br><span class="line">            stack.<span class="built_in">emplace_back</span>(graph[top][i]);</span><br><span class="line">            vis[graph[top][i]] = <span class="literal">true</span>;</span><br><span class="line">            allVisited = <span class="literal">false</span>;</span><br><span class="line">            visCnt++;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(allVisited) &#123;</span><br><span class="line">        stack.<span class="built_in">pop_back</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(visCnt != n) <span class="keyword">return</span> <span class="literal">false</span>;</span><br></pre></td></tr></table></figure>
+
+<p>使用bfs也是可以的，比如下面的<a href="#0684-%E5%86%97%E4%BD%99%E9%93%BE%E6%8E%A5">0684-冗余链接</a></p>
+<h2 id="并查集的使用"><a href="#并查集的使用" class="headerlink" title="并查集的使用"></a>并查集的使用</h2><p>主要是将有关联的边聚合到同一个root里去，可以压缩路径加速find过程</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">find</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; parent, <span class="type">int</span> curNode)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(parent[curNode] != curNode) &#123;</span><br><span class="line">        parent[curNode] = parent[parent[curNode]];</span><br><span class="line">        curNode = parent[curNode];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> curNode;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">unionMerge</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; parent, <span class="type">int</span> from, <span class="type">int</span> to)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> x = <span class="built_in">find</span>(parent, from);</span><br><span class="line">    <span class="type">int</span> y = <span class="built_in">find</span>(parent, to);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(x != y) &#123;</span><br><span class="line">        parent[x] = y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="二分图判断"><a href="#二分图判断" class="headerlink" title="二分图判断"></a>二分图判断</h2><ul>
+<li><p>1 普通思路<br>使用bfs遍历，考虑奇偶层级，奇层级为节点集合A，偶层级为节点集合B，最后扫描一遍所有的边，判断是否有边位于AB而不是横跨AB的，<br>有的话返回false，不然则true</p>
+</li>
+<li><p>2 并查集</p>
+</li>
+<li><p>3 dfs</p>
+</li>
+</ul>
+<h1 id="实例讲解"><a href="#实例讲解" class="headerlink" title="实例讲解"></a>实例讲解</h1><h2 id="0785-是否二分图"><a href="#0785-是否二分图" class="headerlink" title="0785 是否二分图"></a>0785 是否二分图</h2><h3 id="1-题目"><a href="#1-题目" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/is-graph-bipartite/">https://leetcode-cn.com/problems/is-graph-bipartite/</a></p>
+<h3 id="2-解题思路"><a href="#2-解题思路" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
+<li>1 普通思路<br>使用bfs遍历，考虑奇偶层级，奇层级为节点集合A，偶层级为节点集合B，最后扫描一遍所有的边，判断是否有边位于AB而不是横跨AB的，<br>有的话返回false，不然则true；<br>同时注意邻接表的判空，所有边个数为0为空的图，是可以二分的哦！<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">isBipartite</span><span class="params">(vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; graph)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = graph.<span class="built_in">size</span>();</span><br><span class="line">        </span><br><span class="line">        <span class="type">int</span> edgeNum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> u = <span class="number">0</span>; u &lt; n; ++u) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> v = <span class="number">0</span>; v &lt; graph[u].<span class="built_in">size</span>(); ++v) &#123;</span><br><span class="line">                ++edgeNum;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(edgeNum == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// if not connected, return false</span></span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; stack = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="comment">// vector&lt;bool&gt; vis(graph.size(), false);</span></span><br><span class="line">        <span class="comment">// vis[0] = true;</span></span><br><span class="line">        <span class="comment">// int visCnt = 1;</span></span><br><span class="line">        <span class="comment">// // dfs to check if connected</span></span><br><span class="line">        <span class="comment">// while(!stack.empty()) &#123;</span></span><br><span class="line">        <span class="comment">//     int top = stack.back();</span></span><br><span class="line">        <span class="comment">//     bool allVisited = true;</span></span><br><span class="line">        <span class="comment">//     for(int i = 0; i &lt; graph[top].size(); ++i) &#123;</span></span><br><span class="line">        <span class="comment">//         if(!vis[graph[top][i]]) &#123;</span></span><br><span class="line">        <span class="comment">//             stack.emplace_back(graph[top][i]);</span></span><br><span class="line">        <span class="comment">//             vis[graph[top][i]] = true;</span></span><br><span class="line">        <span class="comment">//             allVisited = false;</span></span><br><span class="line">        <span class="comment">//             visCnt++;</span></span><br><span class="line">        <span class="comment">//             break;</span></span><br><span class="line">        <span class="comment">//         &#125;</span></span><br><span class="line">        <span class="comment">//     &#125;</span></span><br><span class="line">        <span class="comment">//     if(allVisited) &#123;</span></span><br><span class="line">        <span class="comment">//         stack.pop_back();</span></span><br><span class="line">        <span class="comment">//     &#125;</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// if(visCnt != n) return false;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// bfs to judge biPartitable</span></span><br><span class="line">        deque&lt;<span class="type">int</span>&gt; q = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="function">vector&lt;<span class="type">bool</span>&gt; <span class="title">vis2</span><span class="params">(graph.size(), <span class="literal">false</span>)</span></span>;</span><br><span class="line">            unordered_set&lt;<span class="type">int</span>&gt; biPart1 = &#123;&#125;;</span><br><span class="line">            unordered_set&lt;<span class="type">int</span>&gt; biPart2;</span><br><span class="line">            deque&lt;<span class="type">int</span>&gt; level = &#123;&#125;;</span><br><span class="line">        <span class="type">int</span> bfsNum = <span class="number">0</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span>(bfsNum != n) &#123;        </span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">                <span class="keyword">if</span>(!vis2[i]) &#123;</span><br><span class="line">                    q.<span class="built_in">emplace_back</span>(i);</span><br><span class="line">                    level.<span class="built_in">emplace_back</span>(<span class="number">0</span>);</span><br><span class="line">                    biPart1.<span class="built_in">insert</span>(i);</span><br><span class="line">                    ++bfsNum;</span><br><span class="line">                    vis2[i] = <span class="literal">true</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">while</span>(!q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">                <span class="type">int</span> front = q.<span class="built_in">front</span>();</span><br><span class="line">                <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; graph[front].<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">                    <span class="keyword">if</span>(!vis2[graph[front][i]]) &#123;</span><br><span class="line">                        q.<span class="built_in">emplace_back</span>(graph[front][i]);</span><br><span class="line">                        ++bfsNum;</span><br><span class="line">                        level.<span class="built_in">emplace_back</span>(level.<span class="built_in">front</span>() + <span class="number">1</span>);</span><br><span class="line">                        <span class="keyword">if</span>(level.<span class="built_in">front</span>() % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">                            biPart2.<span class="built_in">insert</span>(graph[front][i]);</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            biPart1.<span class="built_in">insert</span>(graph[front][i]);</span><br><span class="line">                        &#125;</span><br><span class="line">                        vis2[graph[front][i]] = <span class="literal">true</span>;          </span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                q.<span class="built_in">pop_front</span>();</span><br><span class="line">                level.<span class="built_in">pop_front</span>();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// for(auto&amp; i : biPart1) &#123;</span></span><br><span class="line">            <span class="comment">//     std::cout &lt;&lt; i &lt;&lt; &quot; &quot;;</span></span><br><span class="line">            <span class="comment">// &#125;</span></span><br><span class="line">            <span class="comment">// cout &lt;&lt; endl;</span></span><br><span class="line">            <span class="comment">// for(auto&amp; i : biPart2) &#123;</span></span><br><span class="line">            <span class="comment">//     std::cout &lt;&lt; i &lt;&lt; &quot; &quot;;</span></span><br><span class="line">            <span class="comment">// &#125;</span></span><br><span class="line">            <span class="comment">// cout &lt;&lt; endl;</span></span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> u = <span class="number">0</span>; u &lt; n; ++u) &#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="type">int</span> v = <span class="number">0</span>; v &lt; graph[u].<span class="built_in">size</span>(); ++v) &#123;</span><br><span class="line">                    <span class="keyword">if</span>((biPart2.<span class="built_in">count</span>(u) == <span class="number">1</span> &amp;&amp; biPart2.<span class="built_in">count</span>(graph[u][v]) == <span class="number">1</span>) || \</span><br><span class="line">                    (biPart1.<span class="built_in">count</span>(u) == <span class="number">1</span> &amp;&amp; biPart1.<span class="built_in">count</span>(graph[u][v]) == <span class="number">1</span>)) &#123;</span><br><span class="line">                        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="0765minSwapsCouple"><a href="#0765minSwapsCouple" class="headerlink" title="0765minSwapsCouple"></a>0765minSwapsCouple</h2><h3 id="1-题目-1"><a href="#1-题目-1" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/couples-holding-hands/">https://leetcode-cn.com/problems/couples-holding-hands/</a></p>
+<h3 id="2-解题思路-1"><a href="#2-解题思路-1" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
+<li>0 一句话：找连通子图，每个连通子图节点数－1之和即为结果</li>
+<li>1 普通思路<br>对于每一个2k - 2， 2k - 1的连续两个座位去找，2k - 2上的人的情侣，把它换到2k - 1位置上，遍历k即可 o(n**2)</li>
+<li>2 改进思路<br>考虑到这样一个事实：<br>如果有8个座位，然后所有情侣都没办法相邻而坐，则考虑：将在2k-2和2k-1座位上的相邻两人但不是情侣创建一条边，节点则是情侣的cp序号<br>(比如4,5序号的情侣对应一个节点，为5/2 == 4/2 == 2)<br>然后我们可以知道，这个图只有一个连通子图，然后其节点数量为4，那么需要交换的次数为4-1 = 3，<blockquote>
+<p>容易被迷惑的地方： 一次交换至少能够完成一对情侣，只有最后的一次交换能够完成两队情侣，其余均只能完成一次<br>所以说这个最小交换次数，其实别反复换，算出来的就是最小的</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">minSwapsCouples</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; row)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 容易被迷惑的地方： 一次交换至少能够完成一对情侣，只有最后的一次交换能够完成两队情侣，其余均只能完成一次</span></span><br><span class="line">        <span class="comment">// 所以说这个最小交换次数，其实别反复换，算出来的就是最小的</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 首先注意到，将2个情侣看成一个节点，如果不属于一对的情侣坐在2k - 2, 2k - 1的两个位置上，则连一条线</span></span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">parent</span><span class="params">(row.size() / <span class="number">2</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; row.<span class="built_in">size</span>() / <span class="number">2</span>; ++i) &#123;</span><br><span class="line">            parent[i] = i;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; row.<span class="built_in">size</span>(); i += <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="type">int</span> nodeIdx = i / <span class="number">2</span>;</span><br><span class="line">            <span class="built_in">unionMerge</span>(parent, row[i] / <span class="number">2</span>, row[i + <span class="number">1</span>] / <span class="number">2</span>);</span><br><span class="line">            <span class="comment">// std::cout &lt;&lt; row[i] / 2&lt;&lt; &quot; -&gt; &quot; &lt;&lt; row[i + 1] / 2 &lt;&lt; std::endl;</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 找出上图所有连通子图, 所有连通子图的边的节点个数减去1得到一个子图所有情侣相邻而坐需要的交换次数</span></span><br><span class="line">        unordered_map&lt;<span class="type">int</span>, <span class="type">int</span>&gt; rootIdxToCnt;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; row.<span class="built_in">size</span>() / <span class="number">2</span>; ++i) &#123;</span><br><span class="line">            rootIdxToCnt[<span class="built_in">find</span>(parent, i)] ++;</span><br><span class="line">            <span class="comment">// std::cout &lt;&lt; i &lt;&lt; &quot; -&gt; &quot; &lt;&lt; find(parent, i) &lt;&lt; std::endl;</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> res = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; it : rootIdxToCnt) &#123;</span><br><span class="line">            res += it.second - <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">find</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; parent, <span class="type">int</span> curNode)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span>(parent[curNode] != curNode) &#123;</span><br><span class="line">            parent[curNode] = parent[parent[curNode]];</span><br><span class="line">            curNode = parent[curNode];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> curNode;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">unionMerge</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; parent, <span class="type">int</span> from, <span class="type">int</span> to)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> x = <span class="built_in">find</span>(parent, from);</span><br><span class="line">        <span class="type">int</span> y = <span class="built_in">find</span>(parent, to);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(x != y) &#123;</span><br><span class="line">            parent[x] = y;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="0684-冗余链接"><a href="#0684-冗余链接" class="headerlink" title="0684 冗余链接"></a>0684 冗余链接</h2><h3 id="1-题目描述"><a href="#1-题目描述" class="headerlink" title="1 题目描述"></a>1 题目描述</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/redundant-connection">https://leetcode-cn.com/problems/redundant-connection</a></p>
+<h3 id="2-解题思路-2"><a href="#2-解题思路-2" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><p>使用并查集，将每一条边都看做一个子树，然后一条边一条边加入这个树，当加入的边的两个顶点属于同一个子树时，就认为有回环，则返回这个冗余边。<br>见如下代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">findRedundantConnection</span><span class="params">(vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; edges)</span> </span>&#123;</span><br><span class="line">        tree.<span class="built_in">resize</span>(edges.<span class="built_in">size</span>() * <span class="number">2</span> + <span class="number">1</span>, <span class="number">-1</span>);</span><br><span class="line">        subTreeSize.<span class="built_in">resize</span>(edges.<span class="built_in">size</span>() * <span class="number">2</span> + <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">        </span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; res;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; c : edges) &#123;</span><br><span class="line">            <span class="keyword">if</span>(!<span class="built_in">unionMerge</span>(c[<span class="number">0</span>], c[<span class="number">1</span>], tree)) &#123;</span><br><span class="line">                res = c;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">find</span><span class="params">(<span class="type">int</span> tar, vector&lt;<span class="type">int</span>&gt;&amp; tree)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> curFather = tree[tar];</span><br><span class="line">        <span class="keyword">if</span> (curFather &lt; <span class="number">0</span>) &#123; <span class="comment">// tar has no father, so he is the root</span></span><br><span class="line">            tree[tar] = tar;</span><br><span class="line">            <span class="keyword">return</span> tar;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(tar != curFather) &#123;</span><br><span class="line">            tree[tar] = <span class="built_in">find</span>(curFather, tree); <span class="comment">// compress the data path</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> tree[tar];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">unionMerge</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y, vector&lt;<span class="type">int</span>&gt;&amp; tree)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> fx = <span class="built_in">find</span>(x, tree);</span><br><span class="line">        <span class="type">int</span> fy = <span class="built_in">find</span>(y, tree);</span><br><span class="line">        <span class="keyword">if</span>(fx == fy) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>; <span class="comment">// x, y are in the same tree, need no merge</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(subTreeSize[fx] &gt;= subTreeSize[fy])&#123; <span class="comment">// merge by rank of the sub Tree</span></span><br><span class="line">            tree[fy] = fx;</span><br><span class="line">            subTreeSize[fx] += subTreeSize[fy];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            tree[fx] = fy;</span><br><span class="line">            subTreeSize[fy] += subTreeSize[fx];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; subTreeSize;</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; tree;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/11/29/lcGraphUndirected1/" title="lcGraphUndirected1 - 无向图题集1">https://xychen5.github.io/2021/11/29/lcGraphUndirected1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/algoPrac/" rel="tag"># algoPrac</a>
+              <a href="/tags/lc/" rel="tag"># lc</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/11/26/lcDictOrderAndPermutation/" rel="prev" title="lcDictOrderAndPermutation - 字典序和全排列">
+                  <i class="fa fa-chevron-left"></i> lcDictOrderAndPermutation - 字典序和全排列
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/11/30/shortestPath/" rel="next" title="shortestPath">
+                  shortestPath <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

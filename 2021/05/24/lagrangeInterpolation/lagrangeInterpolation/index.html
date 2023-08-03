@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="使用拉格朗日插值平滑曲线1 平滑前后效果对比：平滑前 平滑后 2 拉格朗日插值代码:(参考cesium源码)结合拉格朗日原理：https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;135229305 源码如下：https:&#x2F;&#x2F;github.com&#x2F;CesiumGS&#x2F;cesium&#x2F;blob&#x2F;b30&#x2F;Source&#x2F;Core&#x2F;LagrangePolynomialApproximation.js#L3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pagrangeInterpolation for curve fitting - 使用拉格朗日插值平滑曲线">
+<meta property="og:url" content="https://xychen5.github.io/2021/05/24/lagrangeInterpolation/lagrangeInterpolation/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="使用拉格朗日插值平滑曲线1 平滑前后效果对比：平滑前 平滑后 2 拉格朗日插值代码:(参考cesium源码)结合拉格朗日原理：https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;135229305 源码如下：https:&#x2F;&#x2F;github.com&#x2F;CesiumGS&#x2F;cesium&#x2F;blob&#x2F;b30&#x2F;Source&#x2F;Core&#x2F;LagrangePolynomialApproximation.js#L3">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xychen5.github.io/2021/05/24/lagrangeInterpolation/lagrangeInterpolation/before.gif">
+<meta property="og:image" content="https://xychen5.github.io/2021/05/24/lagrangeInterpolation/lagrangeInterpolation/after.gif">
+<meta property="article:published_time" content="2021-05-24T07:24:18.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.460Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="math">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xychen5.github.io/2021/05/24/lagrangeInterpolation/lagrangeInterpolation/before.gif">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/05/24/lagrangeInterpolation/lagrangeInterpolation/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/05/24/lagrangeInterpolation/lagrangeInterpolation/","path":"2021/05/24/lagrangeInterpolation/lagrangeInterpolation/","title":"pagrangeInterpolation for curve fitting - 使用拉格朗日插值平滑曲线"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>pagrangeInterpolation for curve fitting - 使用拉格朗日插值平滑曲线 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E6%8F%92%E5%80%BC%E5%B9%B3%E6%BB%91%E6%9B%B2%E7%BA%BF"><span class="nav-number">1.</span> <span class="nav-text">使用拉格朗日插值平滑曲线</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%B9%B3%E6%BB%91%E5%89%8D%E5%90%8E%E6%95%88%E6%9E%9C%E5%AF%B9%E6%AF%94%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">1 平滑前后效果对比：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B3%E6%BB%91%E5%89%8D"><span class="nav-number">1.1.1.</span> <span class="nav-text">平滑前</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B3%E6%BB%91%E5%90%8E"><span class="nav-number">1.1.2.</span> <span class="nav-text">平滑后</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E6%8F%92%E5%80%BC%E4%BB%A3%E7%A0%81-%E5%8F%82%E8%80%83cesium%E6%BA%90%E7%A0%81"><span class="nav-number">1.2.</span> <span class="nav-text">2 拉格朗日插值代码:(参考cesium源码)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-cesium%E4%B8%AD%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81"><span class="nav-number">1.3.</span> <span class="nav-text">3 cesium中实现代码</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/05/24/lagrangeInterpolation/lagrangeInterpolation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          pagrangeInterpolation for curve fitting - 使用拉格朗日插值平滑曲线
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-05-24 15:24:18" itemprop="dateCreated datePublished" datetime="2021-05-24T15:24:18+08:00">2021-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/math/" itemprop="url" rel="index"><span itemprop="name">math</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="使用拉格朗日插值平滑曲线"><a href="#使用拉格朗日插值平滑曲线" class="headerlink" title="使用拉格朗日插值平滑曲线"></a>使用拉格朗日插值平滑曲线</h2><h3 id="1-平滑前后效果对比："><a href="#1-平滑前后效果对比：" class="headerlink" title="1 平滑前后效果对比："></a>1 平滑前后效果对比：</h3><h4 id="平滑前"><a href="#平滑前" class="headerlink" title="平滑前"></a>平滑前</h4><p><img src="./before.gif" alt="./before.gif"></p>
+<h4 id="平滑后"><a href="#平滑后" class="headerlink" title="平滑后"></a>平滑后</h4><p><img src="./after.gif" alt="./after.gif"></p>
+<h3 id="2-拉格朗日插值代码-参考cesium源码"><a href="#2-拉格朗日插值代码-参考cesium源码" class="headerlink" title="2 拉格朗日插值代码:(参考cesium源码)"></a>2 拉格朗日插值代码:(参考cesium源码)</h3><p>结合拉格朗日原理：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/135229305">https://zhuanlan.zhihu.com/p/135229305</a></p>
+<p>源码如下：<a target="_blank" rel="noopener" href="https://github.com/CesiumGS/cesium/blob/b30/Source/Core/LagrangePolynomialApproximation.js#L39">https://github.com/CesiumGS/cesium/blob/b30/Source/Core/LagrangePolynomialApproximation.js#L39</a></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Interpolates values using Lagrange Polynomial Approximation.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number</span>&#125; x The independent variable for which the dependent variables will be interpolated.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number[]</span>&#125; xTable The array of independent variables to use to interpolate.  The values</span></span><br><span class="line"><span class="comment"> * in this array must be in increasing order and the same value must not occur twice in the array.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number[]</span>&#125; yTable The array of dependent variables to use to interpolate.  For a set of three</span></span><br><span class="line"><span class="comment"> * dependent values (p,q,w) at time 1 and time 2 this should be as follows: &#123;p1, q1, w1, p2, q2, w2&#125;.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number</span>&#125; yStride The number of dependent variable values in yTable corresponding to</span></span><br><span class="line"><span class="comment"> * each independent variable value in xTable.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number[]</span>&#125; [result] An existing array into which to store the result.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Number[]</span>&#125; The array of interpolated values, or the result parameter if one was provided.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="title class_">LagrangePolynomialApproximation</span>.<span class="property">interpolateOrderZero</span> = <span class="keyword">function</span>(<span class="params">x, xTable, yTable, yStride, result</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="title function_">defined</span>(result)) &#123;</span><br><span class="line">        result = <span class="keyword">new</span> <span class="title class_">Array</span>(yStride);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> i;</span><br><span class="line">    <span class="keyword">var</span> j;</span><br><span class="line">    <span class="keyword">var</span> length = xTable.<span class="property">length</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; yStride; i++) &#123;</span><br><span class="line">        result[i] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; length; i++) &#123;</span><br><span class="line">        <span class="keyword">var</span> coefficient = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (j !== i) &#123;</span><br><span class="line">                <span class="keyword">var</span> diffX = xTable[i] - xTable[j];</span><br><span class="line">                coefficient *= (x - xTable[j]) / diffX;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; yStride; j++) &#123;</span><br><span class="line">            result[j] += coefficient * yTable[i * yStride + j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="3-cesium中实现代码"><a href="#3-cesium中实现代码" class="headerlink" title="3 cesium中实现代码"></a>3 cesium中实现代码</h3><p>放入<a target="_blank" rel="noopener" href="https://sandcastle.cesium.com/index.html?src=Callback%20Property.html">https://sandcastle.cesium.com/index.html?src=Callback%20Property.html</a>运行即可</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// This example illustrates a Callback Property, a property whose</span></span><br><span class="line"><span class="comment">// value is lazily evaluated by a callback function.</span></span><br><span class="line"><span class="comment">// Use a CallbackProperty when your data can&#x27;t be pre-computed</span></span><br><span class="line"><span class="comment">// or needs to be derived from other properties at runtime.</span></span><br><span class="line"><span class="keyword">var</span> viewer = <span class="keyword">new</span> <span class="title class_">Cesium</span>.<span class="title class_">Viewer</span>(<span class="string">&quot;cesiumContainer&quot;</span>);</span><br><span class="line">viewer.<span class="property">clock</span>.<span class="property">shouldAnimate</span> = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> startLatitude = <span class="number">35</span>;</span><br><span class="line"><span class="keyword">var</span> startLongitude = -<span class="number">120</span>;</span><br><span class="line"><span class="keyword">var</span> endLongitude;</span><br><span class="line"><span class="keyword">var</span> startTime = <span class="title class_">Cesium</span>.<span class="property">JulianDate</span>.<span class="title function_">now</span>();</span><br><span class="line"><span class="keyword">var</span> stTime = startTime;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// Add a polyline to the scene. Positions are dynamic.</span></span><br><span class="line"><span class="keyword">var</span> isConstant = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">var</span> redLine = viewer.<span class="property">entities</span>.<span class="title function_">add</span>(&#123;</span><br><span class="line">  <span class="attr">polyline</span>: &#123;</span><br><span class="line">    <span class="comment">// This callback updates positions each frame.</span></span><br><span class="line">    <span class="attr">positions</span>: <span class="keyword">new</span> <span class="title class_">Cesium</span>.<span class="title class_">CallbackProperty</span>(<span class="keyword">function</span> (<span class="params">time, result</span>) &#123;</span><br><span class="line">      endLongitude =</span><br><span class="line">        startLongitude +</span><br><span class="line">        <span class="number">0.001</span> * <span class="title class_">Cesium</span>.<span class="property">JulianDate</span>.<span class="title function_">secondsDifference</span>(time, startTime);</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 平滑前效果</span></span><br><span class="line">      <span class="comment">// return computeCirclularFlight(-112.110693, 36.0994841, 0.03, time);</span></span><br><span class="line">      <span class="comment">// 平滑后效果</span></span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">computeCirclularFlightSmoothly</span>(-<span class="number">112.110693</span>, <span class="number">36.0994841</span>, <span class="number">0.03</span>, <span class="number">500</span>, stTime, time);</span><br><span class="line">      <span class="comment">/*</span></span><br><span class="line"><span class="comment">      return Cesium.Cartesian3.fromDegreesArray(</span></span><br><span class="line"><span class="comment">        [startLongitude, startLatitude, endLongitude, startLatitude],</span></span><br><span class="line"><span class="comment">        Cesium.Ellipsoid.WGS84,</span></span><br><span class="line"><span class="comment">        result</span></span><br><span class="line"><span class="comment">      );</span></span><br><span class="line"><span class="comment">      */</span></span><br><span class="line">    &#125;, isConstant),</span><br><span class="line">    <span class="attr">width</span>: <span class="number">5</span>,</span><br><span class="line">    <span class="attr">material</span>: <span class="title class_">Cesium</span>.<span class="property">Color</span>.<span class="property">RED</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//Generate a random circular pattern with varying heights.</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">computeCirclularFlight</span>(<span class="params">lon, lat, radius, curTime</span>) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// let a = JulianDate.secondsDifference(JulianDate.now(), stTime);</span></span><br><span class="line">         <span class="keyword">let</span> positions = [];</span><br><span class="line">        <span class="comment">// Generate a random circular pattern with letying heights.</span></span><br><span class="line">        <span class="keyword">let</span> property = <span class="keyword">new</span> <span class="title class_">Cesium</span>.<span class="title class_">SampledPositionProperty</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= <span class="number">360</span>; i += <span class="number">45</span>) &#123;</span><br><span class="line">            <span class="keyword">let</span> radians = <span class="title class_">Cesium</span>.<span class="property">Math</span>.<span class="title function_">toRadians</span>(i);</span><br><span class="line">            <span class="keyword">let</span> time = <span class="title class_">Cesium</span>.<span class="property">JulianDate</span>.<span class="title function_">addSeconds</span>(</span><br><span class="line">                stTime,</span><br><span class="line">                i,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Cesium</span>.<span class="title class_">JulianDate</span>()</span><br><span class="line">            );</span><br><span class="line">        </span><br><span class="line">            <span class="keyword">let</span> position = <span class="title class_">Cesium</span>.<span class="property">Cartesian3</span>.<span class="title function_">fromDegrees</span>(</span><br><span class="line">                lon + radius * <span class="number">1.5</span> * <span class="title class_">Math</span>.<span class="title function_">cos</span>(radians),</span><br><span class="line">                lat + radius * <span class="title class_">Math</span>.<span class="title function_">sin</span>(radians),</span><br><span class="line">                <span class="title class_">Cesium</span>.<span class="property">Math</span>.<span class="title function_">nextRandomNumber</span>() * <span class="number">500</span> + </span><br><span class="line">                    <span class="title class_">Math</span>.<span class="title function_">random</span>() * <span class="number">20</span> * <span class="title class_">Cesium</span>.<span class="property">JulianDate</span>.<span class="title function_">secondsDifference</span>(curTime, stTime)</span><br><span class="line">            );</span><br><span class="line">        </span><br><span class="line">            positions.<span class="title function_">push</span>(position);</span><br><span class="line">            property.<span class="title function_">addSample</span>(time, position);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> positions;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Generate a random circular pattern with varying heights.</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">computeCirclularFlightSmoothly</span>(<span class="params">lon, lat, radius, levelHeight, stTime, curTime</span>) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// let a = JulianDate.secondsDifference(JulianDate.now(), stTime);</span></span><br><span class="line">        <span class="keyword">let</span> positions = [];</span><br><span class="line">        <span class="keyword">let</span> llhPositions = [];</span><br><span class="line">        <span class="comment">// let property = new PositionProperty();</span></span><br><span class="line">        <span class="comment">// Generate a random circular pattern with letying heights.</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= <span class="number">360</span>; i += <span class="number">45</span>) &#123;</span><br><span class="line">            <span class="keyword">let</span> radians = <span class="title class_">Cesium</span>.<span class="property">Math</span>.<span class="title function_">toRadians</span>(i);</span><br><span class="line">            <span class="keyword">let</span> time = <span class="title class_">Cesium</span>.<span class="property">JulianDate</span>.<span class="title function_">addSeconds</span>(</span><br><span class="line">                stTime,</span><br><span class="line">                i,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Cesium</span>.<span class="title class_">JulianDate</span>()</span><br><span class="line">            );</span><br><span class="line"></span><br><span class="line">            <span class="keyword">let</span> tmpPoint = <span class="keyword">new</span> <span class="title class_">Cesium</span>.<span class="title class_">Cartographic</span>(</span><br><span class="line">                lon + radius * <span class="number">1.5</span> * <span class="title class_">Math</span>.<span class="title function_">cos</span>(radians),</span><br><span class="line">                lat + radius * <span class="title class_">Math</span>.<span class="title function_">sin</span>(radians),</span><br><span class="line">                <span class="title class_">Cesium</span>.<span class="property">Math</span>.<span class="title function_">nextRandomNumber</span>() * <span class="number">0.1</span> * levelHeight + levelHeight +</span><br><span class="line">                    <span class="title class_">Cesium</span>.<span class="property">Math</span>.<span class="title function_">random</span>() * <span class="number">20</span> * <span class="title class_">Cesium</span>.<span class="property">JulianDate</span>.<span class="title function_">secondsDifference</span>(curTime, stTime)</span><br><span class="line">            );</span><br><span class="line">            llhPositions.<span class="title function_">push</span>(tmpPoint);</span><br><span class="line">            positions.<span class="title function_">push</span>(</span><br><span class="line">                <span class="title class_">Cesium</span>.<span class="property">Cartesian3</span>.<span class="title function_">fromDegrees</span>(</span><br><span class="line">                    tmpPoint.<span class="property">longitude</span>,</span><br><span class="line">                    tmpPoint.<span class="property">latitude</span>,</span><br><span class="line">                    tmpPoint.<span class="property">height</span></span><br><span class="line">            ));</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// let iptPositions = Array&lt;Cartographic&gt;();</span></span><br><span class="line">        <span class="keyword">let</span> iptPositions = [];</span><br><span class="line">        <span class="keyword">let</span> xRes = [];</span><br><span class="line">        <span class="keyword">let</span> xTable = [];        <span class="comment">// interpolate at xTable[i]</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> ix = <span class="number">0</span>; ix &lt; positions.<span class="property">length</span>; ++ix) &#123;</span><br><span class="line">            xTable.<span class="title function_">push</span>(ix * <span class="number">100</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> yTable = [];        <span class="comment">// used to interpolate, in &#123;la1, lon1, h1, l2, lon2, h2&#125;</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> iy = <span class="number">0</span>; iy &lt; positions.<span class="property">length</span>; ++iy) &#123;</span><br><span class="line">            yTable.<span class="title function_">push</span>(llhPositions[iy].<span class="property">longitude</span>);</span><br><span class="line">            yTable.<span class="title function_">push</span>(llhPositions[iy].<span class="property">latitude</span>);</span><br><span class="line">            yTable.<span class="title function_">push</span>(llhPositions[iy].<span class="property">height</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> yStride = <span class="number">3</span>;        <span class="comment">// 3 dependent vaule in yTable is viewed as one item</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> ix = <span class="number">0</span>; ix &lt; xTable[positions.<span class="property">length</span> - <span class="number">1</span>]; ++ix) &#123;</span><br><span class="line">            <span class="keyword">let</span> iptRes = [];</span><br><span class="line">            <span class="title class_">Cesium</span>.<span class="property">LagrangePolynomialApproximation</span>.<span class="title function_">interpolateOrderZero</span>(</span><br><span class="line">                ix,</span><br><span class="line">                xTable,</span><br><span class="line">                yTable,</span><br><span class="line">                yStride,</span><br><span class="line">                iptRes</span><br><span class="line">            );</span><br><span class="line"></span><br><span class="line">            iptPositions.<span class="title function_">push</span>(</span><br><span class="line">                <span class="title class_">Cesium</span>.<span class="property">Cartesian3</span>.<span class="title function_">fromDegrees</span>(</span><br><span class="line">                iptRes[<span class="number">0</span>],</span><br><span class="line">                iptRes[<span class="number">1</span>],</span><br><span class="line">                iptRes[<span class="number">2</span>]</span><br><span class="line">            ));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span>  iptPositions;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Keep the view centered.</span></span><br><span class="line">viewer.<span class="property">trackedEntity</span> = redLine;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/05/24/lagrangeInterpolation/lagrangeInterpolation/" title="pagrangeInterpolation for curve fitting - 使用拉格朗日插值平滑曲线">https://xychen5.github.io/2021/05/24/lagrangeInterpolation/lagrangeInterpolation/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/math/" rel="tag"># math</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/24/headingPitchRollInCesium/HPRInCesium/" rel="prev" title="hpr in cesium - 在cesium中实现HPR">
+                  <i class="fa fa-chevron-left"></i> hpr in cesium - 在cesium中实现HPR
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/05/24/fittingUsingParabolaCurve/fittedUsingParabolaCurve/" rel="next" title="parabola fitting - 使用抛物线拟合离散点">
+                  parabola fitting - 使用抛物线拟合离散点 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

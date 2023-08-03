@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="0 paxos算法解决了什么问题现在有n个人组成提一个会议，这个会议的目的是为了确定今年的税率，那么每个人都会提出自己认为的今年的合理的税率，为了大家能够达成一致，有了paxos算法。实际里，这个会议就是一个集群。 1 paxos算法详解1.1 基本概念  角色：提议者(proposer)：提议的发起者。批准者(acceptor)：对提议进行批准。学习者(learner)：作为一致性协议的副本因子">
+<meta property="og:type" content="article">
+<meta property="og:title" content="paxo 分布式一致性算法">
+<meta property="og:url" content="https://xychen5.github.io/2021/05/29/paxos/paxos/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="0 paxos算法解决了什么问题现在有n个人组成提一个会议，这个会议的目的是为了确定今年的税率，那么每个人都会提出自己认为的今年的合理的税率，为了大家能够达成一致，有了paxos算法。实际里，这个会议就是一个集群。 1 paxos算法详解1.1 基本概念  角色：提议者(proposer)：提议的发起者。批准者(acceptor)：对提议进行批准。学习者(learner)：作为一致性协议的副本因子">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-05-29T07:24:18.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.488Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="algo">
+<meta property="article:tag" content="dist">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/05/29/paxos/paxos/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/05/29/paxos/paxos/","path":"2021/05/29/paxos/paxos/","title":"paxo 分布式一致性算法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>paxo 分布式一致性算法 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-paxos%E7%AE%97%E6%B3%95%E8%A7%A3%E5%86%B3%E4%BA%86%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">0 paxos算法解决了什么问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-paxos%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3"><span class="nav-number">2.</span> <span class="nav-text">1 paxos算法详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E7%AE%97%E6%B3%95%E5%85%B7%E4%BD%93%E6%B5%81%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 算法具体流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Phase1"><span class="nav-number">2.2.1.</span> <span class="nav-text">Phase1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Phase2"><span class="nav-number">2.2.2.</span> <span class="nav-text">Phase2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-paxos%E7%AE%97%E6%B3%95%E7%9A%84%E6%B4%BB%E9%94%81%E9%97%AE%E9%A2%98"><span class="nav-number">2.3.</span> <span class="nav-text">1.3 paxos算法的活锁问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-paxos%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">2 paxos算法实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-paxos-cpp"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 paxos.cpp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-proposer-cpp"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 proposer.cpp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-acceptor-cpp"><span class="nav-number">3.3.</span> <span class="nav-text">2.3 acceptor.cpp</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">3 参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/05/29/paxos/paxos/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          paxo 分布式一致性算法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-05-29 15:24:18" itemprop="dateCreated datePublished" datetime="2021-05-29T15:24:18+08:00">2021-05-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/algo/" itemprop="url" rel="index"><span itemprop="name">algo</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/algo/dist/" itemprop="url" rel="index"><span itemprop="name">dist</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="0-paxos算法解决了什么问题"><a href="#0-paxos算法解决了什么问题" class="headerlink" title="0 paxos算法解决了什么问题"></a>0 paxos算法解决了什么问题</h2><p>现在有n个人组成提一个会议，这个会议的目的是为了确定今年的税率，那么每个人都会提出自己认为的今年的合理的税率，为了大家能够达成一致，有了paxos算法。实际里，这个会议就是一个集群。</p>
+<h2 id="1-paxos算法详解"><a href="#1-paxos算法详解" class="headerlink" title="1 paxos算法详解"></a>1 paxos算法详解</h2><h3 id="1-1-基本概念"><a href="#1-1-基本概念" class="headerlink" title="1.1 基本概念"></a>1.1 基本概念</h3><ul>
+<li><ol>
+<li>角色：<br>提议者(proposer)：提议的发起者。<br>批准者(acceptor)：对提议进行批准。<br>学习者(learner)：作为一致性协议的副本因子，对被超过半数的 acceptor<br>批准的方案进行学习。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>提议(propose)：<br>Proposer(提议者)可以提出提议，最终要达成一致的 value 就在提议里。Acceptor(接收者)根据提议的编号来选择是否接受(accept)提议。如果超过半数的cceptor 接收了一个提议，那么这个提议就被接受(accepted)了，提议里的 value 也就被选定了。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>仲裁集合(Quorums)： 是 Acceptor(假设有 N 个)的一个子集，任何两个 Quorums 至少有一个相同的成员，也就是说一个 quorums 是一个包含了超过 N/2+1 个 Acceptor 的一个集合。</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>提议序号(Proposal number)和批准值(agreed value)：对于任意一个给定的提议者，其给定的提议对应的提议号必定全局唯一。每一个提议(n,v 代表的话)都有一个提议序号(n)和其想要通过的提议值(v)，为了便于理解，设想一个权力机关去决定今年的税率，那么每个人会给自己的提议有一个全局唯一的序号(n)，然后还包含对于想要决定的目标变量(税率)的值(n)也就是税率的大小。</li>
+</ol>
+</li>
+</ul>
+<h3 id="1-2-算法具体流程"><a href="#1-2-算法具体流程" class="headerlink" title="1.2 算法具体流程"></a>1.2 算法具体流程</h3><p>Paxos(这里主要说的是 Basic paxos 算法)的具体流程分为两阶段：</p>
+<h4 id="Phase1"><a href="#Phase1" class="headerlink" title="Phase1"></a><strong>Phase1</strong></h4><ul>
+<li><strong>(1) Phase 1a - proposer 准备(Prepare)：</strong><br>Proposer 创建一个条消息，我们将其称为“Prepare”，以数字 n 标识。请注意，n 不是要提议的值也不是可能会被同意的商定的值，而只是一个数字，该数字由提议者唯一标识此初始消息（发送给接收者）。数字 n 必须大于此提议者在先前的任何 Prepare 消息中使用的任何数字。然后，它将包含 n 的 Prepare消息发送到接受方的一个仲裁集合(超过一半以上的 Acceptor 的集合)。请注意，Prepare 消息仅包含数字 n（也就是说，它不必包含例如建议的值，通常用 v 表示）。提议者决定谁在仲裁集合。如果提议者不能与至少一个接受者的仲裁集合进行通信，则他不应启动 Paxos。 </li>
+<li><strong>(2) Phase 1b - acceptor 承诺(Promise)：</strong><br>任何接受者都在等待来自任何提议者的准备消息。如果接受方收到一条准备消息，则接受方必须查看刚刚收到的准备消息的标识符编号 n。有两种情况：  <ul>
+<li><ol>
+<li>如果 n 高于接受者从任何提议者接收到的每个先前的提议编号，那么接受者必须向提议者返回一条消息，我们称其为“承诺”，以忽略所有将来的提议数量少的提议比 n。如果接受者在过去某个时候接受了提议者的提议(也就是第二阶段中批准的提议)，则在对提议者的答复中必须包含先前接受的的提议编号（例如 m）和相应的接受(批准)值（例如 w）。  </li>
+</ol>
+</li>
+<li><ol start="2">
+<li>否则（即，n 小于或等于接受者从任何提议者收到的任何先前提议编号），接受者可以忽略收到的提议。在这种情况下，Paxos 不必工作。但是，为了优化起见，发送拒绝（Nack）响应将告诉提议者它停止以 n 作为提议的序号去建立共识(这是优化手段，因为即使不主动告诉，其提议的序号也会增长)。</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Phase2"><a href="#Phase2" class="headerlink" title="Phase2"></a><strong>Phase2</strong></h4><ul>
+<li><strong>(1) Phase 2a - proposer 发送 Accept 消息：</strong><ul>
+<li>1 如果提议者从接受者的一个仲裁集合中获得大部分承诺，则需要为其提议设置值 v。</li>
+<li>2 如果任何接受者先前已接受过一个提议，那么他们会将这个提议发送给提议者，提议者现在必须将其提议值 v 设置为与接受者报告的(与这些接受者最高提议编号关联的)提议值(也就是提议者之前接受过的提议)，我们称之为 z。</li>
+<li>3 如果到目前为止，没有一个接受者接受提议，则提<br>议者可以选择其最初想要提议的值，例如 x。<br>在这个阶段，提议者会发送一个 Accept 信息：(n,v)给一个接受者个仲裁集合。(n 就是之前提议者发给接受者的准备信息里的提议里的提议序号。v=z 或 者 v=x (当所有接受者都没有接受过提议时。))，这个 accept 请求可以理解为一个请求：“请接受这个提议！”。</li>
+</ul>
+</li>
+<li><strong>(2) Phase 2b - acceptor 发送 Accepted 消息：</strong><br>如果接受者从提议者接收到 Accept 信息（n，v），分为两种情况：<ul>
+<li>1 如果：它尚未承诺（在 Paxos 协议的阶段 1b 中）仅考虑提议序号大于 n 的提议时，则它应该将（刚接收到的 Accept 消息的）值 v 注册为（协议）的接受值，并向提议者和每个学习者（通常是提议者本身）发送一条接受消息。</li>
+<li>2 否则：它可以忽略这个 Accept 消息。</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-3-paxos算法的活锁问题"><a href="#1-3-paxos算法的活锁问题" class="headerlink" title="1.3 paxos算法的活锁问题"></a>1.3 paxos算法的活锁问题</h3><p>如上图，(从上图也可以看出集群里的一个机器可以有多重身份)首先 s1-3 给出 3 个 preparemeesage，然后 s1-3 是一个 quorum 得到了大多数支持，开始发送 phase2-a 的 accept 信息(A3.1)，但是由于在发送phase2-a 的 accept 消息之前，s3-5 给出 3 个 prepare message，s3 又更新了自己主张的提议，那么之前发送的(accept 信息)A3.1 就不会被回应，之后 s1-2 发现由于超过半数(s3-5)拒绝了自己，然后就出了新的一轮 prepare message 为 P4.1，<br>然后，就这样循环往复下去出现了活锁。</p>
+<p>其改进方法：</p>
+<ul>
+<li>解决方案1：出现冲突的时候，在重新开始执行prepare message流程之前，施加随机的延迟；让其他proposers有机会完成value的确认</li>
+<li>解决方案2：multi-paxos会使用leader来避免活锁；</li>
+</ul>
+<h2 id="2-paxos算法实现"><a href="#2-paxos算法实现" class="headerlink" title="2 paxos算法实现"></a>2 paxos算法实现</h2><h3 id="2-1-paxos-cpp"><a href="#2-1-paxos-cpp" class="headerlink" title="2.1 paxos.cpp"></a>2.1 paxos.cpp</h3><p>模拟paxos算法的主要流程</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;Paxos/Acceptor.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;Paxos/Proposer.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;lib/Thread.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;lib/Lock.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;lib/mapi.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;lib/atom.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;lib/Logger.h&quot;</span></span></span><br><span class="line"></span><br><span class="line">paxos::Proposer p[<span class="number">5</span>];</span><br><span class="line">paxos::Acceptor a[<span class="number">11</span>];</span><br><span class="line">mdk::Mutex l[<span class="number">11</span>];</span><br><span class="line"><span class="type">int</span> finishedCount = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> finalValue = <span class="number">-1</span>;</span><br><span class="line"><span class="type">bool</span> isFinished = <span class="literal">false</span>;</span><br><span class="line">mdk::uint64 g_start;</span><br><span class="line">mdk::Logger g_log;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span>* <span class="title">Proposer</span><span class="params">(<span class="type">void</span> *id)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	mdk::Logger log;</span><br><span class="line">	<span class="type">char</span> logName[<span class="number">256</span>];</span><br><span class="line">	<span class="built_in">sprintf</span>( logName, <span class="string">&quot;Proposer%d&quot;</span>, (<span class="type">long</span>)id );</span><br><span class="line">	log.<span class="built_in">SetLogName</span>(logName);</span><br><span class="line">	log.<span class="built_in">SetMaxLogSize</span>(<span class="number">10</span>);</span><br><span class="line">	log.<span class="built_in">SetMaxExistDay</span>(<span class="number">30</span>);</span><br><span class="line">	log.<span class="built_in">SetPrintLog</span>(<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">	paxos::Proposer &amp;proposer = p[(<span class="type">long</span>)id];</span><br><span class="line">	paxos::PROPOSAL value = proposer.<span class="built_in">GetProposal</span>();</span><br><span class="line">	paxos::PROPOSAL lastValue;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="type">int</span> acceptorId[<span class="number">11</span>];</span><br><span class="line">	<span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	mdk::uint64 start = mdk::<span class="built_in">MillTime</span>();</span><br><span class="line">	<span class="keyword">while</span> ( <span class="literal">true</span> )</span><br><span class="line">	&#123;</span><br><span class="line">		value = proposer.<span class="built_in">GetProposal</span>();<span class="comment">//拿到提议</span></span><br><span class="line">		log.<span class="built_in">Info</span>(<span class="string">&quot;Info&quot;</span>, <span class="string">&quot;Proposer%d号开始(Propose阶段):提议=[编号:%d，提议:%d]\n&quot;</span>, </span><br><span class="line">			(<span class="type">long</span>)id, value.serialNum, value.value);</span><br><span class="line">		count = <span class="number">0</span>;</span><br><span class="line">		<span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">11</span>; i++ )</span><br><span class="line">		&#123;</span><br><span class="line">		<span class="comment">/*</span></span><br><span class="line"><span class="comment">			* 发送消息到第i个acceptor</span></span><br><span class="line"><span class="comment">			* 经过一定时间达到acceptor，sleep(随机时间)模拟</span></span><br><span class="line"><span class="comment">			* acceptor处理消息，mAcceptors[i].Propose()</span></span><br><span class="line"><span class="comment">			* 回应proposer</span></span><br><span class="line"><span class="comment">			* 经过一定时间proposer收到回应，sleep(随机时间)模拟</span></span><br><span class="line"><span class="comment">			* proposer处理回应mProposer.proposed(ok, lastValue)</span></span><br><span class="line"><span class="comment">		*/</span></span><br><span class="line">			mdk::<span class="built_in">m_sleep</span>(<span class="built_in">rand</span>()%<span class="number">500</span>);<span class="comment">//经过随机时间，消息到达了mAcceptors[i]</span></span><br><span class="line">			<span class="comment">//处理消息</span></span><br><span class="line">			l[i].<span class="built_in">Lock</span>();</span><br><span class="line">			<span class="type">bool</span> ok = a[i].<span class="built_in">Propose</span>(value.serialNum, lastValue);</span><br><span class="line">			l[i].<span class="built_in">Unlock</span>();</span><br><span class="line">			mdk::<span class="built_in">m_sleep</span>(<span class="built_in">rand</span>()%<span class="number">500</span>);<span class="comment">//经过随机时间,消息到达Proposer</span></span><br><span class="line">			<span class="comment">//处理Propose回应</span></span><br><span class="line">			<span class="keyword">if</span> ( !proposer.<span class="built_in">Proposed</span>(ok, lastValue) ) <span class="comment">//重新开始Propose阶段</span></span><br><span class="line">			&#123;</span><br><span class="line">				mdk::<span class="built_in">m_sleep</span>(<span class="number">1000</span>);<span class="comment">//为了降低活锁，多等一会让别的proposer有机会完成自己的2阶段批准</span></span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			paxos::PROPOSAL curValue = proposer.<span class="built_in">GetProposal</span>();<span class="comment">//拿到提议</span></span><br><span class="line">			<span class="keyword">if</span> ( curValue.value != value.value )<span class="comment">//acceptor本次回应可能推荐了一个提议</span></span><br><span class="line">			&#123;</span><br><span class="line">				log.<span class="built_in">Info</span>(<span class="string">&quot;Info&quot;</span>, <span class="string">&quot;Proposer%d号修改了提议:提议=[编号:%d，提议:%d]\n&quot;</span>, </span><br><span class="line">					(<span class="type">long</span>)id, curValue.serialNum, curValue.value);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			acceptorId[count++] = i;<span class="comment">//记录愿意投票的acceptor</span></span><br><span class="line">			<span class="keyword">if</span> ( proposer.<span class="built_in">StartAccept</span>() ) <span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//检查有没有达到Accept开始条件，如果没有表示要重新开始Propose阶段</span></span><br><span class="line">		<span class="keyword">if</span> ( !proposer.<span class="built_in">StartAccept</span>() ) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//开始Accept阶段</span></span><br><span class="line">		<span class="comment">//发送Accept消息到所有愿意投票的acceptor</span></span><br><span class="line">		value = proposer.<span class="built_in">GetProposal</span>();</span><br><span class="line">		log.<span class="built_in">Info</span>(<span class="string">&quot;Info&quot;</span>, <span class="string">&quot;Proposer%d号开始(Accept阶段):提议=[编号:%d，提议:%d]\n&quot;</span>, </span><br><span class="line">			(<span class="type">long</span>)id, value.serialNum, value.value);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; count; i++ )</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="comment">//发送accept消息到acceptor</span></span><br><span class="line">			<span class="comment">//减少accept阶段等待时间，加快收敛</span></span><br><span class="line">			mdk::<span class="built_in">m_sleep</span>(<span class="built_in">rand</span>()%<span class="number">200</span>);<span class="comment">//经过随机时间,accept消息到达acceptor</span></span><br><span class="line">			<span class="comment">//处理accept消息</span></span><br><span class="line">			l[acceptorId[i]].<span class="built_in">Lock</span>();</span><br><span class="line">			<span class="type">bool</span> ok = a[acceptorId[i]].<span class="built_in">Accept</span>(value);</span><br><span class="line">			l[acceptorId[i]].<span class="built_in">Unlock</span>();</span><br><span class="line">			mdk::<span class="built_in">m_sleep</span>(<span class="built_in">rand</span>()%<span class="number">200</span>);<span class="comment">//经过随机时间,accept回应到达proposer</span></span><br><span class="line">			<span class="comment">//处理accept回应</span></span><br><span class="line">			<span class="keyword">if</span> ( !proposer.<span class="built_in">Accepted</span>(ok) ) <span class="comment">//重新开始Propose阶段</span></span><br><span class="line">			&#123;</span><br><span class="line">				mdk::<span class="built_in">m_sleep</span>(<span class="number">1000</span>);<span class="comment">//为了降低活锁，多等一会让别的proposer有机会完成自己的2阶段批准</span></span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> ( proposer.<span class="built_in">IsAgree</span>() )<span class="comment">//成功批准了提议</span></span><br><span class="line">			&#123;</span><br><span class="line">				start = mdk::<span class="built_in">MillTime</span>() - start;</span><br><span class="line">				log.<span class="built_in">Info</span>(<span class="string">&quot;Info&quot;</span>, <span class="string">&quot;Proposer%d号的提议被批准,用时%lluMS:最终提议 = [编号:%d，提议:%d]\n&quot;</span>, (<span class="type">long</span>)id, start, value.serialNum, value.value);</span><br><span class="line">				g_log.<span class="built_in">Info</span>(<span class="string">&quot;Info&quot;</span>, <span class="string">&quot;Proposer%d号的提议被批准,用时%lluMS:最终提议 = [编号:%d，提议:%d]\n&quot;</span>, (<span class="type">long</span>)id, start, value.serialNum, value.value);</span><br><span class="line">				<span class="keyword">if</span>(finalValue == <span class="number">-1</span>) finalValue = value.value;</span><br><span class="line">				<span class="keyword">else</span> <span class="keyword">if</span>(finalValue != value.value) finalValue = <span class="number">0</span>;</span><br><span class="line">				<span class="keyword">if</span> ( <span class="number">4</span> == mdk::<span class="built_in">AtomAdd</span>(&amp;finishedCount, <span class="number">1</span>) )</span><br><span class="line">				&#123;</span><br><span class="line">					isFinished = <span class="literal">true</span>;</span><br><span class="line">					g_start = mdk::<span class="built_in">MillTime</span>() - g_start;</span><br><span class="line">					<span class="keyword">if</span>(finalValue &gt; <span class="number">0</span>)&#123;</span><br><span class="line">						g_log.<span class="built_in">Info</span>(<span class="string">&quot;Info&quot;</span>, <span class="string">&quot;Paxos完成，用时%lluMS，最终通过提议值为：%d\n&quot;</span>, g_start, finalValue);</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">else</span>&#123;</span><br><span class="line">						g_log.<span class="built_in">Info</span>(<span class="string">&quot;Info&quot;</span>, <span class="string">&quot;Paxos完成，用时%lluMS，最终结果不一致！\n&quot;</span>, g_start);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Paxos过程模拟演示程序</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">	g_log.<span class="built_in">SetLogName</span>(<span class="string">&quot;Paxos&quot;</span>);</span><br><span class="line">	g_log.<span class="built_in">SetMaxLogSize</span>(<span class="number">10</span>);</span><br><span class="line">	g_log.<span class="built_in">SetMaxExistDay</span>(<span class="number">30</span>);</span><br><span class="line">	g_log.<span class="built_in">SetPrintLog</span>(<span class="literal">true</span>);</span><br><span class="line">	g_log.<span class="built_in">Info</span>(<span class="string">&quot;Info&quot;</span>, <span class="string">&quot;5个Proposer, 11个Acceptor准备进行Paxos\n&quot;</span></span><br><span class="line">		<span class="string">&quot;每个Proposer独立线程，Acceptor不需要线程\n&quot;</span></span><br><span class="line">		<span class="string">&quot;Proposer编号从0-10,编号为i的Proposer初始提议编号和提议值是（i+1, i+1）\n&quot;</span></span><br><span class="line">		<span class="string">&quot;Proposer每次重新提议会将提议编号增加5\n&quot;</span></span><br><span class="line">		<span class="string">&quot;Proposer被批准后结束线程,其它线程继续投票最终，全部批准相同的值，达成一致。\n&quot;</span>);</span><br><span class="line">	g_start = mdk::<span class="built_in">MillTime</span>();</span><br><span class="line">	g_log.<span class="built_in">Info</span>(<span class="string">&quot;Info&quot;</span>, <span class="string">&quot;Paxos开始\n&quot;</span> );</span><br><span class="line">	paxos::PROPOSAL value;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ ) </span><br><span class="line">	&#123;</span><br><span class="line">		p[i].<span class="built_in">SetPlayerCount</span>(<span class="number">5</span>, <span class="number">11</span>);</span><br><span class="line">		value.serialNum = value.value = i + <span class="number">1</span>;</span><br><span class="line">		p[i].<span class="built_in">StartPropose</span>(value);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	mdk::Thread t[<span class="number">5</span>];</span><br><span class="line">	<span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ ) t[i].<span class="built_in">Run</span>(Proposer, (<span class="type">void</span>*)i);</span><br><span class="line">	<span class="comment">//for ( i = 0; i &lt; 5; i++ ) t[i].WaitStop();</span></span><br><span class="line">	<span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">		<span class="keyword">if</span>(isFinished) <span class="keyword">break</span>;</span><br><span class="line">		mdk::<span class="built_in">m_sleep</span>(<span class="number">500</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-proposer-cpp"><a href="#2-2-proposer-cpp" class="headerlink" title="2.2 proposer.cpp"></a>2.2 proposer.cpp</h3><p>模拟提议者的主要流程</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;Proposer.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> paxos</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">Proposer::<span class="built_in">Proposer</span>()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">SetPlayerCount</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Proposer::<span class="built_in">Proposer</span>(<span class="type">short</span> proposerCount, <span class="type">short</span> acceptorCount)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">SetPlayerCount</span>(proposerCount, acceptorCount);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Proposer::~<span class="built_in">Proposer</span>()</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Proposer::SetPlayerCount</span><span class="params">(<span class="type">short</span> proposerCount, <span class="type">short</span> acceptorCount)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	m_proposerCount = proposerCount;</span><br><span class="line">	m_acceptorCount = acceptorCount;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Proposer::StartPropose</span><span class="params">(PROPOSAL &amp;value)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	m_value = value;</span><br><span class="line">	m_proposeFinished = <span class="literal">false</span>;</span><br><span class="line">	m_isAgree = <span class="literal">false</span>;</span><br><span class="line">	m_maxAcceptedSerialNum = <span class="number">0</span>;</span><br><span class="line">	m_okCount = <span class="number">0</span>;</span><br><span class="line">	m_refuseCount = <span class="number">0</span>;</span><br><span class="line">	m_start = <span class="built_in">time</span>(<span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">PROPOSAL&amp; <span class="title">Proposer::GetProposal</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> m_value;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">//提议者</span></span><br><span class="line"><span class="comment">class Proposer</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">public:</span></span><br><span class="line"><span class="comment">	Proposer();</span></span><br><span class="line"><span class="comment">	Proposer(short proposerCount, short acceptorCount);</span></span><br><span class="line"><span class="comment">	virtual ~Proposer();</span></span><br><span class="line"><span class="comment">	//设置参与者数量</span></span><br><span class="line"><span class="comment">	void SetPlayerCount(short proposerCount, short acceptorCount);</span></span><br><span class="line"><span class="comment">	//开始Propose阶段</span></span><br><span class="line"><span class="comment">	void StartPropose(PROPOSAL &amp;value);</span></span><br><span class="line"><span class="comment">	//取得提议</span></span><br><span class="line"><span class="comment">	PROPOSAL&amp; GetProposal();</span></span><br><span class="line"><span class="comment">	//提议被投票，Proposed失败则重新开始Propose阶段</span></span><br><span class="line"><span class="comment">	bool Proposed(bool ok, PROPOSAL &amp;lastAcceptValue);</span></span><br><span class="line"><span class="comment">	//开始Accept阶段,满足条件成功开始accept阶段返回ture，不满足开始条件返回false</span></span><br><span class="line"><span class="comment">	bool StartAccept();</span></span><br><span class="line"><span class="comment">	//提议被接受，Accepted失败则重新开始Propose阶段</span></span><br><span class="line"><span class="comment">	bool Accepted(bool ok);</span></span><br><span class="line"><span class="comment">	//提议被批准</span></span><br><span class="line"><span class="comment">	bool IsAgree();</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">private:</span></span><br><span class="line"><span class="comment">	short			m_proposerCount;///proposer数量</span></span><br><span class="line"><span class="comment">	short			m_acceptorCount;//acceptor数量</span></span><br><span class="line"><span class="comment">	PROPOSAL		m_value;//预备提议</span></span><br><span class="line"><span class="comment">	bool			m_proposeFinished;//完成拉票，准备开始二阶段</span></span><br><span class="line"><span class="comment">	bool			m_isAgree;//m_value被批准</span></span><br><span class="line"><span class="comment">	unsigned int	m_maxAcceptedSerialNum;//已被接受的提议中流水号最大的</span></span><br><span class="line"><span class="comment">	time_t			m_start;//阶段开始时间，阶段一，阶段二共用</span></span><br><span class="line"><span class="comment">	short			m_okCount;//投票数量，阶段一，阶段二共用</span></span><br><span class="line"><span class="comment">	short			m_refuseCount;//拒绝数量，阶段一，阶段二共用</span></span><br><span class="line"><span class="comment">&#125;;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">	//提议数据结构</span></span><br><span class="line"><span class="comment">	typedef struct PROPOSAL</span></span><br><span class="line"><span class="comment">	&#123;</span></span><br><span class="line"><span class="comment">		unsigned int	serialNum;//流水号,1开始递增，保证全局唯一</span></span><br><span class="line"><span class="comment">		unsigned int	value;//提议内容</span></span><br><span class="line"><span class="comment">	&#125;PROPOSAL;</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">Proposer::Proposed</span><span class="params">(<span class="type">bool</span> ok, PROPOSAL &amp;lastAcceptValue)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> ( m_proposeFinished ) <span class="keyword">return</span> <span class="literal">true</span>;<span class="comment">//可能是一阶段迟到的回应，直接忽略消息</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> ( !ok ) </span><br><span class="line">	&#123;</span><br><span class="line">		m_refuseCount++;</span><br><span class="line">		<span class="comment">//已有半数拒绝，不需要等待其它acceptor投票了，重新开始Propose阶段</span></span><br><span class="line">		<span class="comment">//使用StartPropose(m_value)重置状态</span></span><br><span class="line">	</span><br><span class="line">        <span class="comment">//请完善下面逻辑</span></span><br><span class="line"> 		<span class="comment">/**********Begin**********/</span></span><br><span class="line">        <span class="keyword">if</span> ( m_refuseCount &gt; m_acceptorCount/<span class="number">2</span> )&#123;</span><br><span class="line">            <span class="comment">// 重新开始投票阶段，将提案号自增</span></span><br><span class="line">            m_value.serialNum += <span class="number">5</span>;</span><br><span class="line">            <span class="built_in">StartPropose</span>(m_value);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">	    <span class="comment">/**********End**********/</span></span><br><span class="line">		<span class="comment">//拒绝数不到一半</span></span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	m_okCount++;</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">		没有必要检查分支：serialNum为null</span></span><br><span class="line"><span class="comment">		因为serialNum&gt;m_maxAcceptedSerialNum，与serialNum非0互为必要条件</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">	<span class="comment">//如果已经有提议被接受，修改成已被接受的提议</span></span><br><span class="line">	<span class="comment">//请完善下面逻辑</span></span><br><span class="line"> 	<span class="comment">/**********Begin**********/</span></span><br><span class="line">     </span><br><span class="line">    <span class="keyword">if</span>(lastAcceptValue.serialNum &gt; m_maxAcceptedSerialNum)&#123;</span><br><span class="line">        m_value.value = lastAcceptValue.value;</span><br><span class="line">        m_maxAcceptedSerialNum = lastAcceptValue.serialNum;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">/**********End**********/</span>	</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">//如果自己的提议被接受</span></span><br><span class="line">	<span class="keyword">if</span> ( m_okCount &gt; m_acceptorCount / <span class="number">2</span> ) </span><br><span class="line">	&#123;</span><br><span class="line">		m_okCount = <span class="number">0</span>;</span><br><span class="line">		m_proposeFinished = <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">Proposer::StartAccept</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> m_proposeFinished;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">Proposer::Accepted</span><span class="params">(<span class="type">bool</span> ok)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> ( !m_proposeFinished ) <span class="keyword">return</span> <span class="literal">true</span>;<span class="comment">//可能是上次第二阶段迟到的回应，直接忽略消息</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> ( !ok ) </span><br><span class="line">	&#123;</span><br><span class="line">		m_refuseCount++;</span><br><span class="line">		<span class="comment">//已有半数拒绝，不需要等待其它acceptor投票了，重新开始Propose阶段</span></span><br><span class="line">		<span class="comment">//使用StartPropose(m_value)重置状态</span></span><br><span class="line">	    <span class="comment">//请完善下面逻辑</span></span><br><span class="line">        <span class="comment">/**********Begin**********/</span></span><br><span class="line">        <span class="keyword">if</span> ( m_refuseCount &gt; m_acceptorCount/<span class="number">2</span> )&#123;</span><br><span class="line">            <span class="comment">// 重新开始投票阶段，将提案号自增</span></span><br><span class="line">            m_value.serialNum += <span class="number">5</span>;</span><br><span class="line">            <span class="built_in">StartPropose</span>(m_value);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/**********End**********/</span></span><br><span class="line"> 		</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	m_okCount++;</span><br><span class="line">	<span class="keyword">if</span> ( m_okCount &gt; m_acceptorCount / <span class="number">2</span> ) m_isAgree = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">Proposer::IsAgree</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> m_isAgree;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-acceptor-cpp"><a href="#2-3-acceptor-cpp" class="headerlink" title="2.3 acceptor.cpp"></a>2.3 acceptor.cpp</h3><p>模拟接受者的主要流程</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;Acceptor.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> paxos</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Acceptor::<span class="built_in">Acceptor</span>(<span class="type">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">	m_maxSerialNum = <span class="number">0</span>;</span><br><span class="line">	m_lastAcceptValue.serialNum = <span class="number">0</span>;</span><br><span class="line">	m_lastAcceptValue.value = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Acceptor::~<span class="built_in">Acceptor</span>(<span class="type">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/***</span></span><br><span class="line"><span class="comment">//投票者</span></span><br><span class="line"><span class="comment">class Acceptor</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">public:</span></span><br><span class="line"><span class="comment">	Acceptor(void);</span></span><br><span class="line"><span class="comment">	virtual ~Acceptor(void);</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">	//同意投票</span></span><br><span class="line"><span class="comment">	bool Propose(unsigned int serialNum, PROPOSAL &amp;lastAcceptValue);</span></span><br><span class="line"><span class="comment">	//接受提议</span></span><br><span class="line"><span class="comment">	bool Accept(PROPOSAL &amp;value);</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">private:</span></span><br><span class="line"><span class="comment">	PROPOSAL		m_lastAcceptValue;//最后接受的提议</span></span><br><span class="line"><span class="comment">	unsigned int	m_maxSerialNum;//Propose提交的最大流水号</span></span><br><span class="line"><span class="comment">&#125;;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">	//提议数据结构</span></span><br><span class="line"><span class="comment">	typedef struct PROPOSAL</span></span><br><span class="line"><span class="comment">	&#123;</span></span><br><span class="line"><span class="comment">		unsigned int	serialNum;//流水号,1开始递增，保证全局唯一</span></span><br><span class="line"><span class="comment">		unsigned int	value;//提议内容</span></span><br><span class="line"><span class="comment">	&#125;PROPOSAL;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">***/</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">Acceptor::Propose</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> serialNum, PROPOSAL &amp;lastAcceptValue)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> ( <span class="number">0</span> == serialNum ) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	<span class="comment">//提议不通过</span></span><br><span class="line">	<span class="keyword">if</span> ( m_maxSerialNum &gt; serialNum ) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	<span class="comment">//接受提议</span></span><br><span class="line">    <span class="comment">//请完善下面逻辑</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/**********Begin**********/</span></span><br><span class="line">    <span class="comment">//m_lastAcceptValue = lastAcceptValue;</span></span><br><span class="line">    <span class="comment">// If n is higher than every previous proposal number received, from any of the Proposers, by the Acceptor, </span></span><br><span class="line">    <span class="comment">// then the Acceptor must return a message, which we call a &quot;Promise&quot;, to the Proposer, to ignore all future </span></span><br><span class="line">    <span class="comment">// proposals having a number less than n. If the Acceptor accepted a proposal at some point in the past, it </span></span><br><span class="line">    <span class="comment">// must include the previous proposal number, say m, and the corresponding accepted value, say w, in its response to the Proposer.</span></span><br><span class="line">    m_maxSerialNum = serialNum;</span><br><span class="line">    </span><br><span class="line">    lastAcceptValue = m_lastAcceptValue; <span class="comment">// which contains m -&gt; w</span></span><br><span class="line">	<span class="comment">/**********End**********/</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">Acceptor::Accept</span><span class="params">(PROPOSAL &amp;value)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> ( <span class="number">0</span> == value.serialNum ) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	<span class="comment">//Acceptor又重新答应了其他提议</span></span><br><span class="line">   <span class="comment">//请完善下面逻辑</span></span><br><span class="line">	<span class="comment">/**********Begin**********/</span></span><br><span class="line">    <span class="keyword">if</span> (m_maxSerialNum &gt; value.serialNum )&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 然后接受新的提案</span></span><br><span class="line">    m_lastAcceptValue = value;</span><br><span class="line">	<span class="comment">/**********End**********/</span></span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">	<span class="comment">//批准提议通过</span></span><br><span class="line">    <span class="comment">//请完善下面逻辑</span></span><br><span class="line">    <span class="comment">/**********Begin**********/</span></span><br><span class="line">    m_maxSerialNum = value.serialNum;</span><br><span class="line">	<span class="comment">/**********End**********/</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-参考"><a href="#3-参考" class="headerlink" title="3 参考"></a>3 参考</h2><p>[1] <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Paxos_(computer_science)#Byzantine_Paxos">https://en.wikipedia.org/wiki/Paxos_(computer_science)#Byzantine_Paxos</a><br>[2] <a target="_blank" rel="noopener" href="https://www.cs.rutgers.edu/~pxk/417/notes/paxos.html">https://www.cs.rutgers.edu/~pxk/417/notes/paxos.html</a><br>[3] <a target="_blank" rel="noopener" href="https://github.com/HaHaJeff/Paxos/blob/master/basic_paxos.md">https://github.com/HaHaJeff/Paxos/blob/master/basic_paxos.md</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/05/29/paxos/paxos/" title="paxo 分布式一致性算法">https://xychen5.github.io/2021/05/29/paxos/paxos/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/algo/" rel="tag"># algo</a>
+              <a href="/tags/dist/" rel="tag"># dist</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/24/fittingUsingParabolaCurve/fittedUsingParabolaCurve/" rel="prev" title="parabola fitting - 使用抛物线拟合离散点">
+                  <i class="fa fa-chevron-left"></i> parabola fitting - 使用抛物线拟合离散点
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/05/29/groundVehicle/groundVehicle/" rel="next" title="groundVehicle - cesium中实现贴地车辆">
+                  groundVehicle - cesium中实现贴地车辆 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

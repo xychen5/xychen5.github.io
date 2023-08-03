@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="0 有向图的环路判断 1 bfs访问节点的数目超过n本身才能说明有环 2 或者dfs能够访问到之前访问过的节点，也说明有环 3 不能仅仅通过是否有出度为0的节点来判断是否成环，eg:[[0,1],[1,1]]  1857largestPathValue 路径最大节点颜色数1 题目https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;largest-color-value-in-a-di">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lcGraphDirected1 - 有向图 1">
+<meta property="og:url" content="https://xychen5.github.io/2021/11/24/lcGraphDirected1/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="0 有向图的环路判断 1 bfs访问节点的数目超过n本身才能说明有环 2 或者dfs能够访问到之前访问过的节点，也说明有环 3 不能仅仅通过是否有出度为0的节点来判断是否成环，eg:[[0,1],[1,1]]  1857largestPathValue 路径最大节点颜色数1 题目https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;largest-color-value-in-a-di">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-11-24T10:36:43.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.464Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="algoPrac">
+<meta property="article:tag" content="lc">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/11/24/lcGraphDirected1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/11/24/lcGraphDirected1/","path":"2021/11/24/lcGraphDirected1/","title":"lcGraphDirected1 - 有向图 1"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>lcGraphDirected1 - 有向图 1 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-%E6%9C%89%E5%90%91%E5%9B%BE%E7%9A%84%E7%8E%AF%E8%B7%AF%E5%88%A4%E6%96%AD"><span class="nav-number">1.</span> <span class="nav-text">0 有向图的环路判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1857largestPathValue-%E8%B7%AF%E5%BE%84%E6%9C%80%E5%A4%A7%E8%8A%82%E7%82%B9%E9%A2%9C%E8%89%B2%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">1857largestPathValue 路径最大节点颜色数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE"><span class="nav-number">2.1.</span> <span class="nav-text">1 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-number">2.2.</span> <span class="nav-text">2 解题思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%8E%AF%E8%B7%AF%E5%88%A4%E6%96%AD"><span class="nav-number">2.3.</span> <span class="nav-text">3 环路判断</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/11/24/lcGraphDirected1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          lcGraphDirected1 - 有向图 1
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-11-24 18:36:43" itemprop="dateCreated datePublished" datetime="2021-11-24T18:36:43+08:00">2021-11-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="0-有向图的环路判断"><a href="#0-有向图的环路判断" class="headerlink" title="0 有向图的环路判断"></a>0 有向图的环路判断</h2><ul>
+<li>1 bfs访问节点的数目超过n本身才能说明有环</li>
+<li>2 或者dfs能够访问到之前访问过的节点，也说明有环</li>
+<li>3 不能仅仅通过是否有出度为0的节点来判断是否成环，eg:<br>[[0,1],[1,1]]</li>
+</ul>
+<h2 id="1857largestPathValue-路径最大节点颜色数"><a href="#1857largestPathValue-路径最大节点颜色数" class="headerlink" title="1857largestPathValue 路径最大节点颜色数"></a>1857largestPathValue 路径最大节点颜色数</h2><h3 id="1-题目"><a href="#1-题目" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/largest-color-value-in-a-directed-graph/">https://leetcode-cn.com/problems/largest-color-value-in-a-directed-graph/</a></p>
+<h3 id="2-解题思路"><a href="#2-解题思路" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
+<li>1 自己的思路：自然能够想到的解题方法, 对于出度为0的点做dfs，然后统计每个颜色的值</li>
+<li>2 思路存在的问题：<blockquote>
+<p>上述算法的遍历节点总是从出度为0的地方开始遍历所有可能的路径<br>有重复计算的第方，想象一下，1, 2分别连着3,3后面跟了1000个节点<br>那么会从1,2分别计算一遍，那3后面的1000个节点被重复计算了2次</p>
+</blockquote>
+</li>
+<li>3 解决思路：<blockquote>
+<p>很显然我们就会想到从小规模开始计算，那么1,2的计算结果就能利用<br>小规模的值得到了,那么什么样的节点算是小规模子图的起始点？<br>这隐藏了一个拓扑排序 + 动态规划的思路在其中：<br>如果想要减少上述重复计算过程，可以考虑使用动态规划，但是<br>需要直到1,2,3以及后面节点谁在前谁在后的问题，使用拓扑排序解决<br>这里可以顺便说一下<br>首先bfs获得拓扑排序，依此入栈s，(则s的栈顶得到的是没有后继节点的<br>那些节点)，则依此从s中pop然后得到节点v，<strong>dp[v][c]代表从v出发的<br>颜色为c的最大值</strong>，则对于每个有到达v的边的u，有：<br>dp[u][c] = max(dp[u][c], dp[v][c]);<br>但是这个需要知道，v的前级节点有哪些，则需要翻转一遍v，所以就<br>bfs拓扑排序依此入队列，从队头出数据(这些数据都是没有入度的)，<br><strong>dp[v][c] 表示到达节点v的所有路径的颜色为c的最大值(并未统计v节点本身)</strong><br>对于u所有的 -&gt; v:<br>dp[v][c] = max(dp[u][c], dp[v][c]); // 广度优先遍历</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> ans = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">dfs</span><span class="params">(<span class="type">int</span> from, string&amp; colors, vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; g, map&lt;<span class="type">char</span>, <span class="type">int</span>&gt;&amp; cntInPath)</span> </span>&#123;</span><br><span class="line">        cntInPath[colors[from]]++;</span><br><span class="line">        ans = <span class="built_in">max</span>(ans, cntInPath[colors[from]]);</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> to = <span class="number">0</span>; to &lt; g.<span class="built_in">size</span>(); ++to) &#123;</span><br><span class="line">            <span class="keyword">if</span>(g[from][to] == <span class="number">1</span>) &#123;</span><br><span class="line">                <span class="built_in">dfs</span>(to, colors, g, cntInPath);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        cntInPath[colors[from]]--;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">largestPathValue</span><span class="params">(string colors, vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; edges)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// // 自然能够想到的解题方法: </span></span><br><span class="line">        <span class="comment">// // 基于出度为0的点做dfs，然后统计每个颜色的值</span></span><br><span class="line">        <span class="comment">// vector&lt;int&gt; noInNode;</span></span><br><span class="line">        <span class="comment">// map&lt;int, int&gt; inDegreeStatistic;</span></span><br><span class="line">        <span class="comment">// for(auto &amp;e : edges) &#123;</span></span><br><span class="line">        <span class="comment">//     inDegreeStatistic[e[1]]++;</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line">        <span class="comment">// int n = colors.size();</span></span><br><span class="line">        <span class="comment">// for(int i = 0; i &lt; n; ++i) &#123;</span></span><br><span class="line">        <span class="comment">//     auto it = inDegreeStatistic.find(i);</span></span><br><span class="line">        <span class="comment">//     if(it == inDegreeStatistic.end()) &#123;</span></span><br><span class="line">        <span class="comment">//         noInNode.emplace_back(i);</span></span><br><span class="line">        <span class="comment">//     &#125;</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// if(noInNode.size() == 0)&#123;</span></span><br><span class="line">        <span class="comment">//     return -1;</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// vector&lt;vector&lt;int&gt;&gt; g(n, vector&lt;int&gt;(n, -1));</span></span><br><span class="line">        <span class="comment">// for(int i = 0; i &lt; edges.size(); ++i) &#123;</span></span><br><span class="line">        <span class="comment">//     g[edges[i][0]][edges[i][1]] = 1;</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// // 对每一个节点出度为0的遍历</span></span><br><span class="line">        <span class="comment">// int maxApperanceNumInPath = -1;</span></span><br><span class="line">        <span class="comment">// map&lt;char, int&gt; cntInPath;</span></span><br><span class="line">        <span class="comment">// for(auto&amp; c : colors) &#123;</span></span><br><span class="line">        <span class="comment">//     cntInPath[c] = 0;</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line">        <span class="comment">// for(auto&amp; n : noInNode) &#123;</span></span><br><span class="line">        <span class="comment">//     dfs(n, colors, g, cntInPath);</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 上述算法的遍历节点总是从出度为0的地方开始遍历所有可能的路径</span></span><br><span class="line">        <span class="comment">// 有重复计算的第方，想象一下，1, 2分别连着3,3后面跟了1000个节点</span></span><br><span class="line">        <span class="comment">// 那么会动1,2分别计算一遍，那3后面的1000个节点被重复计算了2次</span></span><br><span class="line">        <span class="comment">// 很显然我们就会想到从小规模开始计算，那么1,2的计算结果就能利用</span></span><br><span class="line">        <span class="comment">// 小规模的值得到了,那么什么样的节点算是小规模子图的起始点？</span></span><br><span class="line">        <span class="comment">// 这隐藏了一个拓扑排序 + 动态规划的思路在其中：</span></span><br><span class="line">        <span class="comment">// 如果想要减少上述重复计算过程，可以考虑使用动态规划，但是</span></span><br><span class="line">        <span class="comment">// 需要直到1,2,3以及后面节点谁在前谁在后的问题，使用拓扑排序解决</span></span><br><span class="line">        <span class="comment">// dp[v][c] 表示到达节点v的所有路径的颜色为c的最大值(并未统计v节点本身)</span></span><br><span class="line">        <span class="comment">// 对于u所有的 -&gt; v: </span></span><br><span class="line">        <span class="comment">// dp[v][c] = max(dp[u][c], dp[v][c]); // 广度优先遍历</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 构建邻接表，统计入度情况</span></span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; noInNode;</span><br><span class="line">        <span class="type">int</span> n = colors.<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">g</span>(n);</span><br><span class="line"></span><br><span class="line">        map&lt;<span class="type">int</span>, <span class="type">int</span>&gt; inDeg;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> &amp;e : edges) &#123;</span><br><span class="line">            inDeg[e[<span class="number">1</span>]]++;</span><br><span class="line">            g[e[<span class="number">0</span>]].<span class="built_in">emplace_back</span>(e[<span class="number">1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 做拓扑排序，首先找到那些个入度为0的点</span></span><br><span class="line">        vector&lt;array&lt;<span class="type">int</span>, 26&gt;&gt; <span class="built_in">dp</span>(n);</span><br><span class="line">        deque&lt;<span class="type">int</span>&gt; q;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="keyword">auto</span> it = inDeg.<span class="built_in">find</span>(i);</span><br><span class="line">            <span class="keyword">if</span>(it == inDeg.<span class="built_in">end</span>()) &#123;</span><br><span class="line">                q.<span class="built_in">push_back</span>(i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// bfs访问节点的数目超过n本身才能说明有环</span></span><br><span class="line">        <span class="comment">// 或者dfs能够访问到之前访问过的节点，也说明有环</span></span><br><span class="line">        <span class="comment">// 不能仅仅通过是否有出度为0的节点来判断是否成环，eg:</span></span><br><span class="line">        <span class="comment">// [[0,1],[1,1]]</span></span><br><span class="line">        <span class="type">int</span> bfsTravelNum = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 使用bfs遍历获取拓扑排序顺便动态规划</span></span><br><span class="line">        <span class="keyword">while</span>(!q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">            ++bfsTravelNum;</span><br><span class="line">            <span class="comment">// 取出一个没有入度的节点</span></span><br><span class="line">            <span class="type">int</span> u = q.<span class="built_in">front</span>();</span><br><span class="line">            q.<span class="built_in">pop_front</span>();</span><br><span class="line">            <span class="comment">// 访问到u节点</span></span><br><span class="line">            dp[u][colors[u] - <span class="string">&#x27;a&#x27;</span>]++;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 更新所有 以v为终点的路径(不包含v本身) 的颜色为c的最大节点数</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> v : g[u]) &#123;</span><br><span class="line">                inDeg[v]--;</span><br><span class="line">                <span class="keyword">for</span>(<span class="type">int</span> c = <span class="number">0</span>; c &lt; <span class="number">26</span>; ++c) &#123;</span><br><span class="line">                    dp[v][c] = <span class="built_in">max</span>(dp[v][c], dp[u][c]);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 位于u拓扑排序后面的v</span></span><br><span class="line">                <span class="keyword">if</span>(<span class="number">0</span> == inDeg[v]) &#123;</span><br><span class="line">                    q.<span class="built_in">push_back</span>(v);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(bfsTravelNum != n) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            ans = <span class="built_in">max</span>(ans, *<span class="built_in">max_element</span>(dp[i].<span class="built_in">begin</span>(), dp[i].<span class="built_in">end</span>()));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="3-环路判断"><a href="#3-环路判断" class="headerlink" title="3 环路判断"></a>3 环路判断</h3><ul>
+<li>1 bfs访问节点的数目超过n本身才能说明有环</li>
+<li>2 或者dfs能够访问到之前访问过的节点，也说明有环</li>
+<li>3 不能仅仅通过是否有出度为0的节点来判断是否成环，eg:<br>[[0,1],[1,1]]</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/11/24/lcGraphDirected1/" title="lcGraphDirected1 - 有向图 1">https://xychen5.github.io/2021/11/24/lcGraphDirected1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/algoPrac/" rel="tag"># algoPrac</a>
+              <a href="/tags/lc/" rel="tag"># lc</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/11/23/influxDBInstall/" rel="prev" title="influxDBInstall">
+                  <i class="fa fa-chevron-left"></i> influxDBInstall
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/11/26/lcDictOrderAndPermutation/" rel="next" title="lcDictOrderAndPermutation - 字典序和全排列">
+                  lcDictOrderAndPermutation - 字典序和全排列 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

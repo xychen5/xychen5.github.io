@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="杨氏矩阵（young table）t[i][j] &lt;&#x3D; t[i+1][j] &amp;&amp; t[i][j] &lt;&#x3D; t[i][j+1] 1755minAbsDiff 最接近目标值的子序列和1 题目https:&#x2F;&#x2F;leetcode.cn&#x2F;problems&#x2F;closest-subsequence-sum&#x2F; 2 解题思路 1 解题思路： 1.1 注意求的是子序列，那么我们可以用状态压缩码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="algoYangTable">
+<meta property="og:url" content="https://xychen5.github.io/2022/06/16/algoYangTable/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="杨氏矩阵（young table）t[i][j] &lt;&#x3D; t[i+1][j] &amp;&amp; t[i][j] &lt;&#x3D; t[i][j+1] 1755minAbsDiff 最接近目标值的子序列和1 题目https:&#x2F;&#x2F;leetcode.cn&#x2F;problems&#x2F;closest-subsequence-sum&#x2F; 2 解题思路 1 解题思路： 1.1 注意求的是子序列，那么我们可以用状态压缩码">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-06-16T09:39:58.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.074Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="algo">
+<meta property="article:tag" content="search">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2022/06/16/algoYangTable/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2022/06/16/algoYangTable/","path":"2022/06/16/algoYangTable/","title":"algoYangTable"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>algoYangTable | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9D%A8%E6%B0%8F%E7%9F%A9%E9%98%B5%EF%BC%88young-table%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">杨氏矩阵（young table）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1755minAbsDiff-%E6%9C%80%E6%8E%A5%E8%BF%91%E7%9B%AE%E6%A0%87%E5%80%BC%E7%9A%84%E5%AD%90%E5%BA%8F%E5%88%97%E5%92%8C"><span class="nav-number">1.1.</span> <span class="nav-text">1755minAbsDiff 最接近目标值的子序列和</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE"><span class="nav-number">1.1.1.</span> <span class="nav-text">1 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-number">1.1.2.</span> <span class="nav-text">2 解题思路</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2022/06/16/algoYangTable/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          algoYangTable
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-06-16 17:39:58" itemprop="dateCreated datePublished" datetime="2022-06-16T17:39:58+08:00">2022-06-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="杨氏矩阵（young-table）"><a href="#杨氏矩阵（young-table）" class="headerlink" title="杨氏矩阵（young table）"></a>杨氏矩阵（young table）</h1><p>t[i][j] &lt;= t[i+1][j] &amp;&amp; t[i][j] &lt;= t[i][j+1]</p>
+<h2 id="1755minAbsDiff-最接近目标值的子序列和"><a href="#1755minAbsDiff-最接近目标值的子序列和" class="headerlink" title="1755minAbsDiff 最接近目标值的子序列和"></a>1755minAbsDiff 最接近目标值的子序列和</h2><h3 id="1-题目"><a href="#1-题目" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/closest-subsequence-sum/">https://leetcode.cn/problems/closest-subsequence-sum/</a></p>
+<h3 id="2-解题思路"><a href="#2-解题思路" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
+<li>1 解题思路：<ul>
+<li>1.1 注意求的是子序列，那么我们可以用状态压缩码中的每个bit表示当前数字是否存在，从而求得所有子序列的和</li>
+<li>1.2 为了快，我们将数组一分为2，左边和右边求所有子序列的和记作ls，rs，然后都升序排列</li>
+<li>1.3 结果就是，在ls[i] + rs[j]中找最接近goal的数字，那不就是杨氏矩阵吗，从左到右从上到下都递增的杨氏矩阵，搜所一个数字的最快方案是O(m + n)，而不是mlog(n)</li>
+<li>1.4 看一个例子：l = 1 1 4 4, r = 2 5 6 9, 其中xi表示的是第i步剪裁掉的解空间<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">search target: 7, start form l = 4, r = 2</span></span><br><span class="line"><span class="comment">l :  1  1  4  4 </span></span><br><span class="line"><span class="comment">r: 2 x1 x1 x1 6</span></span><br><span class="line"><span class="comment">   5 x4 6  8  9</span></span><br><span class="line"><span class="comment">   6    7  x3 x2</span></span><br><span class="line"><span class="comment">   9       x3 x2</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">makeSubSeqSum</span><span class="params">(vector&lt;<span class="type">int</span>&gt; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">ans</span><span class="params">(<span class="number">1</span> &lt;&lt; n)</span></span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> bits = (<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>; bits &gt;= <span class="number">0</span>; --bits) &#123;</span><br><span class="line">            <span class="type">int</span> curState = bits;</span><br><span class="line">            <span class="keyword">while</span>(curState != <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="type">int</span> pos = <span class="built_in">ffs</span>(curState) - <span class="number">1</span>;</span><br><span class="line">                ans[bits] += nums[pos];</span><br><span class="line">                curState -= (<span class="number">1</span> &lt;&lt; pos);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//  vector&lt;int&gt; makeSubSeqSum(vector&lt;int&gt; nums)&#123;</span></span><br><span class="line">    <span class="comment">//     vector&lt;int&gt; ans(1 &lt;&lt; nums.size());</span></span><br><span class="line">    <span class="comment">//     for(int i = 0; i &lt; nums.size(); ++i)&#123;</span></span><br><span class="line">    <span class="comment">//         for(int j = 0; j &lt; (1 &lt;&lt; i); ++j)&#123;</span></span><br><span class="line">    <span class="comment">//             ans[j + (1 &lt;&lt; i)] = ans[j] + nums[i];</span></span><br><span class="line">    <span class="comment">//         &#125;</span></span><br><span class="line">    <span class="comment">//     &#125;</span></span><br><span class="line">    <span class="comment">//     return ans;</span></span><br><span class="line">    <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">binSearchAdjTwoAndUpdate</span><span class="params">(<span class="type">int</span> tar, <span class="type">int</span> r, <span class="type">int</span> goal, vector&lt;<span class="type">int</span>&gt;&amp; leftSet, <span class="type">int</span>&amp; minAbs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">auto</span> it1 = <span class="built_in">lower_bound</span>(leftSet.<span class="built_in">begin</span>(), leftSet.<span class="built_in">end</span>(), tar);   </span><br><span class="line">        <span class="keyword">if</span>(it1 == leftSet.<span class="built_in">end</span>()) &#123;</span><br><span class="line">            <span class="type">int</span> l = *(it1 - <span class="number">1</span>);</span><br><span class="line">            minAbs = <span class="built_in">min</span>(<span class="built_in">abs</span>(l + r - goal), minAbs);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(it1 == leftSet.<span class="built_in">begin</span>()) &#123;</span><br><span class="line">            <span class="type">int</span> l = *(it1);</span><br><span class="line">            minAbs = <span class="built_in">min</span>(<span class="built_in">abs</span>(l + r - goal), minAbs);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="type">int</span> l1 = *it1;</span><br><span class="line">            <span class="type">int</span> l2 = *(it1 - <span class="number">1</span>);</span><br><span class="line">            minAbs = <span class="built_in">min</span>(<span class="built_in">abs</span>(l1 + r - goal), minAbs);</span><br><span class="line">            minAbs = <span class="built_in">min</span>(<span class="built_in">abs</span>(l2 + r - goal), minAbs);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注意题目说的是子序列，而不是子数组</span></span><br><span class="line">    <span class="comment">// 考虑复杂度：如果枚举所有子序列，2^40，那么将数组分成两半去枚举：2^20 * 2</span></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">minAbsDifference</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> goal)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="type">int</span> mid = n &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">auto</span> leftSet = <span class="built_in">makeSubSeqSum</span>(vector&lt;<span class="type">int</span>&gt;&#123;nums.<span class="built_in">begin</span>(), nums.<span class="built_in">begin</span>() + mid&#125;);</span><br><span class="line">        <span class="keyword">auto</span> rightSet = <span class="built_in">makeSubSeqSum</span>(vector&lt;<span class="type">int</span>&gt;&#123;nums.<span class="built_in">begin</span>() + mid, nums.<span class="built_in">end</span>()&#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(n == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">min</span>(<span class="built_in">abs</span>(nums[<span class="number">0</span>] - goal), <span class="built_in">abs</span>(goal));</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">sort</span>(leftSet.<span class="built_in">begin</span>(), leftSet.<span class="built_in">end</span>());</span><br><span class="line">        <span class="built_in">sort</span>(rightSet.<span class="built_in">begin</span>(), rightSet.<span class="built_in">end</span>());</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> minAbs = INT_MAX;</span><br><span class="line">        <span class="comment">// // 对于每一个r部分，使用二分找到最近的两个l， nlogn</span></span><br><span class="line">        <span class="comment">// for(auto r : rightSet) &#123;</span></span><br><span class="line">        <span class="comment">//     // |r + l| == |goal| =&gt; l = |goal| - r or l = - |goal| - r</span></span><br><span class="line">        <span class="comment">//     int tar1 = abs(goal) - r;</span></span><br><span class="line">        <span class="comment">//     int tar2 = - abs(goal) - r;</span></span><br><span class="line">        <span class="comment">//     binSearchAdjTwoAndUpdate(tar1, r, goal, leftSet, minAbs);</span></span><br><span class="line">        <span class="comment">//     binSearchAdjTwoAndUpdate(tar2, r, goal, leftSet, minAbs);</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 直接使用双指针，比二分快, o(n)</span></span><br><span class="line">        <span class="type">int</span> ptr1 = leftSet.<span class="built_in">size</span>() - <span class="number">1</span>; <span class="comment">// 杨氏矩阵的i行 // left升序</span></span><br><span class="line">        <span class="type">int</span> ptr2 = <span class="number">0</span>; <span class="comment">// 央视矩阵的j列 // right升序</span></span><br><span class="line">        <span class="comment">// 则 ptr2为r的最大，ptr1为l的最小</span></span><br><span class="line">        <span class="comment">/** </span></span><br><span class="line"><span class="comment">        search target: 7, start form l = 4, r = 2</span></span><br><span class="line"><span class="comment">        l :  1  1  4  4 </span></span><br><span class="line"><span class="comment">        r: 2 x1 x1 x1 6</span></span><br><span class="line"><span class="comment">           5 x4 6  8  9</span></span><br><span class="line"><span class="comment">           6    7  x3 x2</span></span><br><span class="line"><span class="comment">           9       x3 x2</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">        <span class="keyword">while</span>(ptr1 &gt;= <span class="number">0</span> &amp;&amp; ptr2 &lt; rightSet.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            <span class="comment">// cout &lt;&lt; leftSet[ptr1] &lt;&lt; &quot; &quot; &lt;&lt; rightSet[ptr2] &lt;&lt; endl;</span></span><br><span class="line">            <span class="type">int</span> curRes = leftSet[ptr1] + rightSet[ptr2];</span><br><span class="line">            minAbs = <span class="built_in">min</span>(minAbs, <span class="built_in">abs</span>(curRes - goal));</span><br><span class="line">            <span class="keyword">if</span>(curRes &lt; goal) &#123;</span><br><span class="line">                <span class="comment">// 因为所有的 leftSet[ptr1] + rSet[: ptr2-1]都不可能是答案，于是增加ptr1</span></span><br><span class="line">                ++ptr2;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span>(curRes &gt; goal) &#123;</span><br><span class="line">                <span class="comment">// leftSet[ptr2: ] + leftSet[ptr1] 不可能是答案</span></span><br><span class="line">                --ptr1;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">min</span>(minAbs, <span class="built_in">abs</span>(goal));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2022/06/16/algoYangTable/" title="algoYangTable">https://xychen5.github.io/2022/06/16/algoYangTable/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/algo/" rel="tag"># algo</a>
+              <a href="/tags/search/" rel="tag"># search</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/06/11/lcBinarySearch/" rel="prev" title="lcBinarySearch - 二分搜索">
+                  <i class="fa fa-chevron-left"></i> lcBinarySearch - 二分搜索
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/06/21/algoDijstra/" rel="next" title="algoDijstra - 迪杰斯特拉 求单元点最短路">
+                  algoDijstra - 迪杰斯特拉 求单元点最短路 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

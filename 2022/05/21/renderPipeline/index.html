@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="1 渲染流水线概览  1.1 几何阶段 1 模型和视图变换阶段：模型变换的目的是将模型变换到适合渲染的空间当中，而视图变换的目的是将摄像机放置于坐标原点，方便后续步骤的操作。 2 顶点着色阶段(vertex shading过程)：顶点着色的目的在于确定模型上顶点处材质的光照效果。 3 投影阶段：投影阶段是将模型从三维空间投射到二维的空间中的过程。投影阶段也可以理解为将视体变换到一个对角顶点分别是(">
+<meta property="og:type" content="article">
+<meta property="og:title" content="renderPipeline - 一个三维场景的渲染过程">
+<meta property="og:url" content="https://xychen5.github.io/2022/05/21/renderPipeline/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="1 渲染流水线概览  1.1 几何阶段 1 模型和视图变换阶段：模型变换的目的是将模型变换到适合渲染的空间当中，而视图变换的目的是将摄像机放置于坐标原点，方便后续步骤的操作。 2 顶点着色阶段(vertex shading过程)：顶点着色的目的在于确定模型上顶点处材质的光照效果。 3 投影阶段：投影阶段是将模型从三维空间投射到二维的空间中的过程。投影阶段也可以理解为将视体变换到一个对角顶点分别是(">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/Renderpipeline_openGL.n9246f3kae8.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/RTR_renderPipeline2.5gqxc1hwauo0.webp">
+<meta property="article:published_time" content="2022-05-21T07:00:29.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.490Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="render">
+<meta property="article:tag" content="gl">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/Renderpipeline_openGL.n9246f3kae8.webp">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2022/05/21/renderPipeline/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2022/05/21/renderPipeline/","path":"2022/05/21/renderPipeline/","title":"renderPipeline - 一个三维场景的渲染过程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>renderPipeline - 一个三维场景的渲染过程 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E6%B8%B2%E6%9F%93%E6%B5%81%E6%B0%B4%E7%BA%BF%E6%A6%82%E8%A7%88"><span class="nav-number">1.</span> <span class="nav-text">1 渲染流水线概览</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E5%87%A0%E4%BD%95%E9%98%B6%E6%AE%B5"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 几何阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-1-%E7%BB%93%E5%90%88%E5%85%B7%E4%BD%93%E4%BB%A3%E7%A0%81%E6%8F%8F%E8%BF%B0vertex-shading%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">1.1.1 结合具体代码描述vertex shading过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-2-%E7%BB%93%E5%90%88%E5%85%B7%E4%BD%93%E4%BB%A3%E7%A0%81%E8%AF%B4%E6%98%8Egeometry-shader%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.1.2 结合具体代码说明geometry shader的代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E5%85%89%E6%A0%85%E9%98%B6%E6%AE%B5"><span class="nav-number">1.3.</span> <span class="nav-text">1.2 光栅阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-1-%E5%83%8F%E7%B4%A0%E7%9D%80%E8%89%B2"><span class="nav-number">1.4.</span> <span class="nav-text">1.2.1 像素着色</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-3-%E8%9E%8D%E5%90%88%E9%98%B6%E6%AE%B5"><span class="nav-number">1.5.</span> <span class="nav-text">1.2.3 融合阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E5%90%88%E5%85%B7%E4%BD%93%E4%BB%A3%E7%A0%81%E6%8F%8F%E8%BF%B0-pixel-fragment-shading%E8%BF%87%E7%A8%8B%E5%92%8C%E8%9E%8D%E5%90%88%E9%98%B6%E6%AE%B5"><span class="nav-number">1.6.</span> <span class="nav-text">结合具体代码描述(pixel)fragment shading过程和融合阶段</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2022/05/21/renderPipeline/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          renderPipeline - 一个三维场景的渲染过程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-05-21 15:00:29" itemprop="dateCreated datePublished" datetime="2022-05-21T15:00:29+08:00">2022-05-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="1-渲染流水线概览"><a href="#1-渲染流水线概览" class="headerlink" title="1 渲染流水线概览"></a>1 渲染流水线概览</h1><p><img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/Renderpipeline_openGL.n9246f3kae8.webp" alt="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/Renderpipeline_openGL.n9246f3kae8.webp"></p>
+<p><img src="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/RTR_renderPipeline2.5gqxc1hwauo0.webp" alt="https://raw.githubusercontent.com/xychen5/blogImgs/main/imgs/RTR_renderPipeline2.5gqxc1hwauo0.webp"></p>
+<h2 id="1-1-几何阶段"><a href="#1-1-几何阶段" class="headerlink" title="1.1 几何阶段"></a>1.1 几何阶段</h2><ul>
+<li>1 模型和视图变换阶段：模型变换的目的是将模型变换到适合渲染的空间当中，而视图变换的目的是将摄像机放置于坐标原点，方便后续步骤的操作。</li>
+<li>2 顶点着色阶段(vertex shading过程)：顶点着色的目的在于确定模型上顶点处材质的光照效果。</li>
+<li>3 投影阶段：投影阶段是将模型从三维空间投射到二维的空间中的过程。投影阶段也可以理解为将视体变换到一个对角顶点分别是(-1,-1,-1)和(1,1,1)单位立方体内的过程。</li>
+<li>4 几何着色器：几何着色器可以在顶点发送到下一着色器阶段之前对它们随意变换。几何着色器输出的形式只能是点，折线和三角形条。</li>
+<li>5 裁剪阶段：裁剪阶段的目的，是对部分位于视体内部的图元进行裁剪操作。</li>
+<li>6 屏幕映射阶段：屏幕映射阶段的主要目的，是将之前步骤得到的坐标映射到对应的屏幕坐标系上。</li>
+</ul>
+<h2 id="1-1-1-结合具体代码描述vertex-shading过程"><a href="#1-1-1-结合具体代码描述vertex-shading过程" class="headerlink" title="1.1.1 结合具体代码描述vertex shading过程"></a>1.1.1 结合具体代码描述vertex shading过程</h2><ul>
+<li>1 顶点着色器：是完全可编程的阶段，是专门处理传入的顶点信息的着色器，顶点着色器可以对每个顶点 进行诸如变换和变形在内的很多操作。顶点着色器一般不处理附加信息，也就是说，顶点着色器提供 了修改，创建，或者忽略与每个多边形顶点相关的值的方式，例如其颜色，法线，纹理坐标和位置。 通常，顶点着色器程序将顶点从模型空间（Model Space）变换到齐次裁剪空间（Homogeneous Clip Space），并且，一个顶点着色器至少且必须输出此变换位置(以便于像素着色阶段使用)。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 顶点shading的具体过程</span></span><br><span class="line"><span class="comment">// -------------------------------- 控制 mvp --------------------------------------------</span></span><br><span class="line">    <span class="comment">// pass projection matrix to shader (as projection matrix rarely changes there&#x27;s no need to do this per frame)</span></span><br><span class="line">    <span class="comment">// -----------------------------------------------------------------------------------------------------------</span></span><br><span class="line">    glm::mat4 projection = glm::<span class="built_in">perspective</span>(glm::<span class="built_in">radians</span>(<span class="number">45.0f</span>), (<span class="type">float</span>)SCR_WIDTH / (<span class="type">float</span>)SCR_HEIGHT, <span class="number">0.1f</span>, <span class="number">100.0f</span>);</span><br><span class="line">    ourShader.<span class="built_in">setMat4</span>(<span class="string">&quot;projection&quot;</span>, projection);</span><br><span class="line">...</span><br><span class="line">    <span class="comment">// camera/view transformation</span></span><br><span class="line">    glm::mat4 view = glm::<span class="built_in">lookAt</span>(cameraPos, cameraPos + cameraFront, cameraUp);</span><br><span class="line">    ourShader.<span class="built_in">setMat4</span>(<span class="string">&quot;view&quot;</span>, view);</span><br><span class="line">...</span><br><span class="line">    model = glm::<span class="built_in">rotate</span>(model, glm::<span class="built_in">radians</span>(angle), glm::<span class="built_in">vec3</span>(<span class="number">1.0f</span>, <span class="number">0.3f</span>, <span class="number">0.5f</span>));</span><br><span class="line">    ourShader.<span class="built_in">setMat4</span>(<span class="string">&quot;model&quot;</span>, model);</span><br><span class="line"></span><br><span class="line"><span class="comment">// -------------------------------- vertex shader 代码  --------------------------------</span></span><br><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="built_in">layout</span> (location = <span class="number">0</span>) in vec3 aPos;</span><br><span class="line"><span class="built_in">layout</span> (location = <span class="number">1</span>) in vec3 aNormal;</span><br><span class="line"><span class="built_in">layout</span> (location = <span class="number">2</span>) in vec2 aTexCoords;</span><br><span class="line"></span><br><span class="line">out vec3 FragPos;</span><br><span class="line">out vec3 Normal;</span><br><span class="line">out vec2 TexCoords;</span><br><span class="line"></span><br><span class="line">uniform mat4 model;</span><br><span class="line">uniform mat4 view;</span><br><span class="line">uniform mat4 projection;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FragPos = <span class="built_in">vec3</span>(model * <span class="built_in">vec4</span>(aPos, <span class="number">1.0</span>));</span><br><span class="line">    Normal = <span class="built_in">mat3</span>(<span class="built_in">transpose</span>(<span class="built_in">inverse</span>(model))) * aNormal;  </span><br><span class="line">    TexCoords = aTexCoords;</span><br><span class="line">    </span><br><span class="line">    gl_Position = projection * view * <span class="built_in">vec4</span>(FragPos, <span class="number">1.0</span>); <span class="comment">// 转换以后给opengl绘制顶点的坐标</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="1-1-2-结合具体代码说明geometry-shader的代码"><a href="#1-1-2-结合具体代码说明geometry-shader的代码" class="headerlink" title="1.1.2 结合具体代码说明geometry shader的代码"></a>1.1.2 结合具体代码说明geometry shader的代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line"><span class="built_in">layout</span> (triangles) in; <span class="comment">// 告诉进来的东西是三角形，于是下面画了3个法向</span></span><br><span class="line"><span class="built_in">layout</span> (line_strip, max_vertices = <span class="number">6</span>) out;</span><br><span class="line"></span><br><span class="line">in VS_OUT &#123;</span><br><span class="line">    vec3 normal; <span class="comment">// vertexshader计算的法向</span></span><br><span class="line">&#125; gs_in[];</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">float</span> MAGNITUDE = <span class="number">0.2</span>; <span class="comment">// 法线长度</span></span><br><span class="line"></span><br><span class="line">uniform mat4 projection;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">GenerateLine</span><span class="params">(<span class="type">int</span> index)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    gl_Position = projection * gl_in[index].gl_Position;</span><br><span class="line">    <span class="built_in">EmitVertex</span>();</span><br><span class="line">    gl_Position = projection * (gl_in[index].gl_Position + <span class="built_in">vec4</span>(gs_in[index].normal, <span class="number">0.0</span>) * MAGNITUDE);</span><br><span class="line">    <span class="built_in">EmitVertex</span>();</span><br><span class="line">    <span class="built_in">EndPrimitive</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 对于三个顶点，都去做这个</span></span><br><span class="line">    <span class="built_in">GenerateLine</span>(<span class="number">0</span>); <span class="comment">// first vertex normal</span></span><br><span class="line">    <span class="built_in">GenerateLine</span>(<span class="number">1</span>); <span class="comment">// second vertex normal</span></span><br><span class="line">    <span class="built_in">GenerateLine</span>(<span class="number">2</span>); <span class="comment">// third vertex normal</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-2-光栅阶段"><a href="#1-2-光栅阶段" class="headerlink" title="1.2 光栅阶段"></a>1.2 光栅阶段</h2><ul>
+<li>1 三角形设定阶段(不可配置)：三角形设定阶段主要用来计算三角形表面的差异和三角形表面的其他相关数据。</li>
+<li>2 三角形遍历阶段(不可配置)：找到哪些采样点或像素在三角形中的过程通常叫三角形遍历。</li>
+<li>3 像素着色阶段(fragment shading过程)：像素着色阶段的主要目的是计算所有需逐像素计算操作的过程。</li>
+<li>4 融合阶段：融合阶段的主要任务是合成当前储存于缓冲器中的由之前的像素着色阶段产生的片段颜色。此外，融合阶段还负责可见性问题（Z 缓冲相关）的处理。</li>
+</ul>
+<h2 id="1-2-1-像素着色"><a href="#1-2-1-像素着色" class="headerlink" title="1.2.1 像素着色"></a>1.2.1 像素着色</h2><p>fragment shading和融合阶段过程，有较多的步骤：</p>
+<ul>
+<li>1 像素着色：用来处理场景光照和与之相关的效果，如凸凹纹理映射和调色。名称片断着色器似乎更为准确，因为对于着色器的调用和屏幕上像素的显示并非一一对应。举个例子，对于一个像素，片断着色器可能会被调用若干次来决定它最终的颜色，那些被遮挡的物体也会被计算，直到最后的深度缓冲才将各物体前后排序。在最终合并阶段设置片段颜色以进行合并，而深度值也可以由像素着色器修改。模板缓冲（stencil buffer）值是不可修改的，而是将其传递到合并阶段（Merge Stage）。</li>
+</ul>
+<h2 id="1-2-3-融合阶段"><a href="#1-2-3-融合阶段" class="headerlink" title="1.2.3 融合阶段"></a>1.2.3 融合阶段</h2><ul>
+<li>1 融合阶段：是将像素着色器中生成的各个片段的深度和颜色与帧缓冲结合在一起的地方。这个阶段也就是进行模板缓冲（Stencil-Buffer）和 Z 缓冲（Z-buffer）操作的地方。最常用于透明处理（Transparency）和合成操作（Compositing）的颜色混合（Color Blending）操作也是在这个阶段进行的。一下<ul>
+<li>1.1 模板缓冲：大概就是GLFW给每个窗口库都配置一个模板缓冲，默认情况下，启用模板缓冲写入，就可以把物体对应的顶点的哪些像素位置的模板缓冲值写为1，然后模板缓冲为1的位置，场景对应的片段才会被渲染，通过模板缓冲才会进入深度缓冲阶段，很容易想到的就是为什么是这样的顺序？显然深度模板每一个像素的位置上很可能有多个buffer信息需要处理，计算量远大于模板缓冲，于是自然先进行模板缓冲<ul>
+<li>1.1.1 比如具体的：轮廓算法，就可以通过模板缓冲来实现：简单解释：<ul>
+<li>当你有一个物体，你渲染前，先开启模板缓冲，把这个物体对应的模板缓冲都写成1，然后关闭模板缓冲，避免用于轮廓的物体也去写模板缓冲了</li>
+<li>然后你把这个物体稍微放大，绘制之前， glStencilFunc(GL_NOTEQUAL, 1, 0xFF);也就是不为1的地方，glStencilFunc描述了OpenGL应该对模板缓冲内容做什么，也就是不为1的地方，会通过模板测试，之后用一个简单的带有颜色的片段着色器着色画出这个物体即可形成了轮廓<blockquote>
+<p>在绘制（需要添加轮廓的）物体之前，将模板函数设置为GL_ALWAYS，每当物体的片段被渲染时，将模板缓冲更新为1。<br>渲染物体。<br>禁用模板写入以及深度测试。<br>将每个物体缩放一点点。<br>使用一个不同的片段着色器，输出一个单独的（边框）颜色。<br>再次绘制物体，但只在它们片段的模板值不等于1时才绘制。<br>再次启用模板写入和深度测试。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 轮廓算法代码</span></span><br><span class="line"><span class="built_in">glEnable</span>(GL_DEPTH_TEST);</span><br><span class="line"><span class="built_in">glStencilOp</span>(GL_KEEP, GL_KEEP, GL_REPLACE);  </span><br><span class="line"></span><br><span class="line"><span class="built_in">glClear</span>(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); </span><br><span class="line"></span><br><span class="line"><span class="built_in">glStencilMask</span>(<span class="number">0x00</span>); <span class="comment">// 记得保证我们在绘制地板的时候不会更新模板缓冲</span></span><br><span class="line">normalShader.<span class="built_in">use</span>();</span><br><span class="line"><span class="built_in">DrawFloor</span>()  </span><br><span class="line"></span><br><span class="line"><span class="built_in">glStencilFunc</span>(GL_ALWAYS, <span class="number">1</span>, <span class="number">0xFF</span>); </span><br><span class="line"><span class="built_in">glStencilMask</span>(<span class="number">0xFF</span>); </span><br><span class="line"><span class="built_in">DrawTwoContainers</span>();</span><br><span class="line"></span><br><span class="line"><span class="built_in">glStencilFunc</span>(GL_NOTEQUAL, <span class="number">1</span>, <span class="number">0xFF</span>);</span><br><span class="line"><span class="built_in">glStencilMask</span>(<span class="number">0x00</span>); </span><br><span class="line"><span class="built_in">glDisable</span>(GL_DEPTH_TEST);</span><br><span class="line">shaderSingleColor.<span class="built_in">use</span>(); </span><br><span class="line"><span class="built_in">DrawTwoScaledUpContainers</span>();</span><br><span class="line"><span class="built_in">glStencilMask</span>(<span class="number">0xFF</span>);</span><br><span class="line"><span class="built_in">glEnable</span>(GL_DEPTH_TEST); </span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>1.2 深度缓冲：对于每一个像素，有多个顶点信息，通过计算顶点和当前camera距离的位置，我们决定谁去渲染，通常有这几种策略：默认情况下使用的深度函数是GL_LESS，它将会丢弃深度值大于等于当前深度缓冲值的所有片段。<blockquote>
+<p>GL_ALWAYS    永远通过深度测试<br>GL_NEVER    永远不通过深度测试<br>GL_LESS    在片段深度值小于缓冲的深度值时通过测试<br>GL_EQUAL    在片段深度值等于缓冲区的深度值时通过测试<br>GL_LEQUAL    在片段深度值小于等于缓冲区的深度值时通过测试<br>GL_GREATER    在片段深度值大于缓冲区的深度值时通过测试<br>GL_NOTEQUAL    在片段深度值不等于缓冲区的深度值时通过测试<br>GL_GEQUAL    在片段深度值大于等于缓冲区的深度值时通过测试</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="结合具体代码描述-pixel-fragment-shading过程和融合阶段"><a href="#结合具体代码描述-pixel-fragment-shading过程和融合阶段" class="headerlink" title="结合具体代码描述(pixel)fragment shading过程和融合阶段"></a>结合具体代码描述(pixel)fragment shading过程和融合阶段</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// --------------------------------- fragment(pixel) shader 代码 ----------------------------</span></span><br><span class="line"><span class="meta">#version 330 core</span></span><br><span class="line">out vec4 FragColor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Material</span> &#123;</span><br><span class="line">    sampler2D diffuse;</span><br><span class="line">    sampler2D specular;    </span><br><span class="line">    <span class="type">float</span> shininess;</span><br><span class="line">&#125;; </span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Light</span> &#123;</span><br><span class="line">    vec3 position;  </span><br><span class="line">    vec3 direction;</span><br><span class="line">    <span class="type">float</span> cutOff;</span><br><span class="line">    <span class="type">float</span> outerCutOff;</span><br><span class="line">  </span><br><span class="line">    vec3 ambient;</span><br><span class="line">    vec3 diffuse;</span><br><span class="line">    vec3 specular;</span><br><span class="line">	</span><br><span class="line">    <span class="type">float</span> constant;</span><br><span class="line">    <span class="type">float</span> linear;</span><br><span class="line">    <span class="type">float</span> quadratic;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">in vec3 FragPos;  </span><br><span class="line">in vec3 Normal;  </span><br><span class="line">in vec2 TexCoords;</span><br><span class="line">  </span><br><span class="line">uniform vec3 viewPos;</span><br><span class="line">uniform Material material;</span><br><span class="line">uniform Light light;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    vec3 lightDir = <span class="built_in">normalize</span>(light.position - FragPos);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// check if lighting is inside the spotlight cone</span></span><br><span class="line">    <span class="type">float</span> theta = <span class="built_in">dot</span>(lightDir, <span class="built_in">normalize</span>(-light.direction)); </span><br><span class="line">    </span><br><span class="line">    <span class="comment">// cutOff = cos(spotAngle / 2)，判断当前物体和手电筒形成的夹角是不是在聚光灯内部，不是的话就只用环境光就行</span></span><br><span class="line">    <span class="keyword">if</span>(theta &gt; light.cutOff) <span class="comment">// remember that we&#x27;re working with angles as cosines instead of degrees so a &#x27;&gt;&#x27; is used.</span></span><br><span class="line">    &#123;    </span><br><span class="line">        <span class="comment">// ambient 环境光</span></span><br><span class="line">        vec3 ambient = light.ambient * <span class="built_in">texture</span>(material.diffuse, TexCoords).rgb;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// diffuse 散射</span></span><br><span class="line">        vec3 norm = <span class="built_in">normalize</span>(Normal);</span><br><span class="line">        <span class="type">float</span> diff = <span class="built_in">max</span>(<span class="built_in">dot</span>(norm, lightDir), <span class="number">0.0</span>);</span><br><span class="line">        vec3 diffuse = light.diffuse * diff * <span class="built_in">texture</span>(material.diffuse, TexCoords).rgb;  </span><br><span class="line">        </span><br><span class="line">        <span class="comment">// specular 镜面</span></span><br><span class="line">        vec3 viewDir = <span class="built_in">normalize</span>(viewPos - FragPos);</span><br><span class="line">        vec3 reflectDir = <span class="built_in">reflect</span>(-lightDir, norm);  </span><br><span class="line">        <span class="type">float</span> spec = <span class="built_in">pow</span>(<span class="built_in">max</span>(<span class="built_in">dot</span>(viewDir, reflectDir), <span class="number">0.0</span>), material.shininess);</span><br><span class="line">        vec3 specular = light.specular * spec * <span class="built_in">texture</span>(material.specular, TexCoords).rgb;  </span><br><span class="line">        </span><br><span class="line">        <span class="comment">// attenuation 衰减系数</span></span><br><span class="line">        <span class="type">float</span> distance    = <span class="built_in">length</span>(light.position - FragPos);</span><br><span class="line">        <span class="type">float</span> attenuation = <span class="number">1.0</span> / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    </span><br><span class="line"></span><br><span class="line">        <span class="comment">// ambient  *= attenuation; // remove attenuation from ambient, as otherwise at large distances the light would be darker inside than outside the spotlight due the ambient term in the else branche</span></span><br><span class="line">        diffuse   *= attenuation;</span><br><span class="line">        specular *= attenuation;   </span><br><span class="line">            </span><br><span class="line">        vec3 result = ambient + diffuse + specular;</span><br><span class="line">        FragColor = <span class="built_in">vec4</span>(result, <span class="number">1.0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="comment">// 聚光灯外面</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// else, use ambient light so scene isn&#x27;t completely dark outside the spotlight.</span></span><br><span class="line">        FragColor = <span class="built_in">vec4</span>(light.ambient * <span class="built_in">texture</span>(material.diffuse, TexCoords).rgb, <span class="number">1.0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2022/05/21/renderPipeline/" title="renderPipeline - 一个三维场景的渲染过程">https://xychen5.github.io/2022/05/21/renderPipeline/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/render/" rel="tag"># render</a>
+              <a href="/tags/gl/" rel="tag"># gl</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/12/algoKMPStringMatch/" rel="prev" title="algoKMPStringMatch">
+                  <i class="fa fa-chevron-left"></i> algoKMPStringMatch
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/05/21/lighting/" rel="next" title="lighting - 一些光照模型以及高级光照">
+                  lighting - 一些光照模型以及高级光照 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

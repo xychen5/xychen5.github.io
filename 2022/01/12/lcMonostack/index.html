@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="单调栈其基本特性：  1 单调栈的极值性质：单调递减栈的第一个字符为目前最大的元素，单调递增栈则相反; 关于目前的解释，由于单调栈是遍历整个数组出栈入栈的过程，假设目前遍历到节点i，则arr[:i]为目前单调栈遍历过的元素们，单调栈递增递减栈的第一个数字分别为arr[:i]的最大最小值 2 单调栈的单调性：单调栈内的元素严格单调  1 单调栈写法一下为求每个元素左侧最大值的一个示例： 123456">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lcMonostack - 单调栈">
+<meta property="og:url" content="https://xychen5.github.io/2022/01/12/lcMonostack/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="单调栈其基本特性：  1 单调栈的极值性质：单调递减栈的第一个字符为目前最大的元素，单调递增栈则相反; 关于目前的解释，由于单调栈是遍历整个数组出栈入栈的过程，假设目前遍历到节点i，则arr[:i]为目前单调栈遍历过的元素们，单调栈递增递减栈的第一个数字分别为arr[:i]的最大最小值 2 单调栈的单调性：单调栈内的元素严格单调  1 单调栈写法一下为求每个元素左侧最大值的一个示例： 123456">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-01-12T06:07:18.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.465Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="algoPrac">
+<meta property="article:tag" content="lc">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2022/01/12/lcMonostack/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2022/01/12/lcMonostack/","path":"2022/01/12/lcMonostack/","title":"lcMonostack - 单调栈"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>lcMonostack - 单调栈 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%95%E8%B0%83%E6%A0%88"><span class="nav-number">1.</span> <span class="nav-text">单调栈</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%8D%95%E8%B0%83%E6%A0%88%E5%86%99%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">1 单调栈写法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0000-interview-1712trapWater-%E6%8E%A5%E9%9B%A8%E6%B0%B4"><span class="nav-number">2.1.</span> <span class="nav-text">0000_interview_1712trapWater 接雨水</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE%EF%BC%9A"><span class="nav-number">2.1.1.</span> <span class="nav-text">1 题目：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF%EF%BC%9A"><span class="nav-number">2.1.2.</span> <span class="nav-text">2 解题思路：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2030-%E5%90%AB%E7%89%B9%E5%AE%9A%E5%AD%97%E6%AF%8D%E7%9A%84%E6%9C%80%E5%B0%8F%E5%AD%90%E5%BA%8F%E5%88%97-smallestSubsequence"><span class="nav-number">2.2.</span> <span class="nav-text">2030. 含特定字母的最小子序列 smallestSubsequence</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE%EF%BC%9A-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">1 题目：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF%EF%BC%9A-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">2 解题思路：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%85%B3%E4%BA%8Estring%E7%9A%84-%E5%92%8Cpush-back"><span class="nav-number">2.2.3.</span> <span class="nav-text">3 关于string的+和push_back</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0321-%E6%8B%BC%E6%8E%A5%E6%9C%80%E5%A4%A7%E6%95%B0"><span class="nav-number">2.3.</span> <span class="nav-text">0321 拼接最大数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE"><span class="nav-number">2.3.1.</span> <span class="nav-text">1 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-number">2.3.2.</span> <span class="nav-text">2 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0768-%E6%9C%80%E5%A4%9A%E8%83%BD%E5%AE%8C%E6%88%90%E6%8E%92%E5%BA%8F%E7%9A%84%E5%9D%97-II-maxChunksToSroted"><span class="nav-number">2.4.</span> <span class="nav-text">0768 最多能完成排序的块 II maxChunksToSroted</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE-1"><span class="nav-number">2.4.1.</span> <span class="nav-text">1 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF-1"><span class="nav-number">2.4.2.</span> <span class="nav-text">2 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1793-%E5%A5%BD%E5%AD%90%E6%95%B0%E7%BB%84%E7%9A%84%E6%9C%80%E5%A4%A7%E5%88%86%E6%95%B0-maximumScore"><span class="nav-number">2.5.</span> <span class="nav-text">1793 好子数组的最大分数 maximumScore</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE%EF%BC%9A-2"><span class="nav-number">2.5.1.</span> <span class="nav-text">1 题目：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF%EF%BC%9A-2"><span class="nav-number">2.5.2.</span> <span class="nav-text">2 解题思路：</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2022/01/12/lcMonostack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          lcMonostack - 单调栈
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-01-12 14:07:18" itemprop="dateCreated datePublished" datetime="2022-01-12T14:07:18+08:00">2022-01-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="单调栈"><a href="#单调栈" class="headerlink" title="单调栈"></a>单调栈</h1><p>其基本特性：</p>
+<ul>
+<li>1 单调栈的极值性质：单调递减栈的第一个字符为<strong>目前</strong>最大的元素，单调递增栈则相反; 关于目前的解释，由于单调栈是遍历整个数组出栈入栈的过程，假设目前遍历到节点i，则arr[:i]为目前单调栈遍历过的元素们，单调栈递增递减栈的<strong>第一个数字</strong>分别为arr[:i]的最大最小值</li>
+<li>2 单调栈的单调性：单调栈内的元素严格单调</li>
+</ul>
+<h2 id="1-单调栈写法"><a href="#1-单调栈写法" class="headerlink" title="1 单调栈写法"></a>1 单调栈写法</h2><p>一下为求每个元素左侧最大值的一个示例：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;<span class="type">int</span>&gt; normalOrderMono;</span><br><span class="line"><span class="type">int</span> n = height.<span class="built_in">size</span>();</span><br><span class="line"><span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">leftMax</span><span class="params">(n)</span></span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i)&#123;</span><br><span class="line">    <span class="keyword">while</span>(!normalOrderMono.<span class="built_in">empty</span>() &amp;&amp; height[normalOrderMono.<span class="built_in">back</span>()] &lt;= height[i]) &#123;</span><br><span class="line">        normalOrderMono.<span class="built_in">pop_back</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    leftMax[i] = normalOrderMono.<span class="built_in">empty</span>() ? height[i] : height[normalOrderMono[<span class="number">0</span>]];</span><br><span class="line">    normalOrderMono.<span class="built_in">emplace_back</span>(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><h2 id="0000-interview-1712trapWater-接雨水"><a href="#0000-interview-1712trapWater-接雨水" class="headerlink" title="0000_interview_1712trapWater 接雨水"></a>0000_interview_1712trapWater 接雨水</h2><h3 id="1-题目："><a href="#1-题目：" class="headerlink" title="1 题目："></a>1 题目：</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/volume-of-histogram-lcci/">https://leetcode-cn.com/problems/volume-of-histogram-lcci/</a></p>
+<h3 id="2-解题思路："><a href="#2-解题思路：" class="headerlink" title="2 解题思路："></a>2 解题思路：</h3><ul>
+<li>1 参照提示的一句话：<blockquote>
+<p>每个长方形的顶部都有水，水的高度应与左侧最高长方形和右侧最高长方形的较小值相匹配，也就是说，water_on_top[i] = min(tallest_ bar(0-&gt;i), tallest_bar(i, n))。</p>
+</blockquote>
+</li>
+<li>2 使用单调栈计算当前节点左侧(右侧)最大值<ul>
+<li>2.1 很简单： 考虑单调栈的性质，单调递减栈的第一个字符为<strong>目前</strong>最大的元素，单调递增栈则相反，为最小元素</li>
+<li>2.2 关于目前的解释，由于单调栈是遍历整个数组出栈入栈的过程，遍历到节点i，则arr[:i]为目前单调栈遍历过的元素们，单调栈递增递减栈的第一个数字分别为arr[:i]的最大最小值</li>
+<li>2.3 由于需要统计右侧最大值，则我们只需要逆序遍历数组即可，最大值可以使用单调递减获得</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">trap</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; height)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// using descending mono stack to find maxValue in left or right</span></span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; normalOrderMono;</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; reverseOrderMono;</span><br><span class="line">        <span class="type">int</span> n = height.<span class="built_in">size</span>();</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">leftMax</span><span class="params">(n)</span></span>;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">rightMax</span><span class="params">(n)</span></span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = n - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i)&#123;</span><br><span class="line">            <span class="keyword">while</span>(!reverseOrderMono.<span class="built_in">empty</span>() &amp;&amp; height[reverseOrderMono.<span class="built_in">back</span>()] &lt;= height[i]) &#123;</span><br><span class="line">                reverseOrderMono.<span class="built_in">pop_back</span>();</span><br><span class="line">            &#125;</span><br><span class="line">            rightMax[i] = reverseOrderMono.<span class="built_in">empty</span>() ? height[i] : height[reverseOrderMono[<span class="number">0</span>]];</span><br><span class="line">            reverseOrderMono.<span class="built_in">emplace_back</span>(i);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i)&#123;</span><br><span class="line">            <span class="keyword">while</span>(!normalOrderMono.<span class="built_in">empty</span>() &amp;&amp; height[normalOrderMono.<span class="built_in">back</span>()] &lt;= height[i]) &#123;</span><br><span class="line">                normalOrderMono.<span class="built_in">pop_back</span>();</span><br><span class="line">            &#125;</span><br><span class="line">            leftMax[i] = normalOrderMono.<span class="built_in">empty</span>() ? height[i] : height[normalOrderMono[<span class="number">0</span>]];</span><br><span class="line">            normalOrderMono.<span class="built_in">emplace_back</span>(i);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="type">int</span> res = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">            res += <span class="built_in">max</span>(<span class="built_in">min</span>(leftMax[i], rightMax[i]) - height[i], <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2030-含特定字母的最小子序列-smallestSubsequence"><a href="#2030-含特定字母的最小子序列-smallestSubsequence" class="headerlink" title="2030. 含特定字母的最小子序列 smallestSubsequence"></a>2030. 含特定字母的最小子序列 smallestSubsequence</h2><h3 id="1-题目：-1"><a href="#1-题目：-1" class="headerlink" title="1 题目："></a>1 题目：</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/smallest-k-length-subsequence-with-occurrences-of-a-letter/">https://leetcode-cn.com/problems/smallest-k-length-subsequence-with-occurrences-of-a-letter/</a></p>
+<h3 id="2-解题思路：-1"><a href="#2-解题思路：-1" class="headerlink" title="2 解题思路："></a>2 解题思路：</h3><ul>
+<li>1 考虑一个简单化的问题，选出长度为k的最小字典序的字符串，算法如下：<ul>
+<li>1.1 采用单调栈维护一个递增栈，自然的保持了最小字典序<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">string <span class="title">smallestSubsequence</span><span class="params">(string s, <span class="type">int</span> k, <span class="type">char</span> letter, <span class="type">int</span> repetition)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// first, using monostack to get the min sub arr whose len = k</span></span><br><span class="line">        <span class="comment">// and check if there are rep&#x27;s &#x27;letter&#x27; in sub arr</span></span><br><span class="line">        </span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; mono; <span class="comment">// abscending chars</span></span><br><span class="line">        <span class="type">int</span> n = s.<span class="built_in">size</span>();</span><br><span class="line">        <span class="type">int</span> specialCharCnt = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> avaliableSpeChar = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> c : s) &#123;</span><br><span class="line">            avaliableSpeChar += (c == letter);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="keyword">while</span>(!mono.<span class="built_in">empty</span>() &amp;&amp; s[mono.<span class="built_in">back</span>()] &gt;= s[i] &amp;&amp; mono.<span class="built_in">size</span>() - <span class="number">1</span> + n - i &gt;= k) &#123;</span><br><span class="line">                specialCharCnt -= <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(s[mono.<span class="built_in">back</span>()] == letter);</span><br><span class="line">                mono.<span class="built_in">pop_back</span>();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            mono.<span class="built_in">emplace_back</span>(i);</span><br><span class="line">            <span class="keyword">if</span>(s[i] == letter) &#123;</span><br><span class="line">                --avaliableSpeChar;</span><br><span class="line">                ++specialCharCnt;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        string res = <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> i : mono)&#123;</span><br><span class="line">            res += s[i];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>2 考虑另一个子问题，需要选出含有rep个特殊字符的子序列，可以使用一个队列存储特殊字符的下标，当队列长度达到rep个，则记为一个子序列</li>
+<li>3 将两个问题结合起来考虑就是是说：<ul>
+<li>3.1 在递增栈构造的过程中，要保证当前位置后面剩余的特殊字符加上当前栈内的字符大于等于repetition，否则将不能出栈特殊字符（因为如果出栈则无法满足有repetition个特殊字符的要求</li>
+<li>3.2 经过3.1步骤，单调栈内含有我们的答案，但是一定有一些额外的字符存在，那么如下说明从栈内获得答案的方式：<ul>
+<li>3.2.1 eg: 当aaabbbcccddd为输入，则单调栈为aaabbbcccddd，那么我们想要的结果为在至少有2个b的字符串，那么我们获得最终结果的方式为：<strong>在保证有大于repetition个letter的情况下，从尾部开始删除字符串直到单调栈内剩下k个字符即可</strong><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;aaabbbcccddd&quot;</span><br><span class="line">3</span><br><span class="line">&quot;b&quot;</span><br><span class="line">2</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">string <span class="title">smallestSubsequence</span><span class="params">(string s, <span class="type">int</span> k, <span class="type">char</span> letter, <span class="type">int</span> repetition)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// first, using monostack to get the min sub arr whose len = k</span></span><br><span class="line">        <span class="comment">// and check if there are rep&#x27;s &#x27;letter&#x27; in sub arr</span></span><br><span class="line">                </span><br><span class="line">        <span class="type">clock_t</span> start,end;　　　<span class="comment">//定义clock_t变量</span></span><br><span class="line">        start = <span class="built_in">clock</span>();  　　　<span class="comment">//开始时间</span></span><br><span class="line"></span><br><span class="line">        string mono; <span class="comment">// abscending chars</span></span><br><span class="line">        <span class="type">int</span> n = s.<span class="built_in">size</span>();</span><br><span class="line">        <span class="type">int</span> specialCharCnt = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> avaliableSpeChar = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> &amp;c : s) &#123;</span><br><span class="line">            avaliableSpeChar += (c == letter);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="keyword">while</span>(!mono.<span class="built_in">empty</span>() &amp;&amp; mono.<span class="built_in">back</span>() &gt; s[i] &amp;&amp; mono.<span class="built_in">size</span>() - <span class="number">1</span> + n - i &gt;= k) &#123;</span><br><span class="line">                <span class="keyword">if</span>(mono.<span class="built_in">back</span>() == letter) &#123;</span><br><span class="line">                    <span class="comment">// when not enough special letter, we do not pop special char</span></span><br><span class="line">                    <span class="keyword">if</span>(avaliableSpeChar &lt;= repetition - specialCharCnt) &#123;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    --specialCharCnt;</span><br><span class="line">                &#125;</span><br><span class="line">                mono.<span class="built_in">pop_back</span>();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            mono.<span class="built_in">push_back</span>(s[i]);</span><br><span class="line">            <span class="keyword">if</span>(s[i] == letter) &#123;</span><br><span class="line">                --avaliableSpeChar;</span><br><span class="line">                ++specialCharCnt;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        start = <span class="built_in">clock</span>();  　　　<span class="comment">//开始时间</span></span><br><span class="line">        string res = <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="comment">// eliminate some extra chars reversely</span></span><br><span class="line">        <span class="type">int</span> delNum = mono.<span class="built_in">size</span>() - k;</span><br><span class="line">        <span class="comment">// cout &lt;&lt; &quot;letter Cnt: &quot; &lt;&lt; specialCharCnt &lt;&lt; endl;</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = mono.<span class="built_in">size</span>() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i)&#123;</span><br><span class="line">            <span class="comment">// make sure there are more than rep&#x27;s &#x27;letter&#x27;</span></span><br><span class="line">            <span class="keyword">if</span>(delNum != <span class="number">0</span> ) &#123;</span><br><span class="line">                <span class="keyword">if</span>(specialCharCnt &gt; repetition) &#123;</span><br><span class="line">                    specialCharCnt -= (mono[i] == letter);</span><br><span class="line">                    --delNum;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span>(mono[i] != letter) &#123;</span><br><span class="line">                        --delNum;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// spend: 0.311s</span></span><br><span class="line">            <span class="comment">// res = mono[i] + res; // this spend two much time, ocuppy nearly 100% time! so we change our policy</span></span><br><span class="line">            <span class="comment">// spend: 0.000153s, 1000 times faster!</span></span><br><span class="line">            res.<span class="built_in">push_back</span>(mono[i]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">reverse</span>(res.<span class="built_in">begin</span>(), res.<span class="built_in">end</span>());</span><br><span class="line">        end = <span class="built_in">clock</span>();   <span class="comment">//结束时间</span></span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;time = &quot;</span>&lt;&lt;<span class="built_in">double</span>(end-start)/CLOCKS_PER_SEC&lt;&lt;<span class="string">&quot;s&quot;</span>&lt;&lt;endl;  <span class="comment">//输出</span></span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-关于string的-和push-back"><a href="#3-关于string的-和push-back" class="headerlink" title="3 关于string的+和push_back"></a>3 关于string的+和push_back</h3><p>如果是一个字符一个字符的话，使用push_back会比+快1000倍！如上代码可以自己尝试统计</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// spend: 0.311s</span></span><br><span class="line"><span class="comment">// res = mono[i] + res; // this spend two much time, ocuppy nearly 100% time! so we change our policy</span></span><br><span class="line"><span class="comment">// spend: 0.000153s, 1000 times faster!</span></span><br><span class="line">res.<span class="built_in">push_back</span>(mono[i]);</span><br></pre></td></tr></table></figure>
+
+<h2 id="0321-拼接最大数"><a href="#0321-拼接最大数" class="headerlink" title="0321 拼接最大数"></a>0321 拼接最大数</h2><h3 id="1-题目"><a href="#1-题目" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/longest-duplicate-substring/">https://leetcode-cn.com/problems/longest-duplicate-substring/</a></p>
+<h3 id="2-解题思路"><a href="#2-解题思路" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
+<li>1 首先分解问题：<ul>
+<li>1.1 从长度为m和n(假设m &lt;= n)中的字符串里选出k个，然后这个字串要求最大，遍历的思路：<ul>
+<li>1.2 首先一共要选k个，自然想到从m和n中各挑选几个？那就是遍历了，m中的挑选长度的起点为： max(0, k - n)，最少一个不挑，然后从m中挑的个数身下还有k - m个一定能够从n中挑出，所以起点是从0到k-n，(为什么区最大值？因为当n，m均大于k的时候，k-n为负数)，挑选终点：自然是k，或者没有那么多可以调k个，则挑m个，则min(k, m)</li>
+<li>1.3 那么已经知道所有从m,n中挑选出k个字符串的方法，那么对于每一个方法，如何获取最大字符串呢？<strong>其实就是分别从该方法的m和n串中各选出他们的最大字串，然后合并即可</strong>，于是问题转化为：从m中如何选出某个长度记为l的最大字串？<ul>
+<li>1.3.1 我们考虑一个使用单调递减栈，因为它的栈顶总是当前字符串最大的值，然后后面都是递减的，这正是我们需要的，比如 9 1 2 5 8 3选择3个的时候，使用单调栈可以直接获得9,8,3，但是有个问题，比如从 9 1 2 5 8，单调栈遍历完则为9 5,这3个没选够，所以何时停止从单调栈里弹出呢？遍历位置以及后面剩余的元素刚好够挑选长度的时候，就不再弹出了（即使单调栈内的元素已经不单调了）</li>
+</ul>
+</li>
+<li>1.4 在下一个问题，对于一个挑选方法，m中挑选l个，n中挑选k-l个，分别得到一个最大字串，如何合并成最终字串呢？<ul>
+<li>1.4.1 其实很简单，两个字符串分别维护一个head叫ha，hb吧，若ha比hb大，那么就把ha的值压入最终结果，直到ha &lt; hb，同理移动b即可，但是需要考虑ha == hb的情况，直接比较ha,hb对应的尾串即可，参考如下测试样例即可：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">eg1: </span><br><span class="line">[<span class="number">2</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">0</span>]</span><br><span class="line">[<span class="number">7</span>,<span class="number">3</span>,<span class="number">8</span>,<span class="number">0</span>,<span class="number">6</span>,<span class="number">5</span>,<span class="number">7</span>,<span class="number">6</span>,<span class="number">2</span>]</span><br><span class="line"><span class="number">15</span></span><br><span class="line"></span><br><span class="line">eg2:</span><br><span class="line">[<span class="number">6</span>,<span class="number">7</span>]</span><br><span class="line">[<span class="number">6</span>,<span class="number">0</span>,<span class="number">4</span>]</span><br><span class="line"><span class="number">5</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="function">string <span class="title">getMaxConcat</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; longVec, vector&lt;<span class="type">int</span>&gt;&amp; shortVec, <span class="type">int</span> lenInLonger, <span class="type">int</span> lenInShorter)</span> </span>&#123;</span><br><span class="line">        string monoLong, monoShort;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// choose biggest lenInLonger&#x27;s subArr from  longer vec</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; longVec.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">            <span class="keyword">while</span>(monoLong.<span class="built_in">size</span>() &gt; <span class="number">0</span> &amp;&amp; monoLong.<span class="built_in">back</span>() - <span class="string">&#x27;0&#x27;</span> &lt; longVec[i] &amp;&amp; monoLong.<span class="built_in">size</span>() + longVec.<span class="built_in">size</span>() - i &gt; lenInLonger) &#123;</span><br><span class="line">                <span class="comment">// cout &lt;&lt; &quot;pop_long: &quot; &lt;&lt; monoLong.back() &lt;&lt; &quot; monoLong&#x27;s std len: &quot; &lt;&lt; lenInLonger &lt;&lt; &quot; curback: &quot; &lt;&lt; monoLong.back() &lt;&lt; endl;</span></span><br><span class="line">                monoLong.<span class="built_in">pop_back</span>();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(monoLong.<span class="built_in">size</span>() &lt; lenInLonger) &#123;</span><br><span class="line">                <span class="comment">// cout &lt;&lt; &quot;push_long: in &quot; &lt;&lt; static_cast&lt;char&gt;(longVec[i] + &#x27;0&#x27;) &lt;&lt; endl;</span></span><br><span class="line">                monoLong.<span class="built_in">push_back</span>(<span class="built_in">static_cast</span>&lt;<span class="type">char</span>&gt;(longVec[i] + <span class="string">&#x27;0&#x27;</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; shortVec.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">            <span class="comment">// while(monoLong.back() &lt; longVec[i] &amp;&amp; monoLong.size() &lt;= lenInLonger &amp;&amp; monoLong.size() + longVec.size() - i + 1 &lt; lenInLonger) &#123;</span></span><br><span class="line">            <span class="keyword">while</span>(!monoShort.<span class="built_in">empty</span>() &amp;&amp; monoShort.<span class="built_in">back</span>() - <span class="string">&#x27;0&#x27;</span> &lt; shortVec[i] &amp;&amp; monoShort.<span class="built_in">size</span>() + shortVec.<span class="built_in">size</span>() - i &gt; lenInShorter) &#123;</span><br><span class="line">                <span class="comment">// cout &lt;&lt; &quot;pop_short: &quot; &lt;&lt; monoShort.back() &lt;&lt; &quot; monoLong&#x27;s std len: &quot; &lt;&lt; lenInShorter &lt;&lt; &quot; curback: &quot; &lt;&lt; monoShort.back() &lt;&lt; endl;</span></span><br><span class="line">                monoShort.<span class="built_in">pop_back</span>();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(monoShort.<span class="built_in">size</span>() &lt; lenInShorter) &#123;</span><br><span class="line">                <span class="comment">// cout &lt;&lt; &quot;push_short: in &quot; &lt;&lt; static_cast&lt;char&gt;(longVec[i] + &#x27;0&#x27;) &lt;&lt; endl;</span></span><br><span class="line">                monoShort.<span class="built_in">push_back</span>(<span class="built_in">static_cast</span>&lt;<span class="type">char</span>&gt;(shortVec[i] + <span class="string">&#x27;0&#x27;</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> j = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// merger the two biggest substr,</span></span><br><span class="line">        string finalRes = <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="comment">// cout &lt;&lt; &quot;longMax and shortMax str: &quot; &lt;&lt; monoLong &lt;&lt; &quot; &quot; &lt;&lt; monoShort &lt;&lt; endl;</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; monoShort.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">            <span class="keyword">while</span>(j &lt; monoLong.<span class="built_in">size</span>() &amp;&amp; monoLong[j] &gt; monoShort[i]) &#123;</span><br><span class="line">                finalRes.<span class="built_in">push_back</span>(monoLong[j++]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// decided whether to use long str or short when the char compared is true</span></span><br><span class="line">            <span class="keyword">if</span>(monoLong[j] == monoShort[i]) &#123;</span><br><span class="line">                <span class="keyword">if</span>(monoLong.<span class="built_in">substr</span>(j) &gt; monoShort.<span class="built_in">substr</span>(i)) &#123;</span><br><span class="line">                    finalRes.<span class="built_in">push_back</span>(monoLong[j++]);</span><br><span class="line">                    i--;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            finalRes.<span class="built_in">push_back</span>(monoShort[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        finalRes += monoLong.<span class="built_in">substr</span>(j);</span><br><span class="line">        <span class="comment">// cout &lt;&lt; &quot;finalRes string is: &quot; &lt;&lt; finalRes &lt;&lt; endl;</span></span><br><span class="line">        <span class="keyword">return</span> finalRes;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">maxNumber</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums1, vector&lt;<span class="type">int</span>&gt;&amp; nums2, <span class="type">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> m = nums1.<span class="built_in">size</span>();</span><br><span class="line">        <span class="type">int</span> n = nums2.<span class="built_in">size</span>();</span><br><span class="line">        <span class="comment">// cout &lt;&lt; &quot;m/n&quot; &lt;&lt; m &lt;&lt; &quot; &quot; &lt;&lt; n &lt;&lt; endl;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// let k split into nums1 and nums2</span></span><br><span class="line">        <span class="function">string <span class="title">maxStr</span><span class="params">(k, <span class="string">&#x27;0&#x27;</span>)</span></span>;</span><br><span class="line">        <span class="keyword">if</span>(m &lt;= n) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> lenInShorter = <span class="built_in">max</span>(<span class="number">0</span>, k - n); lenInShorter &lt;= <span class="built_in">min</span>(m, k); ++lenInShorter) &#123;</span><br><span class="line">                <span class="type">int</span> lenInLonger = k - lenInShorter;</span><br><span class="line">                <span class="comment">// cout &lt;&lt; &quot;lenInLong/short&quot; &lt;&lt; lenInLonger &lt;&lt; &quot; &quot; &lt;&lt; lenInShorter &lt;&lt; endl;</span></span><br><span class="line">                string curMax = <span class="built_in">getMaxConcat</span>(nums2, nums1, lenInLonger, lenInShorter);</span><br><span class="line">                maxStr = maxStr &gt; curMax ? maxStr : curMax;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> lenInShorter = <span class="built_in">max</span>(<span class="number">0</span>, k - m); lenInShorter &lt;= <span class="built_in">min</span>(n, k); ++lenInShorter) &#123;</span><br><span class="line">                <span class="type">int</span> lenInLonger = k - lenInShorter;</span><br><span class="line">                string curMax = <span class="built_in">getMaxConcat</span>(nums1, nums2, lenInLonger, lenInShorter);</span><br><span class="line">                maxStr = maxStr &gt; curMax ? maxStr : curMax;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; res;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span>&amp; c : maxStr) &#123;</span><br><span class="line">            res.<span class="built_in">emplace_back</span>(c - <span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="0768-最多能完成排序的块-II-maxChunksToSroted"><a href="#0768-最多能完成排序的块-II-maxChunksToSroted" class="headerlink" title="0768 最多能完成排序的块 II maxChunksToSroted"></a>0768 最多能完成排序的块 II maxChunksToSroted</h2><h3 id="1-题目-1"><a href="#1-题目-1" class="headerlink" title="1 题目"></a>1 题目</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/max-chunks-to-make-sorted-ii">https://leetcode-cn.com/problems/max-chunks-to-make-sorted-ii</a></p>
+<h3 id="2-解题思路-1"><a href="#2-解题思路-1" class="headerlink" title="2 解题思路"></a>2 解题思路</h3><ul>
+<li><p>1 普通思路：</p>
+<ul>
+<li>1.1 利用已经排好序的数组，和当前数组进行比较，得到分块方式，也就是题目的提示：<blockquote>
+<p>Each k for which some permutation of arr[:k] is equal to sorted(arr)[:k] is where we should cut each chunk.</p>
+</blockquote>
+</li>
+<li>1.2 具体算法：<ul>
+<li>记原数组为arr，然后其排序为sortArr，而后遍历arr，如何确定一个下标k是否为chunk的分割点呢？</li>
+<li>使用hashA记录arr[:k]子数组中每个元素的出现次数，使用diffCount<strong>记录arr[:k]和sortArr[:k]（在两个数组里出现次数不同的）元素个数</strong></li>
+<li>当diffCount为0，就找到一个k，最后返回所有diffCount为0的地方即可</li>
+</ul>
+</li>
+<li>1.3 普通解法：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">maxChunksToSorted</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; arr)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// monoStack: every ele in mono represent: the biggest value in a chunk</span></span><br><span class="line">        unordered_map&lt;<span class="type">int</span>, <span class="type">int</span>&gt; hash;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// diffCnt, the size of those numbers whose cnt are not equal in arr[:k] and sortArr[:k]</span></span><br><span class="line">        <span class="type">int</span> ans = <span class="number">0</span>, n = arr.<span class="built_in">size</span>(), diffCnt = <span class="number">0</span>;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">sortArr</span><span class="params">(arr)</span></span>;</span><br><span class="line">        <span class="built_in">sort</span>(sortArr.<span class="built_in">begin</span>(), sortArr.<span class="built_in">end</span>(), std::<span class="built_in">less</span>&lt;<span class="type">int</span>&gt;());</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> k = <span class="number">0</span>; k &lt; n; ++k) &#123;</span><br><span class="line">            ++ hash[arr[k]];</span><br><span class="line">            <span class="keyword">if</span>(hash[arr[k]] == <span class="number">1</span>) &#123;</span><br><span class="line">                diffCnt++;</span><br><span class="line">            &#125; </span><br><span class="line">            <span class="keyword">if</span>(hash[arr[k]] == <span class="number">0</span>)&#123;</span><br><span class="line">                diffCnt--;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            -- hash[sortArr[k]];</span><br><span class="line">            <span class="keyword">if</span>(hash[sortArr[k]] == <span class="number">0</span>) &#123;</span><br><span class="line">                diffCnt--;</span><br><span class="line">            &#125; </span><br><span class="line">            <span class="keyword">if</span>(hash[sortArr[k]] == <span class="number">-1</span>) &#123; <span class="comment">// sortArr[k] is redundant</span></span><br><span class="line">                diffCnt++;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            ans += diffCnt == <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>2 单调栈：</p>
+<ul>
+<li>2.1 考虑例子： 1 4 3 7 5，很容易发现，就三个分块，然后arr的单调增栈为1 4 7，刚好为每个分块的最大值，所以有这么一个单调栈定义：<strong>单调栈里存入的数字为每个分块的最大值</strong></li>
+<li>2.2 当然这也有问题，会涉及到单调栈需要合并分块的情况： 1 4 3 7 5 2，当没检测到2的时候，单调栈为3个分块，最大值分别为1，4，7，当检测到2的时候，我们需要先弹出所有比2大的分块的最大值，因为2在这些分块后面意味着必须将2和这些分块合并，这样才能保证最终从小到大的排序，然后压入合并的这些分块里的最大值，也就是遇到2之前单调栈的栈顶 7，单调栈变成了1，7</li>
+<li>2.3 具体看代码：单调栈解法：<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/max-chunks-to-make-sorted-ii/solution/768-zui-duo-neng-wan-cheng-pai-xu-de-kuai-iihua-do/#%E6%96%B9%E6%B3%95-2-%E5%8D%95%E8%B0%83%E9%80%92%E5%A2%9E%E6%A0%88">可视化参考</a><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">maxChunksToSorted</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; arr)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// monoStack: every ele in mono represent: the biggest value in a chunk</span></span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; mono = &#123;INT_MIN&#125;; <span class="comment">// from small to bigger</span></span><br><span class="line">        <span class="type">int</span> n = arr.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span>(arr[i] &gt;= mono.<span class="built_in">back</span>()) &#123;</span><br><span class="line">                mono.<span class="built_in">emplace_back</span>(arr[i]);</span><br><span class="line">            &#125;  <span class="keyword">else</span> &#123; <span class="comment">// arr[i] &lt; mono.back()</span></span><br><span class="line">                <span class="comment">// merge the chunk untill arr[i] &gt; mono.back()</span></span><br><span class="line">                <span class="type">int</span> curChunkMax = mono.<span class="built_in">back</span>();</span><br><span class="line">                <span class="keyword">while</span>(mono.<span class="built_in">back</span>() &gt; arr[i]) &#123;</span><br><span class="line">                    mono.<span class="built_in">pop_back</span>();</span><br><span class="line">                &#125;</span><br><span class="line">                mono.<span class="built_in">emplace_back</span>(curChunkMax);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> mono.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h2 id="1793-好子数组的最大分数-maximumScore"><a href="#1793-好子数组的最大分数-maximumScore" class="headerlink" title="1793 好子数组的最大分数 maximumScore"></a>1793 好子数组的最大分数 maximumScore</h2><h3 id="1-题目：-2"><a href="#1-题目：-2" class="headerlink" title="1 题目："></a>1 题目：</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-score-of-a-good-subarray/">https://leetcode-cn.com/problems/maximum-score-of-a-good-subarray/</a></p>
+<p>类似题目： </p>
+<ul>
+<li>1 <a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximal-rectangle/submissions/">https://leetcode-cn.com/problems/maximal-rectangle/submissions/</a></li>
+<li>2 <a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/largest-rectangle-in-histogram/">https://leetcode-cn.com/problems/largest-rectangle-in-histogram/</a></li>
+</ul>
+<h3 id="2-解题思路：-2"><a href="#2-解题思路：-2" class="headerlink" title="2 解题思路："></a>2 解题思路：</h3><ul>
+<li>1 单调栈：<ul>
+<li>1.1 想法很简单，遍历上述的柱状图的一列，栈顶总是最大，栈底最小，一旦有小于等于前栈的值，那么栈里面那些小于等于当前栈顶的值都不可能再在遍历的后续位置发生作用了，因为已经有小于等于它的值出现了，所以我们把这些值弹出然后算弹出的这一部分的体积，那么栈里面剩下的就是任然能够为后续遍历的位置贡献面积的值，所以就是这样，具体的看代码吧。</li>
+<li>1.2 计算过程中，我们只有当矩形的两边分别位于k的两边才会更新结果</li>
+</ul>
+</li>
+<li>2 强调单调栈的几个特性(以递增单调栈为例子)<ul>
+<li>2.1 栈底一定是整个数组最小的</li>
+<li>2.2 弹出当前元素记其下标为j后，当前栈顶元素下标记为i，那么i是第一个下标满足： i &lt; j &amp;&amp; arr[i] &lt;= arr[j]</li>
+<li>2.3 **TIPS: **注意单调栈会将所有元素都入栈，但并不会都出栈，很多时候我们要求arr中的每个元素都出栈，那么常见操作为在arr末尾加一个比所有元素都要小的值即可</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">maximumScore</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// k split nums into left and right</span></span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">lPart</span><span class="params">(nums.begin(), nums.begin() + k + <span class="number">1</span>)</span></span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// construct the monostack, abscending</span></span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; mono;</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> res = nums[k];</span><br><span class="line">        nums.<span class="built_in">emplace_back</span>(<span class="number">0</span>); <span class="comment">// make sure all the heights are used for nums</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> r = <span class="number">0</span>; r &lt; nums.<span class="built_in">size</span>(); ++r) &#123;</span><br><span class="line">            <span class="keyword">while</span>(!mono.<span class="built_in">empty</span>() &amp;&amp; nums[mono.<span class="built_in">back</span>()] &gt;= nums[r]) &#123;</span><br><span class="line">                <span class="type">int</span> h = nums[mono.<span class="built_in">back</span>()];</span><br><span class="line">                <span class="comment">// cout &lt;&lt; &quot;h: &quot; &lt;&lt; h &lt;&lt; endl;</span></span><br><span class="line">                mono.<span class="built_in">pop_back</span>();</span><br><span class="line">                <span class="type">int</span> l = mono.<span class="built_in">empty</span>() ? <span class="number">-1</span> : mono.<span class="built_in">back</span>();</span><br><span class="line">                <span class="type">int</span> w = r - l - <span class="number">1</span>;</span><br><span class="line">                cout &lt;&lt; <span class="string">&quot;w/r/l/h: &quot;</span> &lt;&lt; w &lt;&lt; <span class="string">&quot;/&quot;</span> &lt;&lt; r &lt;&lt; <span class="string">&quot;/&quot;</span> &lt;&lt; l &lt;&lt; <span class="string">&quot;/&quot;</span> &lt;&lt; h &lt;&lt; endl;</span><br><span class="line">                <span class="keyword">if</span>(r - <span class="number">1</span> &gt;= k &amp;&amp; l + <span class="number">1</span> &lt;= k) &#123;</span><br><span class="line">                    res = <span class="built_in">max</span>(res, w * h);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            mono.<span class="built_in">emplace_back</span>(r);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2022/01/12/lcMonostack/" title="lcMonostack - 单调栈">https://xychen5.github.io/2022/01/12/lcMonostack/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/algoPrac/" rel="tag"># algoPrac</a>
+              <a href="/tags/lc/" rel="tag"># lc</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/12/30/lcDicTree/" rel="prev" title="lcDicTree">
+                  <i class="fa fa-chevron-left"></i> lcDicTree
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/02/22/lcOrderedSet/" rel="next" title="lcOrderedSet - 有序集合1">
+                  lcOrderedSet - 有序集合1 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="osg模型调整光照以及模型闪烁问题[z-lighting]0 模型闪烁原因推测 1 关于模型闪烁的问题，很可能是由于坐标的值的有效位数超过了7位，目前的opengl的gpu渲染（老一点的显卡以及gl）都是以单精度来渲染点的位置的，所以如果坐标很大，很可能导致单精度无法精确表示有效位数超过7位的数据，然后发生截断。 2 关于z-lighting的问题，尝试了网上大多数的方法：可以使用osg封装的po">
+<meta property="og:type" content="article">
+<meta property="og:title" content="osgModelLightZ-Lighting - osg模型调整光照以及模型闪烁问题[z-lighting]">
+<meta property="og:url" content="https://xychen5.github.io/2021/05/20/osgModelLightZ-Lighting/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="osg模型调整光照以及模型闪烁问题[z-lighting]0 模型闪烁原因推测 1 关于模型闪烁的问题，很可能是由于坐标的值的有效位数超过了7位，目前的opengl的gpu渲染（老一点的显卡以及gl）都是以单精度来渲染点的位置的，所以如果坐标很大，很可能导致单精度无法精确表示有效位数超过7位的数据，然后发生截断。 2 关于z-lighting的问题，尝试了网上大多数的方法：可以使用osg封装的po">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-05-20T02:29:11.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.486Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="osg&#x2F;gl">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/05/20/osgModelLightZ-Lighting/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/05/20/osgModelLightZ-Lighting/","path":"2021/05/20/osgModelLightZ-Lighting/","title":"osgModelLightZ-Lighting - osg模型调整光照以及模型闪烁问题[z-lighting]"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>osgModelLightZ-Lighting - osg模型调整光照以及模型闪烁问题[z-lighting] | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#osg%E6%A8%A1%E5%9E%8B%E8%B0%83%E6%95%B4%E5%85%89%E7%85%A7%E4%BB%A5%E5%8F%8A%E6%A8%A1%E5%9E%8B%E9%97%AA%E7%83%81%E9%97%AE%E9%A2%98-z-lighting"><span class="nav-number">1.</span> <span class="nav-text">osg模型调整光照以及模型闪烁问题[z-lighting]</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0-%E6%A8%A1%E5%9E%8B%E9%97%AA%E7%83%81%E5%8E%9F%E5%9B%A0%E6%8E%A8%E6%B5%8B"><span class="nav-number">1.1.</span> <span class="nav-text">0 模型闪烁原因推测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-meshlab%E6%89%8B%E5%8A%A8%E8%B0%83%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">1 meshlab手动调模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8osg%E9%99%8D%E4%BD%8E%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%82%B9%E7%9A%84%E5%9D%90%E6%A0%87%E5%A4%A7%E5%B0%8F"><span class="nav-number">1.3.</span> <span class="nav-text">2 使用osg降低模型的点的坐标大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%85%B3%E4%BA%8E%E6%9D%90%E8%B4%A8%EF%BC%8C%E5%85%89%E7%85%A7%EF%BC%8C%E4%BB%A5%E5%8F%8A%E6%A8%A1%E5%9E%8B%E8%AF%BB%E5%86%99%E6%97%8B%E8%BD%AC%E5%B9%B3%E7%A7%BB%E7%9A%84%E4%BE%8B%E5%AD%90"><span class="nav-number">1.4.</span> <span class="nav-text">3 关于材质，光照，以及模型读写旋转平移的例子</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/05/20/osgModelLightZ-Lighting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          osgModelLightZ-Lighting - osg模型调整光照以及模型闪烁问题[z-lighting]
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-05-20 10:29:11" itemprop="dateCreated datePublished" datetime="2021-05-20T10:29:11+08:00">2021-05-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="osg模型调整光照以及模型闪烁问题-z-lighting"><a href="#osg模型调整光照以及模型闪烁问题-z-lighting" class="headerlink" title="osg模型调整光照以及模型闪烁问题[z-lighting]"></a>osg模型调整光照以及模型闪烁问题[z-lighting]</h2><h3 id="0-模型闪烁原因推测"><a href="#0-模型闪烁原因推测" class="headerlink" title="0 模型闪烁原因推测"></a>0 模型闪烁原因推测</h3><ul>
+<li>1 关于模型闪烁的问题，很可能是由于坐标的值的有效位数超过了7位，目前的opengl的gpu渲染（老一点的显卡以及gl）都是以单精度来渲染点的位置的，所以如果坐标很大，很可能导致单精度无法精确表示有效位数超过7位的数据，然后发生截断。</li>
+<li>2 关于z-lighting的问题，尝试了网上大多数的方法：可以使用osg封装的polygonOffset来避免重叠面片交替出现的问题，当然最好的方案是找的模型本身重叠面片就少</li>
+</ul>
+<h3 id="1-meshlab手动调模型"><a href="#1-meshlab手动调模型" class="headerlink" title="1 meshlab手动调模型"></a>1 meshlab手动调模型</h3><p>filters-&gt;Normals,curve,orientations-&gt;transform…</p>
+<h3 id="2-使用osg降低模型的点的坐标大小"><a href="#2-使用osg降低模型的点的坐标大小" class="headerlink" title="2 使用osg降低模型的点的坐标大小"></a>2 使用osg降低模型的点的坐标大小</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">osg::Vec3f center1 = TerrainM1-&gt;<span class="built_in">getBound</span>().<span class="built_in">center</span>();</span><br><span class="line"><span class="type">float</span> radius1 = TerrainM1-&gt;<span class="built_in">getBound</span>().<span class="built_in">radius</span>();</span><br><span class="line">osg::Vec3f center2 = TerrainM2-&gt;<span class="built_in">getBound</span>().<span class="built_in">center</span>();</span><br><span class="line"><span class="type">float</span> radius2 = TerrainM2-&gt;<span class="built_in">getBound</span>().<span class="built_in">radius</span>();</span><br><span class="line">TerrainM1-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center1.<span class="built_in">x</span>(), -center1.<span class="built_in">y</span>(), -center1.<span class="built_in">z</span>()) *</span><br><span class="line">	osg::Matrix::<span class="built_in">rotate</span>(osg::<span class="built_in">DegreesToRadians</span>(<span class="number">180.0</span>), <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>) *</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(center1.<span class="built_in">x</span>(), center1.<span class="built_in">y</span>(), center1.<span class="built_in">z</span>()) *</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(<span class="number">0</span>, <span class="number">0</span>, radius2 * <span class="number">0.80</span> + radius1)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// to modify the model&#x27;s points render value</span></span><br><span class="line">mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">0</span>)-&gt;<span class="built_in">asTransform</span>()-&gt;<span class="built_in">asMatrixTransform</span>()-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center1.<span class="built_in">x</span>(), -center1.<span class="built_in">y</span>(), -center1.<span class="built_in">z</span>())</span><br><span class="line">);</span><br><span class="line">osgDB::<span class="built_in">writeNodeFile</span>(*(mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">0</span>)-&gt;<span class="built_in">asNode</span>()), <span class="string">&quot;sc.obj&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-关于材质，光照，以及模型读写旋转平移的例子"><a href="#3-关于材质，光照，以及模型读写旋转平移的例子" class="headerlink" title="3 关于材质，光照，以及模型读写旋转平移的例子"></a>3 关于材质，光照，以及模型读写旋转平移的例子</h3><p>关于材料的颜色光照等可以参考<a target="_blank" rel="noopener" href="https://learnopengl-cn.readthedocs.io/zh/latest/02%20Lighting/03%20Materials/">https://learnopengl-cn.readthedocs.io/zh/latest/02%20Lighting/03%20Materials/</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">// mRoot是一个osg::ref_ptr&lt;osg::Group&gt;</span></span><br><span class="line"><span class="keyword">auto</span> TerrainM1 = <span class="keyword">new</span> osg::MatrixTransform;</span><br><span class="line"><span class="keyword">auto</span> terrain1 = <span class="keyword">new</span> osg::PositionAttitudeTransform;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> TerrainM2 = <span class="keyword">new</span> osg::MatrixTransform;</span><br><span class="line"><span class="keyword">auto</span> terrain2 = <span class="keyword">new</span> osg::PositionAttitudeTransform;</span><br><span class="line">osgDB::Options  *a = <span class="keyword">new</span> osgDB::<span class="built_in">Options</span>(std::<span class="built_in">string</span>(<span class="string">&quot;noRotation&quot;</span>)); <span class="comment">// 关掉模型优化绘制(OSG在加载obj模型的时候，会默认将模型绕x轴逆时针旋转90度,此处设置不旋转)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// setting material</span></span><br><span class="line">osg::Material *material = <span class="keyword">new</span> osg::Material;</span><br><span class="line">material-&gt;<span class="built_in">setDiffuse</span>(osg::Material::FRONT, osg::<span class="built_in">Vec4</span>(<span class="number">0.75</span>, <span class="number">0.80</span>, <span class="number">0.75</span>, <span class="number">1.0</span>));</span><br><span class="line">material-&gt;<span class="built_in">setAmbient</span>(osg::Material::FRONT, osg::<span class="built_in">Vec4</span>(<span class="number">0.75</span>, <span class="number">0.80</span>, <span class="number">0.75</span>, <span class="number">1.0</span>));</span><br><span class="line"><span class="comment">// material-&gt;setShininess(osg::Material::FRONT, 90.0);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// turn off light effect</span></span><br><span class="line"><span class="keyword">auto</span> Model1 = osgDB::<span class="built_in">readNodeFile</span>(part1Path, a);</span><br><span class="line"><span class="keyword">auto</span> pState1 = Model1-&gt;<span class="built_in">getOrCreateStateSet</span>();</span><br><span class="line">pState1-&gt;<span class="built_in">setMode</span>(GL_LIGHTING, osg::StateAttribute::ON);</span><br><span class="line">pState1-&gt;<span class="built_in">setAttribute</span>(material);</span><br><span class="line"><span class="comment">// pState1-&gt;setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);</span></span><br><span class="line">   <span class="comment">// pState1-&gt;setRenderingHint(osg::StateSet::TRANSPARENT_BIN);</span></span><br><span class="line">   <span class="comment">// set polygon offset</span></span><br><span class="line">osg::ref_ptr&lt;osg::PolygonOffset&gt; polyOff = <span class="keyword">new</span> osg::<span class="built_in">PolygonOffset</span>();</span><br><span class="line"><span class="type">float</span> mFactor = <span class="number">1.0</span>, mUnits = <span class="number">1.0</span>;</span><br><span class="line">polyOff-&gt;<span class="built_in">setFactor</span>(mFactor);</span><br><span class="line">polyOff-&gt;<span class="built_in">setUnits</span>(mUnits);</span><br><span class="line">pState1-&gt;<span class="built_in">setAttributeAndModes</span>(<span class="keyword">new</span> osg::<span class="built_in">PolygonOffset</span>(<span class="number">-1.0f</span>,<span class="number">-1.0f</span>),osg::StateAttribute::ON);</span><br><span class="line">material-&gt;<span class="built_in">setEmission</span>(osg::Material::FRONT, osg::<span class="built_in">Vec4</span>(<span class="number">0.75</span>, <span class="number">0.80</span>, <span class="number">0.75</span>, <span class="number">1.0</span>));</span><br><span class="line"><span class="comment">// pState1-&gt;setAttributeAndModes(polyOff.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// auto pGeom1 = Model1-&gt;asGeode()-&gt;asGeometry();</span></span><br><span class="line"><span class="comment">// pGeom1-&gt;getOrCreateStateSet()-&gt;setMode(GL_NV_framebuffer_multisample_coverage, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED | osg::StateAttribute::OVERRIDE);</span></span><br><span class="line">TerrainM1-&gt;<span class="built_in">addChild</span>(Model1);</span><br><span class="line">TerrainM1-&gt;<span class="built_in">setName</span>(modelPrefix + <span class="string">&quot;1&quot;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> Model2 = osgDB::<span class="built_in">readNodeFile</span>(part2Path, a);</span><br><span class="line"><span class="keyword">auto</span> pState2 = Model2-&gt;<span class="built_in">getOrCreateStateSet</span>();</span><br><span class="line">pState2-&gt;<span class="built_in">setMode</span>(GL_LIGHTING, osg::StateAttribute::ON);</span><br><span class="line">pState2-&gt;<span class="built_in">setAttribute</span>(material);</span><br><span class="line"></span><br><span class="line">pState2-&gt;<span class="built_in">setMode</span>(GL_BLEND, osg::StateAttribute::ON);</span><br><span class="line">TerrainM2-&gt;<span class="built_in">addChild</span>(Model2);</span><br><span class="line">TerrainM2-&gt;<span class="built_in">setName</span>(modelPrefix + <span class="string">&quot;2&quot;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// rotate to make sure the building is standing on the ground</span></span><br><span class="line">osg::Vec3f center1 = TerrainM1-&gt;<span class="built_in">getBound</span>().<span class="built_in">center</span>();</span><br><span class="line"><span class="type">float</span> radius1 = TerrainM1-&gt;<span class="built_in">getBound</span>().<span class="built_in">radius</span>();</span><br><span class="line">osg::Vec3f center2 = TerrainM2-&gt;<span class="built_in">getBound</span>().<span class="built_in">center</span>();</span><br><span class="line"><span class="type">float</span> radius2 = TerrainM2-&gt;<span class="built_in">getBound</span>().<span class="built_in">radius</span>();</span><br><span class="line">TerrainM1-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center1.<span class="built_in">x</span>(), -center1.<span class="built_in">y</span>(), -center1.<span class="built_in">z</span>()) *</span><br><span class="line">	osg::Matrix::<span class="built_in">rotate</span>(osg::<span class="built_in">DegreesToRadians</span>(<span class="number">180.0</span>), <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>) *</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(center1.<span class="built_in">x</span>(), center1.<span class="built_in">y</span>(), center1.<span class="built_in">z</span>()) *</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(<span class="number">0</span>, <span class="number">0</span>, radius2 * <span class="number">0.80</span> + radius1)</span><br><span class="line">);</span><br><span class="line">mRoot-&gt;<span class="built_in">addChild</span>(TerrainM1);</span><br><span class="line">TerrainM2-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center2.<span class="built_in">x</span>(), -center2.<span class="built_in">y</span>(), -center2.<span class="built_in">z</span>()) *</span><br><span class="line">	osg::Matrix::<span class="built_in">rotate</span>(osg::<span class="built_in">DegreesToRadians</span>(<span class="number">180.0</span>), <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>) *</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(center2.<span class="built_in">x</span>(), center2.<span class="built_in">y</span>(), center2.<span class="built_in">z</span>()) *</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0.5</span> * radius2)</span><br><span class="line">);</span><br><span class="line">mRoot-&gt;<span class="built_in">addChild</span>(TerrainM2);</span><br><span class="line"></span><br><span class="line"><span class="comment">// to modify the model&#x27;s points render value</span></span><br><span class="line">mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">0</span>)-&gt;<span class="built_in">asTransform</span>()-&gt;<span class="built_in">asMatrixTransform</span>()-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center1.<span class="built_in">x</span>(), -center1.<span class="built_in">y</span>(), -center1.<span class="built_in">z</span>())</span><br><span class="line">);</span><br><span class="line">mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">1</span>)-&gt;<span class="built_in">asTransform</span>()-&gt;<span class="built_in">asMatrixTransform</span>()-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center1.<span class="built_in">x</span>(), -center1.<span class="built_in">y</span>(), -center1.<span class="built_in">z</span>())</span><br><span class="line">);</span><br><span class="line">mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">4</span>)-&gt;<span class="built_in">asTransform</span>()-&gt;<span class="built_in">asMatrixTransform</span>()-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center1.<span class="built_in">x</span>(), -center1.<span class="built_in">y</span>(), -center1.<span class="built_in">z</span>())</span><br><span class="line">);</span><br><span class="line">mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">5</span>)-&gt;<span class="built_in">asTransform</span>()-&gt;<span class="built_in">asMatrixTransform</span>()-&gt;<span class="built_in">setMatrix</span>(</span><br><span class="line">	osg::Matrix::<span class="built_in">translate</span>(-center1.<span class="built_in">x</span>(), -center1.<span class="built_in">y</span>(), -center1.<span class="built_in">z</span>())</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">osgDB::<span class="built_in">writeNodeFile</span>(*(mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">0</span>)-&gt;<span class="built_in">asNode</span>()), <span class="string">&quot;sc.obj&quot;</span>);</span><br><span class="line">osgDB::<span class="built_in">writeNodeFile</span>(*(mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">1</span>)-&gt;<span class="built_in">asNode</span>()), <span class="string">&quot;de.obj&quot;</span>);</span><br><span class="line">osgDB::<span class="built_in">writeNodeFile</span>(*(mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">4</span>)-&gt;<span class="built_in">asNode</span>()), <span class="string">&quot;par1.obj&quot;</span>);</span><br><span class="line">osgDB::<span class="built_in">writeNodeFile</span>(*(mRoot-&gt;<span class="built_in">getChild</span>(<span class="number">5</span>)-&gt;<span class="built_in">asNode</span>()), <span class="string">&quot;par2.obj&quot;</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/05/20/osgModelLightZ-Lighting/" title="osgModelLightZ-Lighting - osg模型调整光照以及模型闪烁问题[z-lighting]">https://xychen5.github.io/2021/05/20/osgModelLightZ-Lighting/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/osg-gl/" rel="tag"># osg/gl</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/16/colmapCompile/" rel="prev" title="colmapCompile - colmap windows的编译">
+                  <i class="fa fa-chevron-left"></i> colmapCompile - colmap windows的编译
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/05/22/4wayCache/4wayCache/" rel="next" title="4way cache - 4路组相连cache">
+                  4way cache - 4路组相连cache <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

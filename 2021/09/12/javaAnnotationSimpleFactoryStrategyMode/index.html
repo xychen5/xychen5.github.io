@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="0 直接看实现 1 手写依赖扫描版本 2 spring boot 版本1 自定义注解 Annotation这里给出自定义注解的例子：1234567891011package com.soul.weapon.algorithm.annotation;import java.lang.annotation.*;@Target(&amp;#123;ElementType.TYPE, ElementType.FI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="javaAnnotationSimpleFactoryStrategyMode - java注解生命周期 &amp; 简单工厂以及策略设计模式">
+<meta property="og:url" content="https://xychen5.github.io/2021/09/12/javaAnnotationSimpleFactoryStrategyMode/index.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="0 直接看实现 1 手写依赖扫描版本 2 spring boot 版本1 自定义注解 Annotation这里给出自定义注解的例子：1234567891011package com.soul.weapon.algorithm.annotation;import java.lang.annotation.*;@Target(&amp;#123;ElementType.TYPE, ElementType.FI">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-09-12T11:53:03.000Z">
+<meta property="article:modified_time" content="2023-08-03T11:50:26.442Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="designPattern">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/2021/09/12/javaAnnotationSimpleFactoryStrategyMode/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://xychen5.github.io/2021/09/12/javaAnnotationSimpleFactoryStrategyMode/","path":"2021/09/12/javaAnnotationSimpleFactoryStrategyMode/","title":"javaAnnotationSimpleFactoryStrategyMode - java注解生命周期 & 简单工厂以及策略设计模式"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>javaAnnotationSimpleFactoryStrategyMode - java注解生命周期 & 简单工厂以及策略设计模式 | LuftBallon</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-%E7%9B%B4%E6%8E%A5%E7%9C%8B%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">0 直接看实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3-Annotation"><span class="nav-number">2.</span> <span class="nav-text">1 自定义注解 Annotation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F-%E7%AE%80%E5%8D%95%E7%94%9A%E8%87%B3%E4%B8%8D%E7%AE%80%E5%8D%95%E7%9A%84%E5%B7%A5%E5%8E%82Ref"><span class="nav-number">3.</span> <span class="nav-text">2 简单工厂模式 简单甚至不简单的工厂Ref</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E4%BD%BF%E7%94%A8%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%8F%8D%E5%B0%84%E6%9D%A5%E5%AE%8C%E5%96%84%E5%8C%85%E5%90%AB%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">3 使用注解的反射来完善包含简单工厂模式的策略模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E7%A4%BA%E4%BE%8B%E5%88%86%E6%9E%90%EF%BC%9A"><span class="nav-number">4.1.</span> <span class="nav-text">3.1 示例分析：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%BD%93%E4%BD%BF%E7%94%A8spritboot%E7%9A%84%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E6%9D%A5%E7%AE%80%E5%8C%96%E4%BB%A5%E5%85%8D%E6%89%8B%E5%8A%A8%E5%86%99reflections"><span class="nav-number">5.</span> <span class="nav-text">4 当使用spritboot的自动装配来简化以免手动写reflections</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/09/12/javaAnnotationSimpleFactoryStrategyMode/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          javaAnnotationSimpleFactoryStrategyMode - java注解生命周期 & 简单工厂以及策略设计模式
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-09-12 19:53:03" itemprop="dateCreated datePublished" datetime="2021-09-12T19:53:03+08:00">2021-09-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="0-直接看实现"><a href="#0-直接看实现" class="headerlink" title="0 直接看实现"></a>0 直接看实现</h2><ul>
+<li>1 <a href="#3-%E4%BD%BF%E7%94%A8%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%8F%8D%E5%B0%84%E6%9D%A5%E5%AE%8C%E5%96%84%E5%8C%85%E5%90%AB%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F">手写依赖扫描版本</a></li>
+<li>2 <a href="#4-%E5%BD%93%E4%BD%BF%E7%94%A8spritboot%E7%9A%84%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E6%9D%A5%E7%AE%80%E5%8C%96%E4%BB%A5%E5%85%8D%E6%89%8B%E5%8A%A8%E5%86%99reflections">spring boot 版本</a><h2 id="1-自定义注解-Annotation"><a href="#1-自定义注解-Annotation" class="headerlink" title="1 自定义注解 Annotation"></a>1 自定义注解 Annotation</h2>这里给出自定义注解的例子：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.soul.weapon.algorithm.annotation;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.*;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Target(&#123;ElementType.TYPE, ElementType.FIELD&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> WeaponAlgorithm &#123;</span><br><span class="line">    String <span class="title function_">algoName</span> <span class="params">()</span> <span class="keyword">default</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>注意注解的申明是用@interface来声明的：<br>然后这里对每一个参数做简单说明：</p>
+<ul>
+<li>@Target 说明注解的使用范围<ul>
+<li>TYPE: 用于描述类、接口(包括注解类型) 或enum声明</li>
+<li>FILED: 用于描述域</li>
+</ul>
+</li>
+<li>@Retention 说明注解可以被保留到什么地方<ul>
+<li>1 RetentionPolicy.SOURCE：注解只保留在源文件，当Java文件编译成class文件的时候，注解被遗弃；</li>
+<li>2 RetentionPolicy.CLASS：注解被保留到class文件，但jvm加载class文件时候被遗弃，这是默认的生命周期；</li>
+<li>3 RetentionPolicy.RUNTIME：注解不仅被保存到class文件中，jvm加载class文件之后，仍然存在；<blockquote>
+<p>这3个生命周期分别对应于：Java源文件(.java文件) —&gt; .class文件 —&gt; 内存中的字节码。<br>明确生命周期长度 SOURCE &lt; CLASS &lt; RUNTIME ，所以前者能作用的地方后者一定也能作用。一般如果需要在运行时去动态获取注解信息，那只能用 RUNTIME 注解，比如接下来要讲到的在运行过程过获得某种注解的所有的类；如果要在编译时进行一些预处理操作，比如生成一些辅助代码（如 ButterKnife 和 mapstruct 等），就用 CLASS注解；如果只是做一些检查性的操作，比如** @Override**和 @SuppressWarnings，则可选用 SOURCE 注解。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>@Documentation: 用于生成javadoc</li>
+<li>@Inherited: 说明被改注解注释的子类会继承该注解</li>
+</ul>
+<h2 id="2-简单工厂模式-简单甚至不简单的工厂Ref"><a href="#2-简单工厂模式-简单甚至不简单的工厂Ref" class="headerlink" title="2 简单工厂模式 简单甚至不简单的工厂Ref"></a>2 简单工厂模式 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/110419316">简单甚至不简单的工厂Ref</a></h2><p>简单说明一下，比如你有一个业务要求是，实现n种车的drive方法，那最普通的就如下：<br>分别实现其类然后调用，这未免有点难看：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Driver1</span> &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="type">Car1</span> <span class="variable">car</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Car1</span>();</span><br><span class="line">    <span class="type">Car2</span> <span class="variable">car</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Car2</span>();</span><br><span class="line">    <span class="type">Car3</span> <span class="variable">car</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Car3</span>();</span><br><span class="line">    <span class="type">Car4</span> <span class="variable">car</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Car4</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用简单工厂模式就是说，来一个carFactory类，我所有车的实例的创建和使用都通过carFactory，然后传具体的参数就能实例化相应的类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Driver2</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> Car car;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">createCar</span><span class="params">(String name)</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> (name) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;car1&quot;</span>:</span><br><span class="line">      car = <span class="keyword">new</span> <span class="title class_">Car3</span>();</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;car2&quot;</span>:</span><br><span class="line">      car = <span class="keyword">new</span> <span class="title class_">Car3</span>();</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;car3&quot;</span>:</span><br><span class="line">      car = <span class="keyword">new</span> <span class="title class_">Car3</span>();</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">      car = <span class="literal">null</span>;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    LOG.info(<span class="string">&quot;Created car name is &#123;&#125;&quot;</span>, name);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">drive</span><span class="params">()</span> &#123; car.drive();&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是这里有一个问题，没有遵循开闭原则(开放扩展，关闭修改的原则)，那么造成没有遵循的原因是什么？因为每一个实现的类的名称是我们手动写到代码里的，当这些相关的类的名称是我们通过代码可以获取的时候，我们就可以解决该问题了，于是我们使用注解</p>
+<h2 id="3-使用注解的反射来完善包含简单工厂模式的策略模式"><a href="#3-使用注解的反射来完善包含简单工厂模式的策略模式" class="headerlink" title="3 使用注解的反射来完善包含简单工厂模式的策略模式"></a>3 使用注解的反射来完善包含简单工厂模式的策略模式</h2><ul>
+<li><strong>策略模式</strong> 将具体的算法封装到一个context类，context可以根据传入的参数自动调取相关的算法，简单工厂模式还是与之很像的</li>
+<li><strong>解决了什么问题</strong><br>策略模式是一种定义一系列算法的方法，从概念上来看，所有这些算法完全的都是相同的工作，只是实现不同，用户通过context以相同的方式调用所有的算法，减少了各种算法实现类与使用类之间的耦合</li>
+<li><strong>和工厂模式的区别</strong><ul>
+<li>1 工厂模式，主要是将对象的创建，和使用进行解耦，而策略模式，主要将策略的定义创建，和使用进行解耦，主要是他们针对的对象不同，一个主体是实体类，另一个是策略类，我个人感觉核心思想都是一样的</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-1-示例分析："><a href="#3-1-示例分析：" class="headerlink" title="3.1 示例分析："></a>3.1 示例分析：</h3><p>接着上面<a href="#1-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3-annotation">#1的注解</a>，一个策略模式的例子如下(个人理解，欢迎交流)</p>
+<ul>
+<li>1 定义一个接口，这样所有的算法类的调用都按照这个接口调用即可：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Algorithm</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * 使用指定的工厂里的函数来处理input</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> input</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String <span class="title function_">exAlgo</span><span class="params">(String input)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>2 为这个接口实现一个算法：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@WeaponAlgorithm(algoName = &quot;airMissilePipeTest&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AirMissilePipeTest</span> <span class="keyword">implements</span> <span class="title class_">Algorithm</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">exAlgo</span><span class="params">(String input)</span> &#123;</span><br><span class="line">        <span class="type">Logger</span> <span class="variable">LOG</span> <span class="operator">=</span> LoggerFactory.getLogger(AirMissilePipeTest.class);</span><br><span class="line">        LOG.info(<span class="string">&quot;airMissilePipeTest algo executing!&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> input;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>3 从用户层面考虑，为用户实现一个上下文类，这个上下文类帮助用户实例化对应的算法类，然后调用相关的算法类:<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AlgoFactoryContext</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">LOG</span> <span class="operator">=</span> LoggerFactory.getLogger(AlgoFactoryContext.class);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String, Class&gt; allStrategies;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="type">Reflections</span> <span class="variable">reflections</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Reflections</span>(<span class="string">&quot;com.soul.weapon.algorithm.impl&quot;</span>,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">SubTypesScanner</span>(),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">TypeAnnotationsScanner</span>(),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">FieldAnnotationsScanner</span>());</span><br><span class="line">        Set&lt;Class&lt;?&gt;&gt; annotatedClasses =</span><br><span class="line">                reflections.getTypesAnnotatedWith(WeaponAlgorithm.class);</span><br><span class="line">        allStrategies = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;String, Class&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Class&lt;?&gt; classObject : annotatedClasses) &#123;</span><br><span class="line">            <span class="type">WeaponAlgorithm</span> <span class="variable">annotatedAlgo</span> <span class="operator">=</span> (WeaponAlgorithm) classObject</span><br><span class="line">                    .getAnnotation(WeaponAlgorithm.class);</span><br><span class="line">            allStrategies.put(annotatedAlgo.algoName(), classObject);</span><br><span class="line">        &#125;</span><br><span class="line">        allStrategies = Collections.unmodifiableMap(allStrategies);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Algorithm algoExecutor;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">AlgoFactoryContext</span> <span class="params">(String requiredAlgoName)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(allStrategies.containsKey(requiredAlgoName)) &#123;</span><br><span class="line">            LOG.info(<span class="string">&quot;algo name is &#123;&#125;&quot;</span>, requiredAlgoName);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                algoExecutor =  (Algorithm) allStrategies.get(requiredAlgoName).getDeclaredConstructor().newInstance();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (NoSuchMethodException | InstantiationException</span><br><span class="line">                    | InvocationTargetException | IllegalAccessException ex) &#123;</span><br><span class="line">                LOG.error(<span class="string">&quot;Instantiate algo Failed: &quot;</span>, ex);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            LOG.error(<span class="string">&quot;algo with name: &#123;&#125; not exist!&quot;</span>, requiredAlgoName);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execAlgo</span><span class="params">(String dataString)</span> &#123;</span><br><span class="line">        algoExecutor.exAlgo(dataString);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li>4 调用示例：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">AlgoFactoryContext</span> <span class="variable">ctx</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AlgoFactoryContext</span>(<span class="string">&quot;airMissilePipeTest&quot;</span>);</span><br><span class="line">ctx.execAlgo(<span class="string">&quot;info to process!&quot;</span>);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="4-当使用spritboot的自动装配来简化以免手动写reflections"><a href="#4-当使用spritboot的自动装配来简化以免手动写reflections" class="headerlink" title="4 当使用spritboot的自动装配来简化以免手动写reflections"></a>4 当使用spritboot的自动装配来简化以免手动写reflections</h2><ul>
+<li>1 定义一个接口，这样所有的算法类的调用都按照这个接口调用即可：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Algorithm</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * 使用指定的工厂里的函数来处理input</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> input</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String <span class="title function_">exAlgo</span><span class="params">(String input)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>2 为这个接口实现一个算法：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service(value = &quot;airMissilePipeTest&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AirMissilePipeTest</span> <span class="keyword">implements</span> <span class="title class_">Algorithm</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">exAlgo</span><span class="params">(String input)</span> &#123;</span><br><span class="line">        <span class="type">Logger</span> <span class="variable">LOG</span> <span class="operator">=</span> LoggerFactory.getLogger(AirMissilePipeTest.class);</span><br><span class="line">        LOG.info(<span class="string">&quot;airMissilePipeTest algo executing!&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> input;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>3 创建上下文类然后自动注入实现接口的那些类：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AlgoFactoryContext</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">LOG</span> <span class="operator">=</span> LoggerFactory.getLogger(AlgoFactoryContext.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired(required = true)</span></span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, Algorithm&gt; allStrategies;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Algorithm algoExecutor;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execAlgo</span><span class="params">(String requiredAlgoName, String dataString)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(allStrategies.containsKey(requiredAlgoName)) &#123;</span><br><span class="line">            LOG.info(<span class="string">&quot;algo name is &#123;&#125;&quot;</span>, requiredAlgoName);</span><br><span class="line">            algoExecutor =  (Algorithm) allStrategies.get(requiredAlgoName);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            LOG.error(<span class="string">&quot;algo with name: &#123;&#125; not exist!&quot;</span>, requiredAlgoName);</span><br><span class="line">        &#125;</span><br><span class="line">        algoExecutor.exAlgo(dataString);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>4 调用：这里需要注意，如果是单独new一个AlgoFactoryContext，并没有办法完成自动装配，猜测原因是，由于使用了sprintboot的autoWire，那么所有依赖都要保证有@component和@sevice/@resouce等去注解，这些注解保证了sprinboot会将这些依赖给管理起来，所以如果new，那么autoWire无法发挥作用<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/free/test&quot;)</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FreePipeTestController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AlgoFactoryContext ctx; <span class="comment">// by autowire, so ctx will scan and get all </span></span><br><span class="line">    <span class="comment">// implement of the algorithm interface</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> PipeTestService pipeTestService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Api</span></span><br><span class="line">    <span class="meta">@GetMapping(value = &quot;/&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> PipeTest <span class="title function_">getById</span><span class="params">(<span class="meta">@PathVariable(&quot;id&quot;)</span> String id)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// add test for the algo factory:</span></span><br><span class="line">        ctx.execAlgo(<span class="string">&quot;airMissilePipeTest&quot;</span>, <span class="string">&quot;telegram from socket!&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> pipeTestService.getById(id);</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>xychen5
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://xychen5.github.io/2021/09/12/javaAnnotationSimpleFactoryStrategyMode/" title="javaAnnotationSimpleFactoryStrategyMode - java注解生命周期 &amp; 简单工厂以及策略设计模式">https://xychen5.github.io/2021/09/12/javaAnnotationSimpleFactoryStrategyMode/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/designPattern/" rel="tag"># designPattern</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/02/pmvsPaper/" rel="prev" title="pmvsPaper pmvs稠密重建论文阅读">
+                  <i class="fa fa-chevron-left"></i> pmvsPaper pmvs稠密重建论文阅读
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/12/gpsToCartesian/" rel="next" title="gpsToCartesian GPS坐标转WGS84坐标">
+                  gpsToCartesian GPS坐标转WGS84坐标 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
