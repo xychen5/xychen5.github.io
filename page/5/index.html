@@ -134,7 +134,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-count">69</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -145,7 +145,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-count">38</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -187,6 +187,121 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/11/15/algoStronglyConnectedComponents/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
+      <meta itemprop="name" content="xychen5">
+      <meta itemprop="description" content="Freiheit Weht">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LuftBallon">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/11/15/algoStronglyConnectedComponents/" class="post-title-link" itemprop="url">stronglyConnectedComponents 强联通分量求法 - kosaraju & tarjan & gabow & 并查集</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-11-15 11:13:12" itemprop="dateCreated datePublished" datetime="2021-11-15T11:13:12+08:00">2021-11-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="1-强联通分量解释"><a href="#1-强联通分量解释" class="headerlink" title="1 强联通分量解释"></a>1 强联通分量解释</h2><p>SCC(stronglyConnectedComponents) 对于G(v, e)的一个子图中，其任何两个顶点都存在一个path相互到达;</p>
+<h2 id="2-图的拓扑排序"><a href="#2-图的拓扑排序" class="headerlink" title="2 图的拓扑排序"></a>2 <a href="yikanggao.com/blog/2016/12/%E5%9B%BE%E7%9A%84%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F.html">图的拓扑排序</a></h2><p>拓扑排序的核心思路还是利用深度优先搜索，排序的基本思想为深度优先搜索正好只会访问每个顶点一次，如果将dfs的参数顶点保存在一个数据结构中，遍历这个数据结构就能访问图中的所有顶点，而遍历的顺序取决于这个数据结构的性质以及是在递归调用之前还是递归调用之后保存。</p>
+<ul>
+<li>1 前序：　在递归调用之前将顶点加入队列　—- pre()方法</li>
+<li>2 后序：　在递归调用之后将顶点加入队列　—- post()方法</li>
+<li>3 逆后序： 在递归调用之后将顶点压入栈 —- reversePost()方法<br>这里给出一个逆后序的例子：<br><img src="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/%E5%BC%BA%E8%81%94%E9%80%9A%E5%88%86%E9%87%8F.77kjmz93ddc0.png" alt="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/强联通分量.77kjmz93ddc0.png"><br>其逆后序得到的一个栈为：(右侧为栈顶，代表最晚完成访问的节点) <strong>6 4 2 5 3 1</strong></li>
+</ul>
+<p>逆后序获得代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DepthFirstOrder</span> &#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="type">boolean</span>[] marked;</span><br><span class="line">	<span class="keyword">private</span> Queue&lt;Integer&gt; pre;			<span class="comment">//所有顶点的前序排列</span></span><br><span class="line">	<span class="keyword">private</span> Queue&lt;Integer&gt; post;		<span class="comment">//所有顶点的后序排列</span></span><br><span class="line">	<span class="keyword">private</span> Stack&lt;Integer&gt; reversePost;	<span class="comment">//所有顶点的逆后序排列</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">DepthFirstOrder</span><span class="params">(Digraph G)</span>&#123;</span><br><span class="line">		pre = <span class="keyword">new</span> <span class="title class_">Queue</span>&lt;Integer&gt;();</span><br><span class="line">		post = <span class="keyword">new</span> <span class="title class_">Queue</span>&lt;Integer&gt;();</span><br><span class="line">		reversePost = <span class="keyword">new</span> <span class="title class_">Stack</span>&lt;Integer&gt;();</span><br><span class="line">		marked = <span class="keyword">new</span> <span class="title class_">boolean</span>[G.V()];</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">v</span> <span class="operator">=</span><span class="number">0</span>;v&lt;G.V();v++)</span><br><span class="line">			<span class="keyword">if</span>(!marked[v]) dfs(G,v);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">dfs</span><span class="params">(Digraph G,<span class="type">int</span> v)</span>&#123;</span><br><span class="line">		pre.enqueue(v);</span><br><span class="line"></span><br><span class="line">		marked[v] = <span class="literal">true</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> w:G.adj(v))</span><br><span class="line">			<span class="keyword">if</span>(!marked[w])</span><br><span class="line">				dfs(G,w);</span><br><span class="line"></span><br><span class="line">		post.enqueue(v);</span><br><span class="line">		reversePost.push(v);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> Iterable&lt;Integer&gt; <span class="title function_">pre</span><span class="params">()</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> pre;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> Iterable&lt;Integer&gt; <span class="title function_">post</span><span class="params">()</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> post;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> Iterable&lt;Integer&gt; <span class="title function_">reversePost</span><span class="params">()</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> reversePost;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-求解算法"><a href="#3-求解算法" class="headerlink" title="3 求解算法"></a>3 求解算法</h2><h3 id="3-1-kosaraju算法"><a href="#3-1-kosaraju算法" class="headerlink" title="3.1 kosaraju算法"></a>3.1 kosaraju算法</h3><p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm">https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm 伪代码</a>:</p>
+<blockquote>
+<ol><li>For each vertex <i>u</i> of the graph, mark <i>u</i> as unvisited. Let <i>L</i> be empty.</li>
+<li>For each vertex <i>u</i> of the graph do Visit(<i>u</i>), where Visit(<i>u</i>) is the recursive subroutine:
+<dl><dd>If <i>u</i> is unvisited then:
+<ol><li>Mark <i>u</i> as visited.</li>
+<li>For each out-neighbour <i>v</i> of <i>u</i>, do Visit(<i>v</i>).</li>
+<li>Prepend <i>u</i> to <i>L</i>.</li></ol></dd>
+<dd>Otherwise do nothing.</dd></dl></li>
+<li>For each element <i>u</i> of <i>L</i> in order, do Assign(<i>u</i>,<i>u</i>) where Assign(<i>u</i>,<i>root</i>) is the recursive subroutine:
+<dl><dd>If <i>u</i> has not been assigned to a component then:
+<ol><li>Assign <i>u</i> as belonging to the component whose root is <i>root</i>.</li>
+<li>For each in-neighbour <i>v</i> of <i>u</i>, do Assign(<i>v</i>,<i>root</i>).</li></ol></dd>
+<dd>Otherwise do nothing.</dd></dl></li></ol>
+</blockquote>
+<p>换句话说：<br>主要就是2次dfs：</p>
+<ul>
+<li>1 获得G的逆图G’，对G做一遍dfs获得其逆后序的顶点访问序列</li>
+<li>2 对于逆后序顶点访问序列，重复2.1即可<ul>
+<li>2.1 将最晚完成访问的顶点，在G’中访问，能够一遍到达的那些顶点，就是目标的连通分量，将相关顶点在逆后序访问序列中移除即可</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-Tarjan算法（待续）"><a href="#3-2-Tarjan算法（待续）" class="headerlink" title="3.2 Tarjan算法（待续）"></a>3.2 Tarjan算法（待续）</h3><p>参考： <a target="_blank" rel="noopener" href="https://www.cnblogs.com/wuchanming/p/4138705.html">https://www.cnblogs.com/wuchanming/p/4138705.html</a></p>
+<h3 id="3-3-Gabow算法-待续"><a href="#3-3-Gabow算法-待续" class="headerlink" title="3.3 Gabow算法(待续)"></a>3.3 Gabow算法(待续)</h3><p>参考： <a target="_blank" rel="noopener" href="https://www.cnblogs.com/wuchanming/p/4138705.html">https://www.cnblogs.com/wuchanming/p/4138705.html</a></p>
+<p>具体的例子：</p>
+<h2 id="4-实际题解"><a href="#4-实际题解" class="headerlink" title="4 实际题解"></a>4 实际题解</h2><h3 id="4-1-针对无向图连通分量求解"><a href="#4-1-针对无向图连通分量求解" class="headerlink" title="4.1 针对无向图连通分量求解"></a>4.1 针对无向图连通分量求解</h3><p>该解题方案实际上为有向图强联通分量求解的一个子集，无向图即为顶点和顶点之间的边均为双向边。<br>这里以kosaraju算法为例:</p>
+<ul>
+<li>1 对于有向图，一开始我们需要获取dfs的逆序遍历栈，原因是，在第二次dfs也就是逆图中的遍历我们可以总是用最晚完成遍历的点去遍历，如此依赖，这样的一个遍历就能得到一个连通分量。</li>
+<li>2 但是针对无向图，不需要这样，因为遍历到不能拓展新的节点，我们就获取到了一个连通分量。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/number-of-provinces/">https://leetcode-cn.com/problems/number-of-provinces/</a><br>其解法如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">dfs</span><span class="params">(vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; g, vector&lt;<span class="type">int</span>&gt;&amp; reversePost, vector&lt;<span class="type">bool</span>&gt;&amp; vis, <span class="type">int</span> tarV)</span> </span>&#123;</span><br><span class="line">        vis[tarV] = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j = <span class="number">0</span>; j &lt; g.<span class="built_in">size</span>(); ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span>(g[tarV][j] != <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span>(!vis[j]) &#123;</span><br><span class="line">                    <span class="built_in">dfs</span>(g, reversePost, vis, j);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;    </span><br><span class="line">        &#125;</span><br><span class="line">        reversePost.<span class="built_in">emplace_back</span>(tarV);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">findCircleNum</span><span class="params">(vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; isConnected)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 获取逆图</span></span><br><span class="line">        <span class="type">int</span> n = isConnected.<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">revIsConnected</span>(isConnected);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 由于不是针对有向图，故不需要这一步</span></span><br><span class="line">        <span class="comment">// 获取逆序</span></span><br><span class="line">        <span class="function">vector&lt;<span class="type">bool</span>&gt; <span class="title">vis</span><span class="params">(n, <span class="literal">false</span>)</span></span>;</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; reversePost;</span><br><span class="line">        <span class="comment">// dfs(isConnected, reversePost, vis, 0);</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 直接任选一点遍历，看有几个连通分量即可</span></span><br><span class="line">        <span class="type">int</span> ans = <span class="number">0</span>;       </span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j = <span class="number">0</span>; j &lt; isConnected.<span class="built_in">size</span>(); ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span>(!vis[j]) &#123;</span><br><span class="line">                <span class="built_in">dfs</span>(isConnected, reversePost, vis, j);</span><br><span class="line">                ans ++;</span><br><span class="line">            &#125;          </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 顺便给一个并查集解法：</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="type">int</span> <span class="title">findCircleNum</span><span class="params">(<span class="type">int</span>[][] isConnected)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> provinces = isConnected.length;</span><br><span class="line">        <span class="type">int</span>[] parent = <span class="keyword">new</span> <span class="type">int</span>[provinces];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; provinces; i++) &#123;</span><br><span class="line">            parent[i] = i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; provinces; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> j = i + <span class="number">1</span>; j &lt; provinces; j++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (isConnected[i][j] == <span class="number">1</span>) &#123;</span><br><span class="line">                    <span class="built_in">union</span>(parent, i, j);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> circles = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; provinces; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (parent[i] == i) &#123;</span><br><span class="line">                circles++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> circles;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="type">void</span> <span class="title">union</span><span class="params">(<span class="type">int</span>[] parent, <span class="type">int</span> index1, <span class="type">int</span> index2)</span> </span>&#123;</span><br><span class="line">        parent[<span class="built_in">find</span>(parent, index1)] = <span class="built_in">find</span>(parent, index2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="type">int</span> <span class="title">find</span><span class="params">(<span class="type">int</span>[] parent, <span class="type">int</span> index)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (parent[index] != index) &#123;</span><br><span class="line">            parent[index] = <span class="built_in">find</span>(parent, parent[index]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> parent[index];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-针对有向图连通分量的求解"><a href="#4-2-针对有向图连通分量的求解" class="headerlink" title="4.2 针对有向图连通分量的求解"></a>4.2 针对有向图连通分量的求解</h3><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/shadowland/p/5876307.html#:~:text=%E5%9C%A8%E8%AE%A1%E7%AE%97%E7%A7%91%E5%AD%A6%E4%B8%AD%EF%BC%8CKosaraju%E7%9A%84%E7%AE%97%E6%B3%95%EF%BC%88%E5%8F%88%E7%A7%B0%E4%B8%BA%E2%80%93Sharir%20Kosaraju%E7%AE%97%E6%B3%95%EF%BC%89%E6%98%AF%E4%B8%80%E4%B8%AA%20%E7%BA%BF%E6%80%A7%E6%97%B6%E9%97%B4%20%28linear%20time%29%E7%AE%97%E6%B3%95%E6%89%BE%E5%88%B0%E7%9A%84%20%E6%9C%89%E5%90%91%E5%9B%BE%20%E7%9A%84,%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%20%E3%80%82%20%E5%AE%83%E5%88%A9%E7%94%A8%E4%BA%86%E4%B8%80%E4%B8%AA%E4%BA%8B%E5%AE%9E%EF%BC%8C%20%E9%80%86%E5%9B%BE%20%EF%BC%88%E4%B8%8E%E5%90%84%E8%BE%B9%E6%96%B9%E5%90%91%E7%9B%B8%E5%90%8C%E7%9A%84%E5%9B%BE%E5%BD%A2%E5%8F%8D%E8%BD%AC%2C%20transpose%20graph%EF%BC%89%E6%9C%89%E7%9B%B8%E5%90%8C%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%9A%84%E5%8E%9F%E5%A7%8B%E5%9B%BE%E3%80%82">参考例子</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1019,86 +1134,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://xychen5.github.io/2021/07/18/glogUse/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/xychen5/blogImgs@main/imgs/index3(复件).1h2t3p2cfiow.jpg">
-      <meta itemprop="name" content="xychen5">
-      <meta itemprop="description" content="Freiheit Weht">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LuftBallon">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/07/18/glogUse/" class="post-title-link" itemprop="url">glogUse</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-07-18 16:18:43" itemprop="dateCreated datePublished" datetime="2021-07-18T16:18:43+08:00">2021-07-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-08-03 19:50:26" itemprop="dateModified" datetime="2023-08-03T19:50:26+08:00">2023-08-03</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="glog使用："><a href="#glog使用：" class="headerlink" title="glog使用："></a>glog使用：</h2><p>项目地址：<br><a href="git@github.com:xychen5/tryGlog.git">git@github.com:xychen5/tryGlog.git</a><br>推荐使用类似于clion的ide，然后打开该项目，即可编译运行。</p>
-<h3 id="1-主要作用："><a href="#1-主要作用：" class="headerlink" title="1 主要作用："></a>1 主要作用：</h3><p><strong>能够将glog的日志在cmd中打印</strong><br>主要调用了函数：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">google::<span class="built_in">SetStderrLogging</span>(google::INFO); <span class="comment">// print the logs whose severity &gt; [info]</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-output："><a href="#2-output：" class="headerlink" title="2 output："></a>2 output：</h3><p>样例输出代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">I0718 16:09:07.626883 18628 main.cpp:13] glog used in cmd!!</span><br><span class="line"></span><br><span class="line">W0718 16:09:07.627887 18628 main.cpp:14] glog used in cmd!!</span><br><span class="line"></span><br><span class="line">E0718 16:09:07.628882 18628 main.cpp:15] glog used in cmd!!</span><br><span class="line"></span><br><span class="line">F0718 16:09:07.628882 18628 main.cpp:16] glog used in cmd!!</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-使用clion需要注意编译器的版本得和库对应"><a href="#3-使用clion需要注意编译器的版本得和库对应" class="headerlink" title="3 使用clion需要注意编译器的版本得和库对应"></a>3 使用clion需要注意编译器的版本得和库对应</h3><p>如果使用x86版本的toolchain，会报错如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">====================[ Build | tryGlogLion | Debug ]=============================</span><br><span class="line">&quot;Z:\softwares\CLion 2021.1.3\bin\cmake\win\bin\cmake.exe&quot; --build F:\cppTry\tryGlogLion\cmake-build-debug --target tryGlogLion</span><br><span class="line">Scanning dependencies of target tryGlogLion</span><br><span class="line">[ 50%] Building CXX object CMakeFiles/tryGlogLion.dir/main.cpp.obj</span><br><span class="line">main.cpp</span><br><span class="line">[100%] Linking CXX executable tryGlogLion.exe</span><br><span class="line">NMAKE : fatal error U1077: “&quot;Z:\softwares\CLion 2021.1.3\bin\cmake\win\bin\cmake.exe&quot;”: 返回代码“0xffffffff”</span><br><span class="line">Stop.</span><br><span class="line">NMAKE : fatal error U1077: “&quot;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\bin\HostX86\x86\nmake.exe&quot;”: 返回代码“0x2”</span><br><span class="line">Stop.</span><br><span class="line">NMAKE : fatal error U1077: “&quot;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\bin\HostX86\x86\nmake.exe&quot;”: 返回代码“0x2”</span><br><span class="line">Stop.</span><br><span class="line">NMAKE : fatal error U1077: “&quot;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\bin\HostX86\x86\nmake.exe&quot;”: 返回代码“0x2”</span><br><span class="line">Stop.</span><br><span class="line">LINK Pass 1: command &quot;C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1429~1.300\bin\Hostx86\x86\link.exe /nologo @CMakeFiles\tryGlogLion.dir\objects1.rsp /out:tryGlogLion.exe /implib:tryGlogLion.lib /pdb:F:\cppTry\tryGlogLion\cmake-build-debug\tryGlogLion.pdb /version:0.0 /machine:X86 /debug /INCREMENTAL /subsystem:console -LIBPATH:F:\prjs\ThirdParty\glog\lib -LIBPATH:F:\prjs\ThirdParty\gflags\lib glog.lib gflags_static.lib glog.lib gflags_static.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTFILE:CMakeFiles\tryGlogLion.dir/intermediate.manifest CMakeFiles\tryGlogLion.dir/manifest.res&quot; failed (exit code 1120) with the following output:</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) void __cdecl google::InitGoogleLogging(char const *)&quot; (__imp_?InitGoogleLogging@google@@YAXPBD@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessage::LogMessage(char const *,int)&quot; (__imp_??0LogMessage@google@@QAE@PBDH@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessage::LogMessage(char const *,int,int)&quot; (__imp_??0LogMessage@google@@QAE@PBDHH@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessage::~LogMessage(void)&quot; (__imp_??1LogMessage@google@@QAE@XZ)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: class std::basic_ostream&lt;char,struct std::char_traits&lt;char&gt; &gt; &amp; __thiscall google::LogMessage::stream(void)&quot; (__imp_?stream@LogMessage@google@@QAEAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@XZ)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessageFatal::LogMessageFatal(char const *,int)&quot; (__imp_??0LogMessageFatal@google@@QAE@PBDH@Z)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) public: __thiscall google::LogMessageFatal::~LogMessageFatal(void)&quot; (__imp_??1LogMessageFatal@google@@QAE@XZ)，函数 _main 中引用了该符号</span><br><span class="line">main.cpp.obj : error LNK2019: 无法解析的外部符号 &quot;__declspec(dllimport) void __cdecl google::SetStderrLogging(int)&quot; (__imp_?SetStderrLogging@google@@YAXH@Z)，函数 _main 中引用了该符号</span><br><span class="line">F:\prjs\ThirdParty\glog\lib\glog.lib : warning LNK4272:库计算机类型“x64”与目标计算机类型“x86”冲突</span><br><span class="line">F:\prjs\ThirdParty\gflags\lib\gflags_static.lib : warning LNK4272:库计算机类型“x64”与目标计算机类型“x86”冲突</span><br><span class="line">tryGlogLion.exe : fatal error LNK1120: 8 个无法解析的外部命令</span><br></pre></td></tr></table></figure>
-<p><strong>解决方案：</strong><br>将files-&gt;settings-&gt;buidl,execut,deploy-&gt;toolchains-&gt;enviroment-&gt;architecture设置为<strong>x86_amd64</strong></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
@@ -1112,7 +1147,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
