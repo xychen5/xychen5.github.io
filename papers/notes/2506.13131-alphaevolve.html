@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="AlphaEvolve 原文：本地 PDF 在线版本：arXiv v1 讨论任务：Kissing number 消融实验 版本：v1，2025-06-16 阅读状态：阅读中  一句话理解AlphaEvolve 用冻结的 LLM 生成程序 diff，用自动 evaluator 评分，把候选程序和评分保存在进化数据库中，并反复从历史优良候选继续生成后代，从而在不更新模型权重的情况下持续搜索更好的程序。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AlphaEvolve: A coding agent for scientific and algorithmic discovery">
+<meta property="og:url" content="https://xychen5.github.io/papers/notes/2506.13131-alphaevolve.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="AlphaEvolve 原文：本地 PDF 在线版本：arXiv v1 讨论任务：Kissing number 消融实验 版本：v1，2025-06-16 阅读状态：阅读中  一句话理解AlphaEvolve 用冻结的 LLM 生成程序 diff，用自动 evaluator 评分，把候选程序和评分保存在进化数据库中，并反复从历史优良候选继续生成后代，从而在不更新模型权重的情况下持续搜索更好的程序。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-08-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-04T16:00:00.000Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="evolutionary-search">
+<meta property="article:tag" content="coding-agent">
+<meta property="article:tag" content="program-synthesis">
+<meta property="article:tag" content="frozen-llm">
+<meta property="article:tag" content="context-engineering">
+<meta property="article:tag" content="scientific-discovery">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/papers/notes/2506.13131-alphaevolve">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"en","comments":"","permalink":"","path":"papers/notes/2506.13131-alphaevolve.html","title":"AlphaEvolve: A coding agent for scientific and algorithmic discovery"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>AlphaEvolve: A coding agent for scientific and algorithmic discovery | LuftBallon
+</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-papers"><a href="/papers/" rel="section"><i class="fa fa-book-open fa-fw"></i>papers</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#AlphaEvolve"><span class="nav-number">1.</span> <span class="nav-text">AlphaEvolve</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E7%90%86%E8%A7%A3"><span class="nav-number">1.1.</span> <span class="nav-text">一句话理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-AlphaEvolve-%E5%88%B0%E5%BA%95%E5%9C%A8%E6%BC%94%E5%8C%96%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.2.</span> <span class="nav-text">1. AlphaEvolve 到底在演化什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%AE%83%E5%92%8C-Harness-Engineering-%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">1.3.</span> <span class="nav-text">2. 它和 Harness Engineering 的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Figure-%E7%BC%96%E5%8F%B7%E7%BA%A0%E6%AD%A3"><span class="nav-number">1.4.</span> <span class="nav-text">3. Figure 编号纠正</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Figure-8-%E7%9A%84%E5%9D%90%E6%A0%87%E6%80%8E%E6%A0%B7%E8%AF%BB%EF%BC%9F"><span class="nav-number">1.5.</span> <span class="nav-text">4. Figure 8 的坐标怎样读？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%AA%E8%BD%B4%EF%BC%9AFraction-of-compute-budget"><span class="nav-number">1.5.1.</span> <span class="nav-text">横轴：Fraction of compute budget</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%B5%E8%BD%B4%EF%BC%9ATarget-metric-aggregated"><span class="nav-number">1.5.2.</span> <span class="nav-text">纵轴：Target metric (aggregated)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B2%E7%BA%BF%E4%B8%8E%E9%98%B4%E5%BD%B1"><span class="nav-number">1.5.3.</span> <span class="nav-text">曲线与阴影</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%AF%8F%E9%A1%B9%E6%B6%88%E8%9E%8D%E5%87%86%E7%A1%AE%E6%8B%BF%E6%8E%89%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.6.</span> <span class="nav-text">5. 每项消融准确拿掉了什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%B7%A6%E5%9B%BE%EF%BC%9AMatrix-multiplication-tensor-decomposition"><span class="nav-number">1.7.</span> <span class="nav-text">6. 左图：Matrix multiplication tensor decomposition</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E5%8F%B3%E5%9B%BE%EF%BC%9AKissing-number-problem"><span class="nav-number">1.8.</span> <span class="nav-text">7. 右图：Kissing number problem</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-Kissing-number-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.8.1.</span> <span class="nav-text">7.1 Kissing number 是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-%E5%8F%B3%E5%9B%BE%E5%AE%9E%E9%99%85%E6%B5%8B%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.8.2.</span> <span class="nav-text">7.2 右图实际测了什么？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E9%97%AE%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88-Kissing-number-%E5%AF%B9-Context-%E6%95%8F%E6%84%9F%EF%BC%9F"><span class="nav-number">1.9.</span> <span class="nav-text">8. 问：为什么 Kissing number 对 Context 敏感？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E9%97%AE%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9D%87%E5%80%BC%E4%B8%8A-No-context-lt-No-evolution%EF%BC%9F"><span class="nav-number">1.10.</span> <span class="nav-text">9. 问：为什么均值上 No context &lt; No evolution？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-%E9%97%AE%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88-Full-method-%E5%BE%88%E5%BF%AB%E8%BF%9B%E5%85%A5%E5%B9%B3%E5%8F%B0%EF%BC%9F"><span class="nav-number">1.11.</span> <span class="nav-text">10. 问：为什么 Full method 很快进入平台？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-%E5%86%BB%E7%BB%93-LLM%EF%BC%8C%E4%BD%86%E6%90%9C%E7%B4%A2%E7%8A%B6%E6%80%81%E5%8F%AF%E4%BB%A5%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.12.</span> <span class="nav-text">11. 冻结 LLM，但搜索状态可以学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-%E8%BF%99%E5%BC%A0%E5%9B%BE%E7%9C%9F%E6%AD%A3%E6%94%AF%E6%8C%81%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.13.</span> <span class="nav-text">12. 这张图真正支持什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-%E5%AF%B9-RSI-%E7%9A%84%E5%90%AB%E4%B9%89"><span class="nav-number">1.14.</span> <span class="nav-text">13. 对 RSI 的含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#14-%E5%90%8E%E7%BB%AD%E9%97%AE%E9%A2%98"><span class="nav-number">1.15.</span> <span class="nav-text">14. 后续问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#15-%E7%9B%B8%E5%85%B3%E8%B5%84%E6%96%99"><span class="nav-number">1.16.</span> <span class="nav-text">15. 相关资料</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="/assets/media/site/avatar.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner page posts-expand">
+
+
+    
+    
+    
+    <div class="post-block" lang="en"><header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">AlphaEvolve: A coding agent for scientific and algorithmic discovery
+</h1>
+
+<div class="post-meta-container">
+  <ul class="breadcrumb">
+            <li><a href="/papers/">PAPERS</a></li>
+            <li><a href="/papers/notes/">NOTES</a></li>
+            <li>2506.13131-ALPHAEVOLVE</li>
+          
+  </ul>
+</div>
+
+</header>
+
+      
+      
+      <div class="post-body">
+          <h1 id="AlphaEvolve"><a href="#AlphaEvolve" class="headerlink" title="AlphaEvolve"></a>AlphaEvolve</h1><ul>
+<li>原文：<a href="../originals/2506.13131-alphaevolve.pdf">本地 PDF</a></li>
+<li>在线版本：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2506.13131v1">arXiv v1</a></li>
+<li>讨论任务：<a href="chatgpt-conversation://6a72de5f-a164-83ea-ac5a-4838ebc4f150">Kissing number 消融实验</a></li>
+<li>版本：v1，2025-06-16</li>
+<li>阅读状态：阅读中</li>
+</ul>
+<h2 id="一句话理解"><a href="#一句话理解" class="headerlink" title="一句话理解"></a>一句话理解</h2><p>AlphaEvolve 用冻结的 LLM 生成程序 diff，用自动 evaluator 评分，把候选程序和评分保存在进化数据库中，并反复从历史优良候选继续生成后代，从而在不更新模型权重的情况下持续搜索更好的程序。</p>
+<p>它展示的不是“LLM 自己学会了”，而是：</p>
+<blockquote>
+<p>冻结的生成器可以嵌入一个具有记忆、选择和反馈的外部搜索系统；模型不变，但搜索状态可以不断积累。</p>
+</blockquote>
+<h2 id="1-AlphaEvolve-到底在演化什么？"><a href="#1-AlphaEvolve-到底在演化什么？" class="headerlink" title="1. AlphaEvolve 到底在演化什么？"></a>1. AlphaEvolve 到底在演化什么？</h2><p>主要演化对象是候选程序，而不是 LLM 权重。</p>
+<p>一次基本循环可以写成：</p>
+<p>$$<br>p_{t}^{\mathrm{parent}}<br>\xrightarrow{\operatorname{Prompt}}<br>M<br>\xrightarrow{\operatorname{GenerateDiff}}<br>\Delta_t<br>\xrightarrow{\operatorname{Apply}}<br>p_t^{\mathrm{child}}<br>\xrightarrow{\operatorname{Evaluate}}<br>s_t<br>$$</p>
+<p>其中：</p>
+<ul>
+<li>$M$：冻结的 LLM；</li>
+<li>$p_t^{\mathrm{parent}}$：从程序池选出的父程序；</li>
+<li>$\Delta_t$：LLM 生成的代码修改；</li>
+<li>$p_t^{\mathrm{child}}$：应用 diff 后的子程序；</li>
+<li>$s_t$：一个或多个 evaluator 给出的分数。</li>
+</ul>
+<p>程序池可以写成：</p>
+<p>$$<br>\mathcal P_t<br>=<br>{(p_i,s_i,m_i)}_{i=1}^{n_t}<br>$$</p>
+<p>$m_i$ 表示程序的来源、父代、生成上下文、运行结果等元数据。</p>
+<p>新候选被评估后加入数据库：</p>
+<p>$$<br>\mathcal P_{t+1}<br>=<br>\operatorname{Update}<br>(\mathcal P_t,p_t^{\mathrm{child}},s_t)<br>$$</p>
+<p>下一次生成时，系统不必再从初始程序开始，而可以从历史上表现好或具有多样性的程序继续搜索。</p>
+<h2 id="2-它和-Harness-Engineering-的关系"><a href="#2-它和-Harness-Engineering-的关系" class="headerlink" title="2. 它和 Harness Engineering 的关系"></a>2. 它和 Harness Engineering 的关系</h2><p>AlphaEvolve 本身是一套 Coding-Agent Harness：它包含 prompt sampling、父代选择、LLM 调用、diff 应用、程序执行、evaluator 和候选数据库。</p>
+<p>但论文主要优化的是：</p>
+<ul>
+<li>解决问题的程序；</li>
+<li>用于搜索解的启发式程序；</li>
+<li>某些情况下共同演化的 meta-prompt。</li>
+</ul>
+<p>它并不是像 AHE 那样，明确把 tool implementation、middleware、skill、sub-agent 和 long-term memory 等 Agent Harness 组件全部开放为修改对象。</p>
+<p>因此更准确的区分是：</p>
+<pre><code class="text">AlphaEvolve：用一个固定的进化 Harness 搜索更好的程序
+AHE：让 Agent 修改 Harness 本身
+</code></pre>
+<h2 id="3-Figure-编号纠正"><a href="#3-Figure-编号纠正" class="headerlink" title="3. Figure 编号纠正"></a>3. Figure 编号纠正</h2><p>网页文章中这张消融图可能被标为 <code>fig17</code>，但在 AlphaEvolve 原论文中它是：</p>
+<blockquote>
+<p>Figure 8，Section 4 Ablations，PDF 第 18 页。</p>
+</blockquote>
+<p>PDF 第 17 页定义 <code>No evolution</code> 和 <code>No context in the prompt</code>；第 18 页给出 Figure 8，并继续定义其他三个消融设置。</p>
+<h2 id="4-Figure-8-的坐标怎样读？"><a href="#4-Figure-8-的坐标怎样读？" class="headerlink" title="4. Figure 8 的坐标怎样读？"></a>4. Figure 8 的坐标怎样读？</h2><h3 id="横轴：Fraction-of-compute-budget"><a href="#横轴：Fraction-of-compute-budget" class="headerlink" title="横轴：Fraction of compute budget"></a>横轴：<code>Fraction of compute budget</code></h3><p>表示已经消耗的搜索计算预算比例：</p>
+<p>$$<br>x<br>=<br>\frac{B_{\mathrm{used}}}{B_{\mathrm{total}}}<br>$$</p>
+<p>它不是准确轮数，也不能从图中换算成 wall-clock time、token 数或 LLM 调用次数。论文没有公开这张图对应的绝对预算。</p>
+<h3 id="纵轴：Target-metric-aggregated"><a href="#纵轴：Target-metric-aggregated" class="headerlink" title="纵轴：Target metric (aggregated)"></a>纵轴：<code>Target metric (aggregated)</code></h3><p>表示跨多个 target 聚合后的内部任务分数。作者只明确说明：</p>
+<p>$$<br>\text{higher is better}<br>$$</p>
+<p>所以图中：</p>
+<p>$$<br>-2&gt;-6<br>$$</p>
+<p>但不能把左图的 $-2$ 解释成“tensor rank 等于 2”，也不能把右图的 $-5$ 解释成具体 kissing number。论文没有给出该聚合指标的详细变换公式。</p>
+<p>左右两个面板使用不同任务，纵轴绝对值不能跨面板比较。</p>
+<h3 id="曲线与阴影"><a href="#曲线与阴影" class="headerlink" title="曲线与阴影"></a>曲线与阴影</h3><p>每条曲线表示某一种系统配置随着预算增加达到的聚合表现。阶梯状曲线符合“发现并保留新最佳候选时才跳升”的搜索过程，但这是结合 AlphaEvolve 机制对图形的解释，图注没有单独定义阶梯的计算细节。</p>
+<p>阴影是作者所称的 intra-target standard deviation。结果汇总自 3 次不同随机种子的独立运行。阴影不是论文报告的正式置信区间。</p>
+<h2 id="5-每项消融准确拿掉了什么？"><a href="#5-每项消融准确拿掉了什么？" class="headerlink" title="5. 每项消融准确拿掉了什么？"></a>5. 每项消融准确拿掉了什么？</h2><table>
+<thead>
+<tr>
+<th>配置</th>
+<th>论文中的准确含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Full method</code></td>
+<td>完整 AlphaEvolve</td>
+</tr>
+<tr>
+<td><code>No evolution</code></td>
+<td>不使用历史候选继续繁衍；反复把同一个初始程序交给 LLM</td>
+</tr>
+<tr>
+<td><code>No context in the prompt</code></td>
+<td>不在 prompt 中加入显式的问题特定 context</td>
+</tr>
+<tr>
+<td><code>No meta prompt evolution</code></td>
+<td>禁用由 LLM 建议、在独立数据库中共同演化的 meta-prompt</td>
+</tr>
+<tr>
+<td><code>No full-file evolution</code></td>
+<td>张量分解实验中只演化 loss function，而不是完整可编辑程序范围</td>
+</tr>
+<tr>
+<td><code>Small base LLM only</code></td>
+<td>只使用单个小模型，而不是 Gemini 2.0 Flash 与 Pro 的组合</td>
+</tr>
+</tbody></table>
+<p><code>No context</code> 不等于“整个 prompt 被清空”。程序、生成协议及 evaluator 反馈仍然可以存在；被删除的是显式问题上下文，例如：</p>
+<ul>
+<li>问题说明；</li>
+<li>固定的人类指令；</li>
+<li>方程；</li>
+<li>代码片段；</li>
+<li>相关文献或 PDF。</li>
+</ul>
+<p>这是理解右图时必须保留的边界。</p>
+<h2 id="6-左图：Matrix-multiplication-tensor-decomposition"><a href="#6-左图：Matrix-multiplication-tensor-decomposition" class="headerlink" title="6. 左图：Matrix multiplication tensor decomposition"></a>6. 左图：Matrix multiplication tensor decomposition</h2><p>左图测试寻找更低 rank 的矩阵乘法张量分解，但显示的是已经转换为“越高越好”的聚合指标。</p>
+<p>从图中读取的近似终点为：</p>
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th align="right">100% budget 附近的聚合指标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Full method</td>
+<td align="right">约 $-2.0$</td>
+</tr>
+<tr>
+<td>No meta prompt evolution</td>
+<td align="right">约 $-2.5$</td>
+</tr>
+<tr>
+<td>Small base LLM only</td>
+<td align="right">约 $-2.7$</td>
+</tr>
+<tr>
+<td>No context in the prompt</td>
+<td align="right">约 $-3.0$</td>
+</tr>
+<tr>
+<td>No full-file evolution</td>
+<td align="right">约 $-3.1$</td>
+</tr>
+<tr>
+<td>No evolution</td>
+<td align="right">约 $-6.4$</td>
+</tr>
+</tbody></table>
+<p>最强的信号来自 <code>No evolution</code>：</p>
+<ul>
+<li>它仍能通过多次独立 LLM 采样找到一些改进；</li>
+<li>但不能从历史较好程序继续积累多步修改；</li>
+<li>后期明显落后于完整进化闭环。</li>
+</ul>
+<p>其余中间曲线也低于 Full method，支持 meta-prompt、更强模型组合、显式 context 和扩大编辑范围都有价值。</p>
+<p>但这些曲线存在交叉，阴影也有重叠，不能根据终点给四个组件建立普适、精确的贡献排名。</p>
+<h2 id="7-右图：Kissing-number-problem"><a href="#7-右图：Kissing-number-problem" class="headerlink" title="7. 右图：Kissing number problem"></a>7. 右图：Kissing number problem</h2><h3 id="7-1-Kissing-number-是什么？"><a href="#7-1-Kissing-number-是什么？" class="headerlink" title="7.1 Kissing number 是什么？"></a>7.1 Kissing number 是什么？</h3><p>在 $n$ 维空间中，kissing number 问题询问：最多有多少个互不重叠的单位球，可以同时接触一个中心单位球？</p>
+<p>论文报告 AlphaEvolve 在 11 维找到由 593 个球组成的构造，将当时的 lower bound 从 592 提高到 593。</p>
+<p>这类任务不是普通的输入输出编程题。候选程序通常承担数学构造或搜索算法的角色，问题中存在几何约束、目标函数、数值表示和已知构造等领域结构。</p>
+<h3 id="7-2-右图实际测了什么？"><a href="#7-2-右图实际测了什么？" class="headerlink" title="7.2 右图实际测了什么？"></a>7.2 右图实际测了什么？</h3><p>右图只画了三种配置：</p>
+<ol>
+<li>Full method。</li>
+<li>No context in the prompt。</li>
+<li>No evolution。</li>
+</ol>
+<p>它没有测试 meta-prompt、full-file evolution 和模型组合，因此不能根据右图判断这三个组件在 kissing number 上的作用。</p>
+<p>近似终点为：</p>
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th align="right">100% budget 附近的聚合指标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Full method</td>
+<td align="right">约 $-4$ 到 $-5$</td>
+</tr>
+<tr>
+<td>No evolution</td>
+<td align="right">约 $-25$</td>
+</tr>
+<tr>
+<td>No context in the prompt</td>
+<td align="right">约 $-31$</td>
+</tr>
+</tbody></table>
+<p>完整方法在前约 25% 的预算内迅速上升到高平台；两个消融配置最终都明显低于完整方法。</p>
+<h2 id="8-问：为什么-Kissing-number-对-Context-敏感？"><a href="#8-问：为什么-Kissing-number-对-Context-敏感？" class="headerlink" title="8. 问：为什么 Kissing number 对 Context 敏感？"></a>8. 问：为什么 Kissing number 对 Context 敏感？</h2><p>论文事实是：去掉显式 context 后的平均曲线远低于 Full method。</p>
+<p>一个合理的机制解释是，数学搜索程序中的许多修改只有结合问题语义才能判断方向：</p>
+<ul>
+<li>哪些约束必须保持；</li>
+<li>evaluator 奖励的数学对象是什么；</li>
+<li>哪些变量或表示具有领域含义；</li>
+<li>哪些已知方法值得继续组合；</li>
+<li>哪些程序变化只是数值投机或无效改写。</li>
+</ul>
+<p>显式 context 相当于给冻结 LLM 一个搜索先验：</p>
+<p>$$<br>p(\Delta\mid p,\text{problem context},\text{evaluation history})<br>$$</p>
+<p>去掉它以后，生成分布变成：</p>
+<p>$$<br>p(\Delta\mid p,\text{evaluation history})<br>$$</p>
+<p>LLM 仍然能看到程序并接收某些反馈，但生成的修改更难对准问题结构。</p>
+<p>需要谨慎：图本身只能证明“在该设置下，显式 context 与更高结果相关”。它没有直接记录每个失败候选是不是因为破坏了某个几何约束，所以“LLM 完全不知道目标、只能盲改”是过强表述。</p>
+<h2 id="9-问：为什么均值上-No-context-lt-No-evolution？"><a href="#9-问：为什么均值上-No-context-lt-No-evolution？" class="headerlink" title="9. 问：为什么均值上 No context &lt; No evolution？"></a>9. 问：为什么均值上 <code>No context &lt; No evolution</code>？</h2><p>从右图终点均值看：</p>
+<p>$$<br>\mathrm{No\ context}<br>&lt;<br>\mathrm{No\ evolution}<br>$$</p>
+<p><code>No evolution</code> 的行为可以表示为：</p>
+<p>$$<br>p_0\rightarrow c_1,<br>\qquad<br>p_0\rightarrow c_2,<br>\qquad<br>p_0\rightarrow c_3<br>$$</p>
+<p>每次都从同一个 seed 出发，不能把 $c_1$ 的改善继续组合到 $c_2$，但每次生成仍有问题 context 指路。因此它是“有方向的独立采样”。</p>
+<p><code>No context</code> 仍然保留进化：</p>
+<p>$$<br>p_0\rightarrow p_1\rightarrow p_2\rightarrow p_3<br>$$</p>
+<p>但缺少显式领域先验。一个合理推断是：父代选择能积累 evaluator 已经识别的改善，却不保证 LLM 理解这些改善背后的数学原因，后续 diff 可能更难稳定地组合有效结构。</p>
+<p>所以这张图提示：</p>
+<blockquote>
+<p>有反馈的累积搜索不能替代问题表述；搜索方向与搜索记忆是两个互补条件。</p>
+</blockquote>
+<p>但不能把右图解释成“无 context 的 evolution 一定会累积错误”。原因是：</p>
+<ul>
+<li>这只是均值曲线；</li>
+<li>两个消融的阴影范围较大且存在重叠；</li>
+<li>只有 3 个随机种子；</li>
+<li>论文没有提供候选级因果轨迹证明这个机制。</li>
+</ul>
+<p>因此，更严谨的表述是：在这一实验中，<code>No context</code> 的平均终点低于 <code>No evolution</code>；上述搜索方向解释是合理假设，不是被图直接证明的事实。</p>
+<h2 id="10-问：为什么-Full-method-很快进入平台？"><a href="#10-问：为什么-Full-method-很快进入平台？" class="headerlink" title="10. 问：为什么 Full method 很快进入平台？"></a>10. 问：为什么 Full method 很快进入平台？</h2><p>可直接观察到的是：Full method 在前约 20% 到 30% 预算内完成大部分提升，随后曲线变平。</p>
+<p>可能原因包括：</p>
+<ol>
+<li>初期容易发现的高收益修改先被找到。</li>
+<li>聚合指标或部分 targets 接近当前可达到的饱和值。</li>
+<li>更进一步的改进需要罕见、组合式创新，采样概率更低。</li>
+<li>搜索进入局部平台，现有父代选择和 prompt 难以跨越。</li>
+<li>指标是离散或低分辨率的，微小改进不会显示为曲线变化。</li>
+</ol>
+<p>“边际收益递减”是合理总结，但图不能区分以上原因。</p>
+<p>此前讨论中举出的“修 loss、改初始化、加缓存、改搜索策略”应当视为解释平台现象的示意例子，而不是论文披露的 kissing-number 实际修改顺序。</p>
+<p>平台也不意味着 Agent 已经停止生成程序，只表示在剩余预算中没有发现能够明显抬高该聚合指标的新最佳候选。</p>
+<h2 id="11-冻结-LLM，但搜索状态可以学习"><a href="#11-冻结-LLM，但搜索状态可以学习" class="headerlink" title="11. 冻结 LLM，但搜索状态可以学习"></a>11. 冻结 LLM，但搜索状态可以学习</h2><p>完整系统状态可以写成：</p>
+<p>$$<br>S_t<br>=<br>(\mathcal P_t,\mathcal E_t,\mathcal C_t,\mathcal M_t)<br>$$</p>
+<p>其中：</p>
+<ul>
+<li>$\mathcal P_t$：候选程序池；</li>
+<li>$\mathcal E_t$：评价分数和程序输出；</li>
+<li>$\mathcal C_t$：当前 prompt context；</li>
+<li>$\mathcal M_t$：meta-prompt 与搜索元数据。</li>
+</ul>
+<p>虽然模型保持不变：</p>
+<p>$$<br>M_t=M_0<br>$$</p>
+<p>但外部状态不断变化：</p>
+<p>$$<br>S_{t+1}<br>=<br>F(S_t,M_0,\operatorname{Evaluate})<br>$$</p>
+<p>因此后续 LLM 调用面对的父程序、历史结果和提示上下文都不同：</p>
+<p>$$<br>p(\Delta_{t+1}\mid S_{t+1},M_0)<br>\ne<br>p(\Delta_t\mid S_t,M_0)<br>$$</p>
+<p>这就是“模型没有在线训练，但系统仍表现出持续改进”的数学原因。</p>
+<p>更准确地说，学习发生在外部搜索过程的状态转移中，而不是模型参数中。</p>
+<h2 id="12-这张图真正支持什么？"><a href="#12-这张图真正支持什么？" class="headerlink" title="12. 这张图真正支持什么？"></a>12. 这张图真正支持什么？</h2><p>它支持：</p>
+<ol>
+<li>在两个被测试任务上，完整 AlphaEvolve 比所展示的消融配置取得更高聚合表现。</li>
+<li>历史候选复用和 evaluator 反馈使改进能够跨代积累。</li>
+<li>显式问题 context 对复杂数学搜索非常重要。</li>
+<li>在张量分解任务上，meta-prompt、全文件编辑和强弱模型组合也提供额外价值。</li>
+<li>冻结模型的外部搜索系统可以随预算增加找到更好的程序。</li>
+</ol>
+<p>它不支持：</p>
+<ol>
+<li>每个组件在所有任务上都同样重要。</li>
+<li>各消融差距可以相加为独立贡献。</li>
+<li>$-2$ 相比 $-3$ 对应某个固定百分比的实际算法提升。</li>
+<li><code>No context</code> 在统计意义上必然差于 <code>No evolution</code>。</li>
+<li>平台一定由 low-hanging fruit 耗尽造成。</li>
+<li>AlphaEvolve 的模型权重发生了自我改进。</li>
+<li>这已经构成开放式 Recursive Self-Improvement。</li>
+</ol>
+<h2 id="13-对-RSI-的含义"><a href="#13-对-RSI-的含义" class="headerlink" title="13. 对 RSI 的含义"></a>13. 对 RSI 的含义</h2><p>AlphaEvolve 提供了一种参数外自我改进：</p>
+<pre><code class="text">冻结 LLM
+   +
+可增长的程序池
+   +
+自动 evaluator
+   +
+选择与历史记忆
+   +
+可变化的 prompt context
+</code></pre>
+<p>它距离开放式 RSI 仍有明确边界：</p>
+<ul>
+<li>目标函数由人定义；</li>
+<li>evaluator 固定；</li>
+<li>搜索空间受程序接口约束；</li>
+<li>模型不修改自身权重；</li>
+<li>进化控制器的核心规则主要由人设计；</li>
+<li>成功依赖可以自动执行且可靠评分的问题。</li>
+</ul>
+<p>因此，这篇论文更准确地证明：</p>
+<blockquote>
+<p>在可自动验证的程序搜索空间中，冻结模型加上有状态的演化闭环，可以产生持续且可累积的系统级改进。</p>
+</blockquote>
+<h2 id="14-后续问题"><a href="#14-后续问题" class="headerlink" title="14. 后续问题"></a>14. 后续问题</h2><ol>
+<li>Figure 8 的 aggregated target metric 具体怎样计算？</li>
+<li>横轴 100% 对应多少 LLM calls、候选程序和 evaluator compute？</li>
+<li>如果为所有消融匹配 token、模型成本和 evaluator 次数，结论是否保持？</li>
+<li>增加随机种子后，<code>No context</code> 与 <code>No evolution</code> 的终点顺序是否稳定？</li>
+<li>Context 的收益来自数学知识、约束描述、参考代码还是历史结果？</li>
+<li>Meta-prompt evolution 与程序 evolution 之间是否存在非线性交互？</li>
+<li>平台来自任务饱和、指标分辨率、父代选择还是生成模型能力上限？</li>
+<li>如果允许 AlphaEvolve 修改父代采样器或 evaluator orchestration，它是否会从 program evolution 走向 harness evolution？</li>
+</ol>
+<h2 id="15-相关资料"><a href="#15-相关资料" class="headerlink" title="15. 相关资料"></a>15. 相关资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2506.13131">arXiv 摘要页</a></li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2506.13131#page=18">论文 PDF Figure 8</a></li>
+<li><a target="_blank" rel="noopener" href="https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/">DeepMind 官方介绍</a></li>
+</ul>
+
+      </div>
+      
+      
+      
+    </div>
+  <ul class="breadcrumb">
+            <li><a href="/papers/">PAPERS</a></li>
+            <li><a href="/papers/notes/">NOTES</a></li>
+            <li>2506.13131-ALPHAEVOLVE</li>
+          
+  </ul>
+
+    
+    
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

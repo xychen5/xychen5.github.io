@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="Agentic Harness Engineering 原文：本地 PDF 在线版本：arXiv v4 HTML：arXiv HTML 官方代码：china-qijizhifeng&#x2F;agentic-harness-engineering 版本：v4，2026-05-18 阅读状态：阅读中  一句话理解AHE 固定基础模型，通过反复执行任务、记录轨迹、分析失败根因、修改模型外部的 Harness 文">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Agentic Harness Engineering: Observability-Driven Automatic Evolution of Coding-Agent Harnesses">
+<meta property="og:url" content="https://xychen5.github.io/papers/notes/2604.25850-agentic-harness-engineering.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="Agentic Harness Engineering 原文：本地 PDF 在线版本：arXiv v4 HTML：arXiv HTML 官方代码：china-qijizhifeng&#x2F;agentic-harness-engineering 版本：v4，2026-05-18 阅读状态：阅读中  一句话理解AHE 固定基础模型，通过反复执行任务、记录轨迹、分析失败根因、修改模型外部的 Harness 文">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-08-02T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-04T16:00:00.000Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="agent-harness">
+<meta property="article:tag" content="harness-evolution">
+<meta property="article:tag" content="coding-agent">
+<meta property="article:tag" content="observability">
+<meta property="article:tag" content="trajectory-analysis">
+<meta property="article:tag" content="self-improvement">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/papers/notes/2604.25850-agentic-harness-engineering">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"en","comments":"","permalink":"","path":"papers/notes/2604.25850-agentic-harness-engineering.html","title":"Agentic Harness Engineering: Observability-Driven Automatic Evolution of Coding-Agent Harnesses"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Agentic Harness Engineering: Observability-Driven Automatic Evolution of Coding-Agent Harnesses | LuftBallon
+</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-papers"><a href="/papers/" rel="section"><i class="fa fa-book-open fa-fw"></i>papers</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Agentic-Harness-Engineering"><span class="nav-number">1.</span> <span class="nav-text">Agentic Harness Engineering</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E7%90%86%E8%A7%A3"><span class="nav-number">1.1.</span> <span class="nav-text">一句话理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E9%97%AE%EF%BC%9AHarness-%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.2.</span> <span class="nav-text">1. 问：Harness 到底是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E9%97%AE%EF%BC%9A%E5%8D%95%E4%B8%AA-Agent-%E4%B9%9F%E6%9C%89-Harness-%E5%90%97%EF%BC%9F"><span class="nav-number">1.3.</span> <span class="nav-text">2. 问：单个 Agent 也有 Harness 吗？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E9%97%AE%EF%BC%9AAgent%E3%80%81Model%E3%80%81Harness%E3%80%81Environment-%E5%BA%94%E8%AF%A5%E6%80%8E%E6%A0%B7%E5%AE%9A%E4%B9%89%EF%BC%9F"><span class="nav-number">1.4.</span> <span class="nav-text">3. 问：Agent、Model、Harness、Environment 应该怎样定义？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Model"><span class="nav-number">1.4.1.</span> <span class="nav-text">Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Harness"><span class="nav-number">1.4.2.</span> <span class="nav-text">Harness</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Runtime-State"><span class="nav-number">1.4.3.</span> <span class="nav-text">Runtime State</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Environment"><span class="nav-number">1.4.4.</span> <span class="nav-text">Environment</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E9%97%AE%EF%BC%9AAHE-%E4%BC%98%E5%8C%96%E7%9A%84%E6%98%AF%E4%B8%80%E7%A7%8D%E4%BB%80%E4%B9%88-Harness%EF%BC%9F"><span class="nav-number">1.5.</span> <span class="nav-text">4. 问：AHE 优化的是一种什么 Harness？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E9%97%AE%EF%BC%9ATrajectory-%E4%B8%80%E8%88%AC%E6%80%8E%E6%A0%B7%E8%AE%B0%E5%BD%95%EF%BC%9F"><span class="nav-number">1.6.</span> <span class="nav-text">5. 问：Trajectory 一般怎样记录？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E9%97%AE%EF%BC%9A%E8%BF%99%E9%87%8C%E6%9C%89%E6%B2%A1%E6%9C%89%E2%80%9C%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE%E2%80%9D%EF%BC%9F"><span class="nav-number">1.7.</span> <span class="nav-text">6. 问：这里有没有“训练数据”？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E9%97%AE%EF%BC%9A%E8%B7%91%E5%AE%9E%E9%AA%8C%E5%8F%AF%E4%BB%A5%E5%8F%AA%E4%BD%BF%E7%94%A8%E5%A4%A7%E6%A8%A1%E5%9E%8B-API-Key-%E5%90%97%EF%BC%9F"><span class="nav-number">1.8.</span> <span class="nav-text">7. 问：跑实验可以只使用大模型 API Key 吗？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E9%97%AE%EF%BC%9A%E4%B8%89%E7%A7%8D-Observability-%E5%BA%94%E8%AF%A5%E6%80%8E%E6%A0%B7%E7%90%86%E8%A7%A3%EF%BC%9F"><span class="nav-number">1.9.</span> <span class="nav-text">8. 问：三种 Observability 应该怎样理解？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-Component-Observability"><span class="nav-number">1.9.1.</span> <span class="nav-text">8.1 Component Observability</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-2-Experience-Observability"><span class="nav-number">1.9.2.</span> <span class="nav-text">8.2 Experience Observability</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-3-Decision-Observability"><span class="nav-number">1.9.3.</span> <span class="nav-text">8.3 Decision Observability</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-Algorithm-1%EF%BC%9A%E6%89%80%E6%9C%89%E7%AC%A6%E5%8F%B7"><span class="nav-number">1.10.</span> <span class="nav-text">9. Algorithm 1：所有符号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-Algorithm-1%EF%BC%9A%E9%80%90%E6%AD%A5%E8%A7%A3%E9%87%8A"><span class="nav-number">1.11.</span> <span class="nav-text">10. Algorithm 1：逐步解释</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#10-1-%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.11.1.</span> <span class="nav-text">10.1 初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-2-Rollout"><span class="nav-number">1.11.2.</span> <span class="nav-text">10.2 Rollout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-3-Pass-1"><span class="nav-number">1.11.3.</span> <span class="nav-text">10.3 Pass@1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-4-Clean"><span class="nav-number">1.11.4.</span> <span class="nav-text">10.4 Clean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-5-Attribute"><span class="nav-number">1.11.5.</span> <span class="nav-text">10.5 Attribute</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-6-Rollback"><span class="nav-number">1.11.6.</span> <span class="nav-text">10.6 Rollback</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-7-AgentDebugger"><span class="nav-number">1.11.7.</span> <span class="nav-text">10.7 AgentDebugger</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-8-Evolve"><span class="nav-number">1.11.8.</span> <span class="nav-text">10.8 Evolve</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-9-Commit"><span class="nav-number">1.11.9.</span> <span class="nav-text">10.9 Commit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-10-%E6%9B%B4%E6%96%B0%E6%9C%80%E4%BD%B3-Harness"><span class="nav-number">1.11.10.</span> <span class="nav-text">10.10 更新最佳 Harness</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-%E7%94%A8%E4%B8%A4%E4%B8%AA%E8%BF%AD%E4%BB%A3%E6%8A%8A%E6%B5%81%E7%A8%8B%E4%B8%B2%E8%B5%B7%E6%9D%A5"><span class="nav-number">1.12.</span> <span class="nav-text">11. 用两个迭代把流程串起来</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC-1-%E8%BD%AE%EF%BC%9A%E8%AF%84%E6%B5%8B-H-0"><span class="nav-number">1.12.1.</span> <span class="nav-text">第 1 轮：评测 $H_0$</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC-2-%E8%BD%AE%EF%BC%9A%E8%AF%84%E6%B5%8B-H-1"><span class="nav-number">1.12.2.</span> <span class="nav-text">第 2 轮：评测 $H_1$</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-Code-Agent%E3%80%81Agent-Debugger%E3%80%81Evolve-Agent-%E6%98%AF%E5%90%8C%E4%B8%80%E4%B8%AA-Agent-%E5%90%97%EF%BC%9F"><span class="nav-number">1.13.</span> <span class="nav-text">12. Code Agent、Agent Debugger、Evolve Agent 是同一个 Agent 吗？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-%E8%AE%BA%E6%96%87%E7%BB%93%E6%9E%9C%E6%80%8E%E6%A0%B7%E7%90%86%E8%A7%A3%EF%BC%9F"><span class="nav-number">1.14.</span> <span class="nav-text">13. 论文结果怎样理解？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#14-%E8%BF%99%E9%A1%B9%E5%B7%A5%E4%BD%9C%E6%9C%80%E6%9C%89%E4%BB%B7%E5%80%BC%E7%9A%84%E5%9C%B0%E6%96%B9"><span class="nav-number">1.15.</span> <span class="nav-text">14. 这项工作最有价值的地方</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#15-%E5%90%8E%E7%BB%AD%E5%80%BC%E5%BE%97%E7%BB%A7%E7%BB%AD%E8%BF%BD%E9%97%AE"><span class="nav-number">1.16.</span> <span class="nav-text">15. 后续值得继续追问</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#16-%E7%9B%B8%E5%85%B3%E8%B5%84%E6%96%99"><span class="nav-number">1.17.</span> <span class="nav-text">16. 相关资料</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="/assets/media/site/avatar.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner page posts-expand">
+
+
+    
+    
+    
+    <div class="post-block" lang="en"><header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">Agentic Harness Engineering: Observability-Driven Automatic Evolution of Coding-Agent Harnesses
+</h1>
+
+<div class="post-meta-container">
+  <ul class="breadcrumb">
+            <li><a href="/papers/">PAPERS</a></li>
+            <li><a href="/papers/notes/">NOTES</a></li>
+            <li>2604.25850-AGENTIC-HARNESS-ENGINEERING</li>
+          
+  </ul>
+</div>
+
+</header>
+
+      
+      
+      <div class="post-body">
+          <h1 id="Agentic-Harness-Engineering"><a href="#Agentic-Harness-Engineering" class="headerlink" title="Agentic Harness Engineering"></a>Agentic Harness Engineering</h1><ul>
+<li>原文：<a href="../originals/2604.25850-agentic-harness-engineering.pdf">本地 PDF</a></li>
+<li>在线版本：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2604.25850v4">arXiv v4</a></li>
+<li>HTML：<a target="_blank" rel="noopener" href="https://arxiv.org/html/2604.25850v4">arXiv HTML</a></li>
+<li>官方代码：<a target="_blank" rel="noopener" href="https://github.com/china-qijizhifeng/agentic-harness-engineering">china-qijizhifeng/agentic-harness-engineering</a></li>
+<li>版本：v4，2026-05-18</li>
+<li>阅读状态：阅读中</li>
+</ul>
+<h2 id="一句话理解"><a href="#一句话理解" class="headerlink" title="一句话理解"></a>一句话理解</h2><p>AHE 固定基础模型，通过反复执行任务、记录轨迹、分析失败根因、修改模型外部的 Harness 文件，并在下一轮验证修改是否兑现预测，使 Coding Agent 的执行框架可以被自动、可审计地改进。</p>
+<p>它优化的是 Harness，不是模型权重。</p>
+<h2 id="1-问：Harness-到底是什么？"><a href="#1-问：Harness-到底是什么？" class="headerlink" title="1. 问：Harness 到底是什么？"></a>1. 问：Harness 到底是什么？</h2><p>Harness 是围绕模型、负责把模型变成可执行 Agent 的外部工程系统。它决定：</p>
+<ul>
+<li>给模型什么指令和上下文；</li>
+<li>模型能够调用哪些工具；</li>
+<li>工具参数和返回值如何表达；</li>
+<li>调用前后执行哪些拦截、恢复或压缩逻辑；</li>
+<li>如何维护短期状态和长期记忆；</li>
+<li>如何组织 skill 和 sub-agent；</li>
+<li>如何把模型动作落实到真实执行环境。</li>
+</ul>
+<p>AHE 把 Harness 暴露成七类可编辑文件：</p>
+<ol>
+<li>System prompt。</li>
+<li>Tool description。</li>
+<li>Tool implementation。</li>
+<li>Middleware。</li>
+<li>Skill。</li>
+<li>Sub-agent configuration。</li>
+<li>Long-term memory。</li>
+</ol>
+<p>所以“mem、skill、规约”确实可以属于 Harness，但 Harness 不只是这些，它还包括工具实现、上下文组织、执行保护和恢复机制等。</p>
+<h2 id="2-问：单个-Agent-也有-Harness-吗？"><a href="#2-问：单个-Agent-也有-Harness-吗？" class="headerlink" title="2. 问：单个 Agent 也有 Harness 吗？"></a>2. 问：单个 Agent 也有 Harness 吗？</h2><p>有。</p>
+<p>Harness 不是只有多 Agent 系统才存在。即使只有一个模型实例，只要它通过 system prompt、工具协议、memory、middleware 和运行循环与外界交互，就已经处于某个 Harness 中。</p>
+<p>例如一个最小命令行 Agent：</p>
+<pre><code class="text">用户任务
+   ↓
+System Prompt
+   ↓
+模型
+   ↓
+Shell Tool
+   ↓
+终端环境
+</code></pre>
+<p>其中模型之外负责“如何调用 Shell、怎样返回输出、何时停止”的部分就是最小 Harness。</p>
+<h2 id="3-问：Agent、Model、Harness、Environment-应该怎样定义？"><a href="#3-问：Agent、Model、Harness、Environment-应该怎样定义？" class="headerlink" title="3. 问：Agent、Model、Harness、Environment 应该怎样定义？"></a>3. 问：Agent、Model、Harness、Environment 应该怎样定义？</h2><p>一个比较清楚的边界是：</p>
+<p>$$<br>\text{Agent System}<br>=<br>\text{Model}<br>+<br>\text{Harness}<br>+<br>\text{Runtime State}<br>$$</p>
+<p>Agent System 再与 Environment 交互：</p>
+<p>$$<br>\text{Agent System}<br>\longleftrightarrow<br>\text{Environment}<br>$$</p>
+<p>四者分别是：</p>
+<h3 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h3><p>模型参数和推理能力，例如 GPT、Qwen、Gemini。输入消息，输出 token 或工具调用意图。</p>
+<h3 id="Harness"><a href="#Harness" class="headerlink" title="Harness"></a>Harness</h3><p>模型外部、为模型组织观察和动作的可编辑控制层，例如 prompt、tool、middleware、skill、memory 和 sub-agent orchestration。</p>
+<h3 id="Runtime-State"><a href="#Runtime-State" class="headerlink" title="Runtime State"></a>Runtime State</h3><p>某一次 Agent 运行过程中形成的临时状态，例如当前消息历史、待办列表、已经访问的文件、当前工作阶段和 token 使用情况。</p>
+<h3 id="Environment"><a href="#Environment" class="headerlink" title="Environment"></a>Environment</h3><p>Agent 操作的外部世界，例如容器、操作系统、代码仓库、文件系统、网络、Benchmark 任务和 verifier。</p>
+<p>因此不应简单定义为：</p>
+<p>$$<br>\text{Harness}=\text{除 Model 外的一切}<br>$$</p>
+<p>原因是 Environment 和 verifier 通常不属于 Harness。在 AHE 中，它们故意被冻结且不可编辑；只有明确暴露在 Harness workspace 中的控制组件才是优化对象。</p>
+<p>更合适的口径是：</p>
+<blockquote>
+<p>Agent 是一个具有目标、状态和行动接口的运行系统；Model 是其中的决策核心，Harness 是包围 Model 的可编辑控制与执行层，Environment 是 Agent 所操作但不归 Agent 所有的外部世界。</p>
+</blockquote>
+<h2 id="4-问：AHE-优化的是一种什么-Harness？"><a href="#4-问：AHE-优化的是一种什么-Harness？" class="headerlink" title="4. 问：AHE 优化的是一种什么 Harness？"></a>4. 问：AHE 优化的是一种什么 Harness？</h2><p>论文实例化的是 Coding Agent / Terminal Agent 的 Harness。</p>
+<p>它运行在 Terminal-Bench 2 上，任务通常需要 Agent 在隔离容器中：</p>
+<ul>
+<li>阅读任务说明；</li>
+<li>检查文件系统；</li>
+<li>执行 Shell 命令；</li>
+<li>编写或修改代码；</li>
+<li>安装依赖；</li>
+<li>运行测试；</li>
+<li>生成 verifier 要求的交付文件。</li>
+</ul>
+<p>初始 Harness 只有一个 Shell 执行工具；演化过程中可以逐渐增加 prompt 规则、工具保护、middleware、skill、memory 等。</p>
+<p>因此可以说它是“为命令行 Coding Agent 服务的 Harness”，但不能把 Harness 本身缩减为“命令执行器”。命令行只是它连接 Environment 的主要动作接口。</p>
+<h2 id="5-问：Trajectory-一般怎样记录？"><a href="#5-问：Trajectory-一般怎样记录？" class="headerlink" title="5. 问：Trajectory 一般怎样记录？"></a>5. 问：Trajectory 一般怎样记录？</h2><p>Trajectory 是一次 Agent 从接收任务到结束的完整时序记录。可以形式化为：</p>
+<p>$$<br>\tau<br>=<br>(o_0,a_0,o_1,a_1,\ldots,o_T,a_T,z)<br>$$</p>
+<p>其中：</p>
+<ul>
+<li>$o_t$：第 $t$ 步 Agent 看到的 observation；</li>
+<li>$a_t$：第 $t$ 步 Agent 产生的 action；</li>
+<li>$z$：最终 verifier 结果。</li>
+</ul>
+<p>对于 LLM Agent，实际文件通常记录：</p>
+<ul>
+<li>system、user、assistant 消息；</li>
+<li>tool call 的名称和参数；</li>
+<li>tool output；</li>
+<li>middleware 事件；</li>
+<li>错误、超时和重试；</li>
+<li>token、延迟等元数据；</li>
+<li>verifier 输出和 reward；</li>
+<li>对应 task、trial、iteration、Harness 版本和模型配置。</li>
+</ul>
+<p>AHE 公开仓库中每个 trial 的主要文件包括：</p>
+<pre><code class="text">agent/nexau_in_memory_tracer.cleaned.json
+agent/nexau.txt
+verifier/reward.txt
+</code></pre>
+<ul>
+<li><code>cleaned.json</code>：结构化消息、工具调用和 middleware 事件；</li>
+<li><code>nexau.txt</code>：Agent 运行日志；</li>
+<li><code>reward.txt</code>：verifier 的通过或失败结果。</li>
+</ul>
+<p>轨迹必须关联精确的 Harness commit、模型配置和 sandbox，才能回答“哪个版本产生了这个行为”。</p>
+<h2 id="6-问：这里有没有“训练数据”？"><a href="#6-问：这里有没有“训练数据”？" class="headerlink" title="6. 问：这里有没有“训练数据”？"></a>6. 问：这里有没有“训练数据”？</h2><p>没有传统意义上的模型参数训练数据，因为 AHE 不做梯度更新。</p>
+<p>但从 Harness 搜索的角度，Benchmark $D$ 相当于优化数据：</p>
+<p>$$<br>D={d_1,d_2,\ldots,d_m}<br>$$</p>
+<p>参考实验使用 Terminal-Bench 2 的 89 个任务，每个任务每轮运行 $k=2$ 次。一次迭代会产生：</p>
+<p>$$<br>89\times2=178<br>$$</p>
+<p>次独立 trial。</p>
+<p>这些 task、trajectory、verifier result 和 debugger report 构成 Harness 演化的经验数据。它们用于：</p>
+<ul>
+<li>找重复出现的失败机制；</li>
+<li>比较同一任务的成功与失败轨迹；</li>
+<li>判断上一轮修改是否造成修复或回归；</li>
+<li>为下一轮 Harness 修改提供证据。</li>
+</ul>
+<p>这里的风险是：同一组 Benchmark 反复参与修改选择，可能产生 benchmark overfitting。因此论文又通过跨 Benchmark 和跨模型迁移检查 Harness 是否学到了较一般的工程经验。</p>
+<p>官方仓库没有发布论文十轮实验的全部原始 trajectory、manifest 和分析产物；仓库提供的是复现实验框架、部分 Agent Debugger 能力和示例配置。</p>
+<h2 id="7-问：跑实验可以只使用大模型-API-Key-吗？"><a href="#7-问：跑实验可以只使用大模型-API-Key-吗？" class="headerlink" title="7. 问：跑实验可以只使用大模型 API Key 吗？"></a>7. 问：跑实验可以只使用大模型 API Key 吗？</h2><p>大模型 API Key 可以承担模型推理部分，但不能单独完成整个实验。</p>
+<p>完整 AHE 实验还需要：</p>
+<ul>
+<li>可调用的模型 endpoint 和 API Key；</li>
+<li>NexAU Agent runtime；</li>
+<li>Harbor Benchmark runner；</li>
+<li>Terminal-Bench 2 数据和 verifier；</li>
+<li>E2B 或等价隔离 sandbox；</li>
+<li>保存 trajectory、workspace snapshot 和 Git history 的运行目录；</li>
+<li>足够的调用额度、并发额度和执行时间。</li>
+</ul>
+<p>API Key 只替代下式中的 $M$：</p>
+<p>$$<br>\operatorname{Rollout}(M,H,D,k)<br>$$</p>
+<p>它不能替代 $H$、$D$、sandbox 和 verifier。</p>
+<p>完整参考配置的调用量很大：十轮、89 个任务、每题两次 Code Agent rollout，此外每轮还有 Agent Debugger 和 Evolve Agent 的模型调用。因此适合先用少量任务和较小的 $k$ 做 smoke test。</p>
+<h2 id="8-问：三种-Observability-应该怎样理解？"><a href="#8-问：三种-Observability-应该怎样理解？" class="headerlink" title="8. 问：三种 Observability 应该怎样理解？"></a>8. 问：三种 Observability 应该怎样理解？</h2><p>AHE 认为自动 Harness 演化的瓶颈不是“模型不会改代码”，而是模型看不清三个问题：</p>
+<ol>
+<li>可以改什么？</li>
+<li>为什么失败？</li>
+<li>上次修改究竟有没有效果？</li>
+</ol>
+<p>三种 observability 分别解决这三个问题。</p>
+<h3 id="8-1-Component-Observability"><a href="#8-1-Component-Observability" class="headerlink" title="8.1 Component Observability"></a>8.1 Component Observability</h3><p>目标是让修改空间可见。</p>
+<p>七种 Harness 组件都表现为明确文件，Evolve Agent 可以知道：</p>
+<ul>
+<li>当前有哪些可编辑组件；</li>
+<li>某个失败应该在哪一层处理；</li>
+<li>某次修改具体改变了哪些文件；</li>
+<li>如果发生回归，应该恢复哪些文件。</li>
+</ul>
+<p>这使 Harness 修改从“重写一个巨大 Prompt”变成文件级、组件级的操作。</p>
+<h3 id="8-2-Experience-Observability"><a href="#8-2-Experience-Observability" class="headerlink" title="8.2 Experience Observability"></a>8.2 Experience Observability</h3><p>目标是让大量轨迹中的证据可见。</p>
+<p>处理层次为：</p>
+<pre><code class="text">原始 trajectories
+        ↓
+清洗后的 canonical traces
+        ↓
+逐任务 root-cause reports
+        ↓
+benchmark overview
+</code></pre>
+<p>Evolve Agent 默认先读 overview，需要时才下钻到 task detail 和 raw trace。这就是 progressive disclosure：既节省上下文，又保留证据来源。</p>
+<h3 id="8-3-Decision-Observability"><a href="#8-3-Decision-Observability" class="headerlink" title="8.3 Decision Observability"></a>8.3 Decision Observability</h3><p>目标是让每一次修改的判断可验证。</p>
+<p>每项修改都必须记录：</p>
+<ul>
+<li>观察到的 failure pattern；</li>
+<li>推断出的 root cause；</li>
+<li>修改了哪个组件和文件；</li>
+<li>预计修复哪些任务；</li>
+<li>哪些任务可能回归。</li>
+</ul>
+<p>下一轮拿实际 task delta 检验预测。于是每项修改不再只是“听起来合理的解释”，而成为可以被下一轮否证的 contract。</p>
+<p>三者合起来形成：</p>
+<pre><code class="text">可见的修改空间
+      +
+可下钻的运行证据
+      +
+可验证的修改预测
+      =
+可审计的 Harness 演化闭环
+</code></pre>
+<h2 id="9-Algorithm-1：所有符号"><a href="#9-Algorithm-1：所有符号" class="headerlink" title="9. Algorithm 1：所有符号"></a>9. Algorithm 1：所有符号</h2><p>论文算法输入为：</p>
+<p>$$<br>H_0,;M,;D,;k,;N<br>$$</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>定义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$H_0$</td>
+<td>初始 Harness</td>
+</tr>
+<tr>
+<td>$M$</td>
+<td>固定基础模型</td>
+</tr>
+<tr>
+<td>$D$</td>
+<td>Benchmark 任务集合</td>
+</tr>
+<tr>
+<td>$k$</td>
+<td>每个任务的 rollout 次数</td>
+</tr>
+<tr>
+<td>$N$</td>
+<td>最大迭代轮数</td>
+</tr>
+<tr>
+<td>$H_t$</td>
+<td>第 $t$ 轮结束时新生成的 Harness；第 $t+1$ 轮才评测</td>
+</tr>
+<tr>
+<td>$T_t$</td>
+<td>第 $t$ 轮使用 $H_{t-1}$ 得到的原始轨迹和 reward</td>
+</tr>
+<tr>
+<td>$\widetilde T_t$</td>
+<td>规范化后的轨迹</td>
+</tr>
+<tr>
+<td>$C_t$</td>
+<td>描述 $H_{t-1}\rightarrow H_t$ 的 change manifest</td>
+</tr>
+<tr>
+<td>$V_t$</td>
+<td>对上一轮 manifest $C_{t-1}$ 的验证报告</td>
+</tr>
+<tr>
+<td>$R_t$</td>
+<td>Agent Debugger 从本轮轨迹提炼的分层证据</td>
+</tr>
+<tr>
+<td>$H_{\mathrm{best}}$</td>
+<td>历史上已经实际评测过的最佳 Harness 快照</td>
+</tr>
+</tbody></table>
+<p>最重要的“一代错开”关系是：</p>
+<pre><code class="text">第 t 轮：评测 H_(t-1) → 产生 H_t
+第 t+1 轮：评测 H_t → 验证 C_t
+</code></pre>
+<h2 id="10-Algorithm-1：逐步解释"><a href="#10-Algorithm-1：逐步解释" class="headerlink" title="10. Algorithm 1：逐步解释"></a>10. Algorithm 1：逐步解释</h2><h3 id="10-1-初始化"><a href="#10-1-初始化" class="headerlink" title="10.1 初始化"></a>10.1 初始化</h3><p>$$<br>H_{\mathrm{best}}\leftarrow H_0<br>$$</p>
+<p>初始时先把 seed Harness 作为唯一候选。更严谨的实现还需要维护历史最好分数：</p>
+<p>$$<br>s_{\mathrm{best}}\leftarrow-\infty<br>$$</p>
+<h3 id="10-2-Rollout"><a href="#10-2-Rollout" class="headerlink" title="10.2 Rollout"></a>10.2 <code>Rollout</code></h3><p>$$<br>T_t<br>=<br>\operatorname{Rollout}(M,H_{t-1},D,k)<br>$$</p>
+<p>它不是训练函数，而是评测执行器。</p>
+<p>对于任务 $d_i$ 的第 $j$ 次运行：</p>
+<p>$$<br>(\tau_{i,j}^{(t)},r_{i,j}^{(t)})<br>=<br>\operatorname{Execute}(M,H_{t-1},d_i)<br>$$</p>
+<p>其中：</p>
+<ul>
+<li>$\tau_{i,j}^{(t)}$：完整 Agent 轨迹；</li>
+<li>$r_{i,j}^{(t)}\in{0,1}$：verifier 结果；</li>
+<li>$i=1,\ldots,|D|$；</li>
+<li>$j=1,\ldots,k$。</li>
+</ul>
+<p>所以：</p>
+<p>$$<br>T_t<br>=<br>\left{<br>(\tau_{i,j}^{(t)},r_{i,j}^{(t)})<br>\right}_{i=1,j=1}^{|D|,k}<br>$$</p>
+<p>每次 trial 使用独立 sandbox。模型和 Harness 接收同一任务，但模型采样、工具调用和环境分支可能不同。</p>
+<p>$k\ge2$ 的主要价值是发现 partial-pass：如果同一 Harness 在同一任务上一次成功、一次失败，说明模型可能具有完成能力，但 Harness 没有让成功策略成为稳定默认行为。</p>
+<h3 id="10-3-Pass-1"><a href="#10-3-Pass-1" class="headerlink" title="10.3 Pass@1"></a>10.3 <code>Pass@1</code></h3><p>$$<br>\operatorname{Pass@1}(T_t)<br>=<br>\frac{1}{k|D|}<br>\sum_{i=1}^{|D|}<br>\sum_{j=1}^{k}<br>r_{i,j}^{(t)}<br>$$</p>
+<p>例如三个任务分别为：</p>
+<p>$$<br>0/2,\qquad1/2,\qquad2/2<br>$$</p>
+<p>则：</p>
+<p>$$<br>\operatorname{Pass@1}<br>=<br>\frac{0+1+2}{2\times3}<br>=<br>50%<br>$$</p>
+<p>它不是“运行 $k$ 次至少成功一次”的 pass@$k$。论文统计中 timeout 或基础设施中止也按失败计入 pass@1。</p>
+<h3 id="10-4-Clean"><a href="#10-4-Clean" class="headerlink" title="10.4 Clean"></a>10.4 <code>Clean</code></h3><p>$$<br>\widetilde T_t<br>=<br>\operatorname{Clean}(T_t)<br>$$</p>
+<p>这一步负责：</p>
+<ul>
+<li>把 tracer 中的嵌套事件整理为时间顺序；</li>
+<li>统一 system、user、assistant、tool 消息；</li>
+<li>统一 tool input 和 tool output；</li>
+<li>去掉重复或与分析无关的内容；</li>
+<li>保留关键错误、reward 和来源信息。</li>
+</ul>
+<p>它只整理数据，不判断根因，不重新评分，也不修改 Harness。原始 $T_t$ 仍然保留供下钻核查。</p>
+<h3 id="10-5-Attribute"><a href="#10-5-Attribute" class="headerlink" title="10.5 Attribute"></a>10.5 <code>Attribute</code></h3><p>准确函数名是 <code>Attribute</code>，意思是“验证并归因上一轮修改”：</p>
+<p>$$<br>V_t<br>=<br>\operatorname{Attribute}<br>(C_{t-1},T_{t-1},T_t)<br>$$</p>
+<p>三个输入分别回答：</p>
+<ul>
+<li>$C_{t-1}$：上一轮声称做了什么；</li>
+<li>$T_{t-1}$：修改前任务表现如何；</li>
+<li>$T_t$：修改后任务表现如何。</li>
+</ul>
+<p>先计算相邻两轮的任务变化：</p>
+<p>$$<br>F_t<br>=<br>{d_i\mid d_i:\mathrm{fail}\rightarrow\mathrm{pass}}<br>$$</p>
+<p>$$<br>G_t<br>=<br>{d_i\mid d_i:\mathrm{pass}\rightarrow\mathrm{fail}}<br>$$</p>
+<p>对于 manifest 中的一项修改 $c$，定义：</p>
+<p>$$<br>P_c=\operatorname{predictedFixes}(c)<br>$$</p>
+<p>$$<br>Q_c=\operatorname{riskTasks}(c)<br>$$</p>
+<p>于是实际兑现的修复为：</p>
+<p>$$<br>\operatorname{actuallyFixed}(c)<br>=<br>P_c\cap F_t<br>$$</p>
+<p>没有兑现的预测为：</p>
+<p>$$<br>\operatorname{stillFailed}(c)<br>=<br>P_c-F_t<br>$$</p>
+<p>实际发生的预测风险为：</p>
+<p>$$<br>\operatorname{riskRealized}(c)<br>=<br>Q_c\cap G_t<br>$$</p>
+<p>公开实现生成五种 verdict：</p>
+<table>
+<thead>
+<tr>
+<th>Verdict</th>
+<th>判定含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>EFFECTIVE</code></td>
+<td>所有非空 predicted fixes 都实际发生，且没有预测风险发生</td>
+</tr>
+<tr>
+<td><code>PARTIALLY_EFFECTIVE</code></td>
+<td>只修复了一部分 predicted fixes</td>
+</tr>
+<tr>
+<td><code>MIXED</code></td>
+<td>有预测修复发生，也有预测风险发生</td>
+</tr>
+<tr>
+<td><code>INEFFECTIVE</code></td>
+<td>没有 predicted fix 兑现</td>
+</tr>
+<tr>
+<td><code>HARMFUL</code></td>
+<td>没有 predicted fix 兑现，且发生了预测风险</td>
+</tr>
+</tbody></table>
+<p>例如：</p>
+<pre><code class="text">predicted_fixes = [A, B]
+risk_tasks      = [C]
+
+A：fail → pass
+B：fail → fail
+C：pass → fail
+</code></pre>
+<p>得到：</p>
+<pre><code class="text">actually_fixed = [A]
+still_failed   = [B]
+risk_realized  = [C]
+verdict        = MIXED
+</code></pre>
+<p>这不是严格因果推断。多个修改同时进入同一 Harness、rollout 存在随机性、不同组件之间存在交互时，相邻两轮的 task flip 不能唯一证明是哪项修改造成结果。</p>
+<p>第一轮没有上一轮 manifest，因此：</p>
+<p>$$<br>V_1=\varnothing<br>$$</p>
+<h3 id="10-6-Rollback"><a href="#10-6-Rollback" class="headerlink" title="10.6 Rollback"></a>10.6 <code>Rollback</code></h3><p>论文伪代码写成：</p>
+<p>$$<br>\bar H_{t-1}<br>=<br>\operatorname{Rollback}(H_{t-1},V_t)<br>$$</p>
+<p>概念上的处理是：</p>
+<ul>
+<li><code>EFFECTIVE</code>：保留；</li>
+<li><code>PARTIALLY_EFFECTIVE</code>：保留并继续观察或调整；</li>
+<li><code>MIXED</code>：保留有效部分，撤销有害部分；</li>
+<li><code>INEFFECTIVE</code>：回滚或重新设计；</li>
+<li><code>HARMFUL</code>：优先回滚。</li>
+</ul>
+<p>执行 Rollback 阶段不意味着一定撤销文件；没有被否定的修改可以全部保留。</p>
+<p>论文伪代码与公开实现需要区分：公开主循环中的 Attribution 只生成 <code>change_evaluation.json</code>，真正的 keep、improve、rollback 或 pivot 由 Evolve Agent 根据报告执行。代码中的注释明确称其为 <code>report only, rollback decided by evolve agent</code>。</p>
+<p>公开代码另有 <code>perform_auto_rollback()</code>，但它用于把整个 workspace 恢复到历史快照，不是正常迭代中的逐 change 回滚函数。</p>
+<h3 id="10-7-AgentDebugger"><a href="#10-7-AgentDebugger" class="headerlink" title="10.7 AgentDebugger"></a>10.7 <code>AgentDebugger</code></h3><p>$$<br>R_t<br>=<br>\operatorname{AgentDebugger}(\widetilde T_t)<br>$$</p>
+<p>Debugger 才负责理解轨迹：</p>
+<ol>
+<li>将同一任务的 $k$ 条 trace 放在一起；</li>
+<li>标记 pass、fail、timeout；</li>
+<li>结合 verifier 输出定位失败点；</li>
+<li>比较同一任务成功与失败轨迹的分叉位置；</li>
+<li>提取 root cause、成功机制和可泛化 failure pattern；</li>
+<li>生成逐任务 detail report；</li>
+<li>聚合 benchmark overview。</li>
+</ol>
+<p>输出 $R_t$ 不是标量 reward，而是一套分层证据：</p>
+<pre><code class="text">analysis/
+├── overview.md
+└── detail/
+    ├── task-A.md
+    ├── task-B.md
+    └── ...
+</code></pre>
+<h3 id="10-8-Evolve"><a href="#10-8-Evolve" class="headerlink" title="10.8 Evolve"></a>10.8 <code>Evolve</code></h3><p>$$<br>(H_t,C_t)<br>=<br>\operatorname{Evolve}<br>(\bar H_{t-1},R_t,V_t)<br>$$</p>
+<p>输入包括：</p>
+<ul>
+<li>当前保留或回滚后的 Harness；</li>
+<li>本轮轨迹证据 $R_t$；</li>
+<li>上一轮修改的验证报告 $V_t$。</li>
+</ul>
+<p>Evolve Agent 会：</p>
+<ol>
+<li>查看历史得分、task delta 和上一轮 verdict；</li>
+<li>从 overview 下钻到 detail 或 raw trace；</li>
+<li>将多个任务归纳成可处理的 failure pattern；</li>
+<li>判断应修改哪一类 Harness 组件；</li>
+<li>在 Harness workspace 中修改文件；</li>
+<li>为每个逻辑修改记录新的预测。</li>
+</ol>
+<p>输出：</p>
+<ul>
+<li>$H_t$：新的完整 Harness 文件树；</li>
+<li>$C_t$：描述 $H_{t-1}\rightarrow H_t$ 的 change manifest。</li>
+</ul>
+<p>manifest 大致为：</p>
+<pre><code class="json">{
+  &quot;iteration&quot;: 5,
+  &quot;changes&quot;: [
+    {
+      &quot;id&quot;: &quot;chg-1&quot;,
+      &quot;type&quot;: &quot;improvement&quot;,
+      &quot;description&quot;: &quot;保护已经生成并验证过的交付文件&quot;,
+      &quot;files&quot;: [&quot;tools/run_shell_command.py&quot;],
+      &quot;failure_pattern&quot;: &quot;验证后错误删除交付物&quot;,
+      &quot;predicted_fixes&quot;: [&quot;path-tracing&quot;],
+      &quot;risk_tasks&quot;: [&quot;需要主动重建输出的任务&quot;],
+      &quot;constraint_level&quot;: &quot;tool_impl&quot;,
+      &quot;why_this_component&quot;: &quot;Prompt 提醒不足，需要在执行层拦截&quot;
+    }
+  ]
+}
+</code></pre>
+<p>$H_t$ 和 $C_t$ 在当前轮不会被验证，要等到下一轮：</p>
+<p>$$<br>T_{t+1}<br>=<br>\operatorname{Rollout}(M,H_t,D,k)<br>$$</p>
+<p>$$<br>V_{t+1}<br>=<br>\operatorname{Attribute}(C_t,T_t,T_{t+1})<br>$$</p>
+<h3 id="10-9-Commit"><a href="#10-9-Commit" class="headerlink" title="10.9 Commit"></a>10.9 <code>Commit</code></h3><p>$$<br>\operatorname{Commit}(H_t,C_t,t)<br>$$</p>
+<p>Commit 不计算新分数，而是：</p>
+<ul>
+<li>保存 Harness 文件；</li>
+<li>保存 manifest；</li>
+<li>保存 Git diff 和 commit；</li>
+<li>给 iteration 打 tag；</li>
+<li>保存 workspace snapshot。</li>
+</ul>
+<p>它只证明“这个候选版本和它的预测已被完整记录”，并不证明修改有效。有效性由下一轮 rollout 决定。</p>
+<h3 id="10-10-更新最佳-Harness"><a href="#10-10-更新最佳-Harness" class="headerlink" title="10.10 更新最佳 Harness"></a>10.10 更新最佳 Harness</h3><p>论文伪代码这一行存在下标歧义：</p>
+<p>$$<br>T_t<br>=<br>\operatorname{Rollout}(M,H_{t-1},D,k)<br>$$</p>
+<p>所以 $T_t$ 评价的是 $H_{t-1}$，不是本轮刚生成、尚未运行的 $H_t$。</p>
+<p>如果本轮得分创新高，严格来说应该保存：</p>
+<p>$$<br>H_{\mathrm{best}}<br>\leftarrow<br>H_{t-1}^{\mathrm{evaluated}}<br>$$</p>
+<p>更严谨的写法是：</p>
+<pre><code class="text">H_eval = Snapshot(H_(t-1))
+T_t = Rollout(M, H_eval, D, k)
+score_t = Pass@1(T_t)
+
+if score_t &gt; best_score:
+    H_best = H_eval
+    best_score = score_t
+
+随后再生成 H_t
+</code></pre>
+<p>公开仓库的目录也体现了这个一代错开关系：</p>
+<pre><code class="text">iteration_NNN/input/workspace
+    上一轮产生、本轮刚刚被评测的 Harness
+
+iteration_NNN/evolve
+    本轮新产生、下一轮才评测的修改
+</code></pre>
+<p>因此 Algorithm 1 中将本轮分数直接关联到 $H_t$，应理解为记号简化或 off-by-one，而不是允许未评测版本直接成为 best。</p>
+<h2 id="11-用两个迭代把流程串起来"><a href="#11-用两个迭代把流程串起来" class="headerlink" title="11. 用两个迭代把流程串起来"></a>11. 用两个迭代把流程串起来</h2><p>设：</p>
+<p>$$<br>D={A,B,C},\qquad k=2<br>$$</p>
+<h3 id="第-1-轮：评测-H-0"><a href="#第-1-轮：评测-H-0" class="headerlink" title="第 1 轮：评测 $H_0$"></a>第 1 轮：评测 $H_0$</h3><table>
+<thead>
+<tr>
+<th>任务</th>
+<th align="right">结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A</td>
+<td align="right">0/2</td>
+</tr>
+<tr>
+<td>B</td>
+<td align="right">1/2</td>
+</tr>
+<tr>
+<td>C</td>
+<td align="right">2/2</td>
+</tr>
+</tbody></table>
+<p>$$<br>\operatorname{Pass@1}(T_1)<br>=<br>\frac{0+1+2}{6}<br>=<br>50%<br>$$</p>
+<p>第一轮没有历史修改，所以：</p>
+<p>$$<br>V_1=\varnothing<br>$$</p>
+<p>Debugger 发现：</p>
+<ul>
+<li>A：正确交付文件生成后又被清理命令删除；</li>
+<li>B：行为不稳定；</li>
+<li>C：稳定通过。</li>
+</ul>
+<p>Evolve Agent 修改 Shell tool，生成 $H_1$，同时在 $C_1$ 声明：</p>
+<pre><code class="text">predicted_fixes = [A]
+risk_tasks      = [C]
+</code></pre>
+<p>$H_1$ 此时还没有被评测。</p>
+<h3 id="第-2-轮：评测-H-1"><a href="#第-2-轮：评测-H-1" class="headerlink" title="第 2 轮：评测 $H_1$"></a>第 2 轮：评测 $H_1$</h3><table>
+<thead>
+<tr>
+<th>任务</th>
+<th align="right">修改前 $T_1$</th>
+<th align="right">修改后 $T_2$</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A</td>
+<td align="right">0/2</td>
+<td align="right">2/2</td>
+</tr>
+<tr>
+<td>B</td>
+<td align="right">1/2</td>
+<td align="right">1/2</td>
+</tr>
+<tr>
+<td>C</td>
+<td align="right">2/2</td>
+<td align="right">1/2</td>
+</tr>
+</tbody></table>
+<p>$$<br>\operatorname{Pass@1}(T_2)<br>=<br>\frac{2+1+1}{6}<br>=<br>66.7%<br>$$</p>
+<p>Attribute 得到：</p>
+<ul>
+<li>A：fail → pass，预测修复命中；</li>
+<li>B：仍然 partial-pass；</li>
+<li>C：pass → fail，预测风险发生。</li>
+</ul>
+<p>因此：</p>
+<pre><code class="text">actually_fixed = [A]
+risk_realized  = [C]
+verdict        = MIXED
+</code></pre>
+<p>接下来 Evolve Agent 可以保留修复 A 的机制，同时缩小造成 C 回归的拦截范围，然后根据 Debugger 对 B、C 的分析产生 $H_2,C_2$。$H_2$ 到第 3 轮才会被评测。</p>
+<p>论文中的 <code>path-tracing</code> 是类似的真实案例：Agent 已生成正确的 <code>/app/reconstructed.ppm</code>，却在清理阶段把文件删除，导致 verifier 失败；加入 publish-state 和 Shell guard 后，删除操作被拦截，任务从 $0/2$ 变成 $2/2$。</p>
+<h2 id="12-Code-Agent、Agent-Debugger、Evolve-Agent-是同一个-Agent-吗？"><a href="#12-Code-Agent、Agent-Debugger、Evolve-Agent-是同一个-Agent-吗？" class="headerlink" title="12. Code Agent、Agent Debugger、Evolve Agent 是同一个 Agent 吗？"></a>12. Code Agent、Agent Debugger、Evolve Agent 是同一个 Agent 吗？</h2><p>不是同一个运行角色或同一次 Agent 实例。</p>
+<p>三者分工是：</p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>输入</th>
+<th>职责</th>
+<th>输出</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Code Agent</td>
+<td>任务、当前 Harness、sandbox</td>
+<td>真正执行 Benchmark 任务</td>
+<td>trajectory、任务产物</td>
+</tr>
+<tr>
+<td>Agent Debugger</td>
+<td>cleaned trajectories、verifier 结果</td>
+<td>分析成功和失败机制</td>
+<td>$R_t$</td>
+</tr>
+<tr>
+<td>Evolve Agent</td>
+<td>当前 Harness、$R_t$、$V_t$、历史记录</td>
+<td>修改 Harness 并填写预测</td>
+<td>$H_t,C_t$</td>
+</tr>
+</tbody></table>
+<p>论文主实验让三个角色共享同一种基础模型和 reasoning 设置，以控制“是不是换了更强模型”这个变量；但它们使用不同 prompt、上下文、工具权限和运行目标，所以是三个不同角色。</p>
+<p>其中 <code>Attribute</code> 主要是程序化集合比较，不是第四个 LLM Judge。</p>
+<h2 id="13-论文结果怎样理解？"><a href="#13-论文结果怎样理解？" class="headerlink" title="13. 论文结果怎样理解？"></a>13. 论文结果怎样理解？</h2><p>在 Terminal-Bench 2 的 89 个任务上，论文进行十轮演化：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th align="right">Pass@1</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NexAU 初始 Harness</td>
+<td align="right">69.7%</td>
+</tr>
+<tr>
+<td>OpenCode</td>
+<td align="right">47.2%</td>
+</tr>
+<tr>
+<td>Terminus-2</td>
+<td align="right">62.9%</td>
+</tr>
+<tr>
+<td>Codex</td>
+<td align="right">71.9%</td>
+</tr>
+<tr>
+<td>ACE</td>
+<td align="right">68.9%</td>
+</tr>
+<tr>
+<td>Training-Free GRPO</td>
+<td align="right">72.3%</td>
+</tr>
+<tr>
+<td>AHE</td>
+<td align="right">77.0%</td>
+</tr>
+</tbody></table>
+<p>AHE 总体高于这些对照，但在 Hard tier 上仍略低于 Codex。组件消融显示，收益主要存在于 tool、middleware 和 long-term memory；只迁移 system prompt 反而可能回归。</p>
+<p>冻结最终 Harness、不再演化后，把它迁移到 SWE-bench-verified 和其他基础模型仍然获得收益。这支持的解释是：Harness 学到了一部分可迁移的工程协调机制，而不只是背下 Terminal-Bench 任务答案。</p>
+<p>但论文不能证明：</p>
+<ul>
+<li>每个 change manifest 的自归因都具有严格因果性；</li>
+<li>AHE 不会对反复使用的 Benchmark 过拟合；</li>
+<li>Harness 能开放式、无限自我改进；</li>
+<li>所有组件的有效修改叠加后仍然线性增益；</li>
+<li>在 Coding Agent 以外的领域会自然得到相同效果。</li>
+</ul>
+<h2 id="14-这项工作最有价值的地方"><a href="#14-这项工作最有价值的地方" class="headerlink" title="14. 这项工作最有价值的地方"></a>14. 这项工作最有价值的地方</h2><p>它的核心贡献不是“又让一个 Agent 改自己的 Prompt”，而是把自我改进变成一个有证据、有版本、有预测、有下一轮验证的工程过程：</p>
+<p>$$<br>\text{执行}<br>\rightarrow<br>\text{记录}<br>\rightarrow<br>\text{分析}<br>\rightarrow<br>\text{修改}<br>\rightarrow<br>\text{预测}<br>\rightarrow<br>\text{验证}<br>\rightarrow<br>\text{回滚或保留}<br>$$</p>
+<p>更准确地说，AHE 展示的是：</p>
+<blockquote>
+<p>当模型、推理预算、Benchmark 和 verifier 保持固定，并且 Harness 的可编辑面、运行证据和修改历史都足够可观察时，Agent 可以参与搜索比人工 seed 更有效的外部执行结构。</p>
+</blockquote>
+<p>它离开放式 RSI 仍有距离，因为：</p>
+<ul>
+<li>修改对象限定为 Harness；</li>
+<li>模型权重不变；</li>
+<li>评价目标和 verifier 由人定义；</li>
+<li>数据域有限；</li>
+<li>编辑权限受控；</li>
+<li>自归因不是严格因果归因。</li>
+</ul>
+<h2 id="15-后续值得继续追问"><a href="#15-后续值得继续追问" class="headerlink" title="15. 后续值得继续追问"></a>15. 后续值得继续追问</h2><ol>
+<li>如何把 task-level flip 升级为更可靠的 change-level 因果归因？</li>
+<li>多个 Harness 组件非线性交互时，怎样判断应该保留哪一部分？</li>
+<li>是否应该设置完全不参与演化的最终 test set？</li>
+<li>当 $k=2$ 时，怎样降低随机波动对 <code>Attribute</code> verdict 的影响？</li>
+<li>是否可以用更便宜的模型承担 Debugger，而不降低根因质量？</li>
+<li>如何在工具层真正强制 <code>runs/</code>、verifier 和模型配置只读，而不只依赖 prompt 约束？</li>
+<li>AHE 的方法能否迁移到语音 Agent、浏览器 Agent 或实时 RTC Agent 的 Harness？</li>
+<li>如何让 Evolve Agent同时优化 Harness 的使用方式与 Harness 内容，而不是只编辑静态文件？</li>
+</ol>
+<h2 id="16-相关资料"><a href="#16-相关资料" class="headerlink" title="16. 相关资料"></a>16. 相关资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/html/2604.25850v4#S3">论文 Method 与 Algorithm 1</a></li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/html/2604.25850v4#Sx3">论文定性案例</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/china-qijizhifeng/agentic-harness-engineering#readme">官方仓库 README</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/china-qijizhifeng/agentic-harness-engineering/blob/main/evolve.py#L830-L914">任务状态变化实现</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/china-qijizhifeng/agentic-harness-engineering/blob/main/evolve.py#L2239-L2329">Attribute verdict 实现</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/china-qijizhifeng/agentic-harness-engineering/blob/main/agents/evolve_agent/evolve_prompt.md">Evolve Agent manifest 说明</a></li>
+</ul>
+
+      </div>
+      
+      
+      
+    </div>
+  <ul class="breadcrumb">
+            <li><a href="/papers/">PAPERS</a></li>
+            <li><a href="/papers/notes/">NOTES</a></li>
+            <li>2604.25850-AGENTIC-HARNESS-ENGINEERING</li>
+          
+  </ul>
+
+    
+    
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

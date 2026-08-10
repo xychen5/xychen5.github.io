@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="Self-Harness: Harnesses That Improve Themselves 原文：本地 PDF 在线版本：arXiv 项目仓库：qzzqzzb&#x2F;Self-Harness 本地代码：prjs&#x2F;Self-Harness 版本：v1，2026-06-08 阅读状态：阅读中  一句话理解Self-Harness 固定模型参数，让目标模型根据自身执行轨迹中反复出现的失败机制，提出对当前">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Self-Harness: Harnesses That Improve Themselves">
+<meta property="og:url" content="https://xychen5.github.io/papers/notes/2606.09498-self-harness-harnesses-that-improve-themselves.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="Self-Harness: Harnesses That Improve Themselves 原文：本地 PDF 在线版本：arXiv 项目仓库：qzzqzzb&#x2F;Self-Harness 本地代码：prjs&#x2F;Self-Harness 版本：v1，2026-06-08 阅读状态：阅读中  一句话理解Self-Harness 固定模型参数，让目标模型根据自身执行轨迹中反复出现的失败机制，提出对当前">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-07-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-22T16:00:00.000Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="agent-harness">
+<meta property="article:tag" content="self-improvement">
+<meta property="article:tag" content="coding-agent">
+<meta property="article:tag" content="regression-testing">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/papers/notes/2606.09498-self-harness-harnesses-that-improve-themselves">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"en","comments":"","permalink":"","path":"papers/notes/2606.09498-self-harness-harnesses-that-improve-themselves.html","title":"Self-Harness: Harnesses That Improve Themselves"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Self-Harness: Harnesses That Improve Themselves | LuftBallon
+</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-papers"><a href="/papers/" rel="section"><i class="fa fa-book-open fa-fw"></i>papers</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Self-Harness-Harnesses-That-Improve-Themselves"><span class="nav-number">1.</span> <span class="nav-text">Self-Harness: Harnesses That Improve Themselves</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E7%90%86%E8%A7%A3"><span class="nav-number">1.1.</span> <span class="nav-text">一句话理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%90%86%E8%A7%A3%E5%A4%A7%E7%BA%B2"><span class="nav-number">1.2.</span> <span class="nav-text">理解大纲</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%AE%BA%E6%96%87%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 论文要解决的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%89%E7%A7%8D-Harness-%E6%94%B9%E8%BF%9B%E8%8C%83%E5%BC%8F"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. 三种 Harness 改进范式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%9F%BA%E6%9C%AC%E6%95%B0%E5%AD%A6%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. 基本数学对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5%EF%BC%9AWeakness-Mining"><span class="nav-number">1.2.4.</span> <span class="nav-text">4. 第一阶段：Weakness Mining</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5%EF%BC%9AHarness-Proposal"><span class="nav-number">1.2.5.</span> <span class="nav-text">5. 第二阶段：Harness Proposal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E7%AC%AC%E4%B8%89%E9%98%B6%E6%AE%B5%EF%BC%9AProposal-Validation"><span class="nav-number">1.2.6.</span> <span class="nav-text">6. 第三阶段：Proposal Validation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-Algorithm-1-%E7%9A%84%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB"><span class="nav-number">1.2.7.</span> <span class="nav-text">7. Algorithm 1 的状态转移</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.2.8.</span> <span class="nav-text">8. 实验设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E4%B8%BB%E8%A6%81%E7%BB%93%E6%9E%9C"><span class="nav-number">1.2.9.</span> <span class="nav-text">9. 主要结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-%E5%AD%A6%E5%88%B0%E7%9A%84%E4%BF%AE%E6%94%B9%E5%85%B7%E6%9C%89%E6%A8%A1%E5%9E%8B%E7%89%B9%E5%BC%82%E6%80%A7"><span class="nav-number">1.2.10.</span> <span class="nav-text">10. 学到的修改具有模型特异性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-%E4%B8%8E-STOP%E3%80%81MCE-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.2.11.</span> <span class="nav-text">11. 与 STOP、MCE 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-%E8%AE%BA%E6%96%87%E8%83%BD%E6%94%AF%E6%8C%81%E7%9A%84%E7%BB%93%E8%AE%BA"><span class="nav-number">1.2.12.</span> <span class="nav-text">12. 论文能支持的结论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-%E5%80%BC%E5%BE%97%E7%BB%A7%E7%BB%AD%E8%BF%BD%E9%97%AE%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.13.</span> <span class="nav-text">13. 值得继续追问的问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%85%E8%AF%BB%E9%97%AE%E7%AD%94"><span class="nav-number">1.3.</span> <span class="nav-text">阅读问答</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Q1%EF%BC%9A%E5%85%88%E6%80%8E%E4%B9%88%E7%90%86%E8%A7%A3%E6%95%B4%E7%AF%87%E8%AE%BA%E6%96%87%EF%BC%9F"><span class="nav-number">1.3.1.</span> <span class="nav-text">Q1：先怎么理解整篇论文？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q2%EF%BC%9AHarness-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E6%98%AF%E5%90%A6%E5%8F%AF%E4%BB%A5%E7%90%86%E8%A7%A3%E6%88%90%E5%8C%85%E5%90%AB-Memory%E3%80%81Skill-%E5%92%8C%E8%A7%84%E7%BA%A6%E7%9A%84-Agent-%E6%9E%84%E5%BB%BA%E6%96%B9%E5%BC%8F%EF%BC%9F"><span class="nav-number">1.3.2.</span> <span class="nav-text">Q2：Harness 是什么？是否可以理解成包含 Memory、Skill 和规约的 Agent 构建方式？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q3%EF%BC%9A%E5%AF%B9%E4%BA%8E%E5%8D%95%E4%B8%AA-Agent%EF%BC%8C%E4%B9%9F%E5%AD%98%E5%9C%A8-Harness-%E5%90%97%EF%BC%9F"><span class="nav-number">1.3.3.</span> <span class="nav-text">Q3：对于单个 Agent，也存在 Harness 吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q4%EF%BC%9AAgent-%E6%98%AF%E5%90%A6%E5%B0%B1%E6%98%AF-Model%E3%80%81Harness-%E5%92%8C-Environment-%E5%9C%A8%E6%9F%90%E4%B8%AA%E6%A8%A1%E5%9D%97%E4%B8%8A%E7%9A%84%E5%AD%90%E9%9B%86%EF%BC%9F"><span class="nav-number">1.3.4.</span> <span class="nav-text">Q4：Agent 是否就是 Model、Harness 和 Environment 在某个模块上的子集？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q5%EF%BC%9A%E6%98%AF%E5%90%A6%E5%8F%AF%E4%BB%A5%E6%8A%8A%E9%99%A4-Model-%E4%BB%A5%E5%A4%96%E7%9A%84%E6%89%80%E6%9C%89%E9%83%A8%E5%88%86%E9%83%BD%E7%90%86%E8%A7%A3%E4%B8%BA-Harness%EF%BC%9F"><span class="nav-number">1.3.5.</span> <span class="nav-text">Q5：是否可以把除 Model 以外的所有部分都理解为 Harness？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q6%EF%BC%9ATrajectory-%E4%B8%80%E8%88%AC%E6%80%8E%E6%A0%B7%E8%AE%B0%E5%BD%95%EF%BC%9F"><span class="nav-number">1.3.6.</span> <span class="nav-text">Q6：Trajectory 一般怎样记录？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q7%EF%BC%9A%E8%AE%BA%E6%96%87%E6%98%AF%E5%90%A6%E6%9C%89-GitHub%EF%BC%9F%E6%9C%AC%E5%9C%B0%E8%83%BD%E5%90%A6%E8%BF%90%E8%A1%8C%EF%BC%9F"><span class="nav-number">1.3.7.</span> <span class="nav-text">Q7：论文是否有 GitHub？本地能否运行？</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="/assets/media/site/avatar.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner page posts-expand">
+
+
+    
+    
+    
+    <div class="post-block" lang="en"><header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">Self-Harness: Harnesses That Improve Themselves
+</h1>
+
+<div class="post-meta-container">
+  <ul class="breadcrumb">
+            <li><a href="/papers/">PAPERS</a></li>
+            <li><a href="/papers/notes/">NOTES</a></li>
+            <li>2606.09498-SELF-HARNESS-HARNESSES-THAT-IMPROVE-THEMSELVES</li>
+          
+  </ul>
+</div>
+
+</header>
+
+      
+      
+      <div class="post-body">
+          <h1 id="Self-Harness-Harnesses-That-Improve-Themselves"><a href="#Self-Harness-Harnesses-That-Improve-Themselves" class="headerlink" title="Self-Harness: Harnesses That Improve Themselves"></a>Self-Harness: Harnesses That Improve Themselves</h1><ul>
+<li>原文：<a href="../originals/2606.09498-self-harness-harnesses-that-improve-themselves.pdf">本地 PDF</a></li>
+<li>在线版本：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2606.09498">arXiv</a></li>
+<li>项目仓库：<a target="_blank" rel="noopener" href="https://github.com/qzzqzzb/Self-Harness">qzzqzzb/Self-Harness</a></li>
+<li>本地代码：<a target="_blank" rel="noopener" href="https://github.com/qzzqzzb/Self-Harness">prjs/Self-Harness</a></li>
+<li>版本：v1，2026-06-08</li>
+<li>阅读状态：阅读中</li>
+</ul>
+<h2 id="一句话理解"><a href="#一句话理解" class="headerlink" title="一句话理解"></a>一句话理解</h2><p>Self-Harness 固定模型参数，让目标模型根据自身执行轨迹中反复出现的失败机制，提出对当前 Harness 的小幅修改，并且只有修改通过 held-in 与 held-out 回归测试后才予以保留。</p>
+<p>它改进的是模型外部的执行协议，不是模型权重。</p>
+<h2 id="理解大纲"><a href="#理解大纲" class="headerlink" title="理解大纲"></a>理解大纲</h2><h3 id="1-论文要解决的问题"><a href="#1-论文要解决的问题" class="headerlink" title="1. 论文要解决的问题"></a>1. 论文要解决的问题</h3><p>Agent 的行为由两部分共同决定：</p>
+<p>$$<br>\text{Agent behavior}<br>=<br>\text{base model}<br>+<br>\text{harness}<br>$$</p>
+<p>论文中的 Harness 是模型外部的非参数脚手架，包括：</p>
+<ul>
+<li>System prompt 和动态指令。</li>
+<li>工具、工具适配器和工具使用策略。</li>
+<li>Memory 与 state management。</li>
+<li>Verification rules。</li>
+<li>Runtime policy、失败恢复与 orchestration。</li>
+<li>Subagent、skill 和 middleware 等结构。</li>
+</ul>
+<p>不同模型具有不同的工具使用习惯、错误模式和指令敏感性，因此同一套 Harness 不一定适合所有模型。论文提出的问题是：</p>
+<blockquote>
+<p>不依赖人工工程师或更强的外部 Agent，目标模型能否参与改进自己正在使用的 Harness？</p>
+</blockquote>
+<h3 id="2-三种-Harness-改进范式"><a href="#2-三种-Harness-改进范式" class="headerlink" title="2. 三种 Harness 改进范式"></a>2. 三种 Harness 改进范式</h3><p>论文区分：</p>
+<ol>
+<li>Human Harness Engineering：人工观察失败并修改 Harness。</li>
+<li>Meta-Harness：更强的外部 Agent 优化目标 Agent 的 Harness。</li>
+<li>Self-Harness：目标模型根据自身行为证据，提出对自身 Harness 的修改。</li>
+</ol>
+<p>Self-Harness 的边界是：模型 $M$、Evaluator $E$、任务协议和工具集合保持固定，只允许修改预先声明的 Harness 表面。</p>
+<h3 id="3-基本数学对象"><a href="#3-基本数学对象" class="headerlink" title="3. 基本数学对象"></a>3. 基本数学对象</h3><ul>
+<li>$M$：固定语言模型。</li>
+<li>$h_t$：第 $t$ 轮使用的 Harness。</li>
+<li>$x_i$：一个任务实例。</li>
+<li>$\tau_i$：执行轨迹，包括消息、工具调用和 verifier 结果。</li>
+<li>$y_i$：Agent 的最终输出。</li>
+<li>$E$：固定 Evaluator。</li>
+<li>$z_i=E(x_i,\tau_i,y_i)$：任务结果，例如 pass 或 fail。</li>
+<li>$r_i=(x_i,\tau_i,y_i,z_i)$：一次完整运行记录。</li>
+<li>$D_{\mathrm{in}}$：向弱点分析阶段暴露执行轨迹的 held-in 集合。</li>
+<li>$D_{\mathrm{ho}}$：不向 proposer 暴露轨迹、只用于晋升门禁的 held-out 集合。</li>
+</ul>
+<p>运行关系可以写成：</p>
+<p>$$<br>(\tau_i,y_i)=\operatorname{Run}(M,h_t,x_i)<br>$$</p>
+<p>$$<br>z_i=E(x_i,\tau_i,y_i)<br>$$</p>
+<p>被持续更新的是：</p>
+<p>$$<br>h_0\rightarrow h_1\rightarrow\cdots\rightarrow h_T<br>$$</p>
+<p>模型参数始终不变。</p>
+<h3 id="4-第一阶段：Weakness-Mining"><a href="#4-第一阶段：Weakness-Mining" class="headerlink" title="4. 第一阶段：Weakness Mining"></a>4. 第一阶段：Weakness Mining</h3><p>首先在 $D_{\mathrm{in}}$ 上运行当前 Harness $h_t$，形成：</p>
+<p>$$<br>R_t={r_i}<em>{i=1}^{|D</em>{\mathrm{in}}|}<br>$$</p>
+<p>只保留失败记录：</p>
+<p>$$<br>F_t={r_i\in R_t\mid z_i=\operatorname{fail}}<br>$$</p>
+<p>对每条失败记录构造失败签名：</p>
+<p>$$<br>\phi(r_i)=(c_i,q_i,m_i)<br>$$</p>
+<ul>
+<li>$c_i$：Verifier 最终拒绝的直接原因。</li>
+<li>$q_i$：相关 Agent 行为在失败中的因果地位。</li>
+<li>$m_i$：轨迹暴露出的可复用行为机制。</li>
+</ul>
+<p>采用完全相同的签名聚类：</p>
+<p>$$<br>C_{\phi}<br>=<br>{r_i\in F_t\mid\phi(r_i)=\phi}<br>$$</p>
+<p>每个 cluster 记录规模、代表任务、共同轨迹症状、Verifier 证据和推断出的 Agent 机制。最后形成 Evidence Bundle：</p>
+<p>$$<br>B_t=\operatorname{BuildEvidenceBundle}(R_t)<br>$$</p>
+<p>重点不是把所有 timeout 归为一类，而是区分造成 timeout 的不同机制，例如无限探索、重复失败命令或没有及时创建交付文件。</p>
+<h3 id="5-第二阶段：Harness-Proposal"><a href="#5-第二阶段：Harness-Proposal" class="headerlink" title="5. 第二阶段：Harness Proposal"></a>5. 第二阶段：Harness Proposal</h3><p>论文让同一个固定模型 $M$ 在当前 Harness $h_t$ 下切换到 proposer 角色。它获得：</p>
+<ul>
+<li>当前 Harness 的可编辑表面。</li>
+<li>$B_t$ 中的失败模式。</li>
+<li>应当保留的成功行为。</li>
+<li>过去已经尝试过的修改摘要。</li>
+</ul>
+<p>模型并行产生 $K$ 个候选：</p>
+<p>$$<br>\mathcal P_t<br>=<br>{(\Delta_j,a_j)}_{j=1}^{K}<br>$$</p>
+<ul>
+<li>$\Delta_j$：Harness 修改算子。</li>
+<li>$a_j$：Audit record，说明目标失败、修改表面、预期行为和回归风险。</li>
+<li>$h_t^{(j)}=\Delta_j(h_t)$：应用修改后的候选 Harness。</li>
+</ul>
+<p>提案原则是：</p>
+<ul>
+<li>不同候选之间保持多样性。</li>
+<li>单个候选内部保持最小修改。</li>
+<li>修改必须对应有证据且可由 Harness 解决的失败机制。</li>
+<li>不允许借机重写整个控制架构。</li>
+</ul>
+<h3 id="6-第三阶段：Proposal-Validation"><a href="#6-第三阶段：Proposal-Validation" class="headerlink" title="6. 第三阶段：Proposal Validation"></a>6. 第三阶段：Proposal Validation</h3><p>定义 Harness $h$ 在两个 split 上通过的任务数：</p>
+<p>$$<br>P_{\mathrm{in}}(h),<br>\qquad<br>P_{\mathrm{ho}}(h)<br>$$</p>
+<p>候选相对当前 Harness 的变化为：</p>
+<p>$$<br>\Delta_{\mathrm{in}}^{(j)}<br>=<br>P_{\mathrm{in}}(h_t^{(j)})-P_{\mathrm{in}}(h_t)<br>$$</p>
+<p>$$<br>\Delta_{\mathrm{ho}}^{(j)}<br>=<br>P_{\mathrm{ho}}(h_t^{(j)})-P_{\mathrm{ho}}(h_t)<br>$$</p>
+<p>接受条件是：</p>
+<p>$$<br>\Delta_{\mathrm{in}}^{(j)}\ge 0,<br>\qquad<br>\Delta_{\mathrm{ho}}^{(j)}\ge 0,<br>\qquad<br>\max\left(<br>\Delta_{\mathrm{in}}^{(j)},<br>\Delta_{\mathrm{ho}}^{(j)}<br>\right)&gt;0<br>$$</p>
+<p>含义是：</p>
+<ul>
+<li>至少一个 split 变好。</li>
+<li>另一个 split 不能变差。</li>
+<li>只提高总分但牺牲某个 split 的候选也要拒绝。</li>
+</ul>
+<p>若没有候选通过：</p>
+<p>$$<br>h_{t+1}=h_t<br>$$</p>
+<p>若多个兼容候选通过，则合并 accepted edits，形成 $h_{t+1}$。</p>
+<h3 id="7-Algorithm-1-的状态转移"><a href="#7-Algorithm-1-的状态转移" class="headerlink" title="7. Algorithm 1 的状态转移"></a>7. Algorithm 1 的状态转移</h3><p>一轮循环可以概括成：</p>
+<p>$$<br>h_t<br>\xrightarrow{\operatorname{Evaluate}}<br>R_t<br>\xrightarrow{\operatorname{Mine}}<br>B_t<br>\xrightarrow{\operatorname{Propose}}<br>{h_t^{(j)}}<em>{j=1}^{K}<br>\xrightarrow{\operatorname{Validate}}<br>h</em>{t+1}<br>$$</p>
+<p>完整算法执行 $T$ 轮，最终返回：</p>
+<p>$$<br>h_T<br>$$</p>
+<p>这不是任意自我改写，而是 evidence-driven、validation-gated 的有界状态迁移。</p>
+<h3 id="8-实验设置"><a href="#8-实验设置" class="headerlink" title="8. 实验设置"></a>8. 实验设置</h3><ul>
+<li>Benchmark：Terminal-Bench-2.0。</li>
+<li>原基准包含 89 个任务，论文使用固定的 64 个任务子集。</li>
+<li>排除依赖不稳定外网资源以及初始 Harness 不支持的多模态任务。</li>
+<li>每个任务在全新容器环境中启动。</li>
+<li>每个候选 Harness 通常重复运行两次。</li>
+<li>初始 Harness：极简 DeepAgent 配置，只有短 system prompt、文件和 shell 工具以及声明好的可编辑接口。</li>
+<li>模型：MiniMax M2.5、Qwen3.5-35B-A3B、GLM-5。</li>
+</ul>
+<h3 id="9-主要结果"><a href="#9-主要结果" class="headerlink" title="9. 主要结果"></a>9. 主要结果</h3><table>
+<thead>
+<tr>
+<th>模型</th>
+<th align="right">Held-in Pass</th>
+<th align="right">Held-out Pass</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MiniMax M2.5</td>
+<td align="right">43.0% → 50.0%</td>
+<td align="right">40.5% → 61.9%</td>
+</tr>
+<tr>
+<td>Qwen3.5-35B-A3B</td>
+<td align="right">15.1% → 36.0%</td>
+<td align="right">23.8% → 38.1%</td>
+</tr>
+<tr>
+<td>GLM-5</td>
+<td align="right">47.7% → 57.0%</td>
+<td align="right">42.9% → 57.1%</td>
+</tr>
+</tbody></table>
+<p>论文报告最大绝对提升为 21.4 个百分点，最大相对提升为 138%。</p>
+<h3 id="10-学到的修改具有模型特异性"><a href="#10-学到的修改具有模型特异性" class="headerlink" title="10. 学到的修改具有模型特异性"></a>10. 学到的修改具有模型特异性</h3><p>MiniMax M2.5：</p>
+<ul>
+<li>更早创建任务要求的输出文件。</li>
+<li>正确形成结构化工具内容。</li>
+<li>长时间工具调用后主动重定向执行。</li>
+</ul>
+<p>Qwen3.5：</p>
+<ul>
+<li>预检依赖和 import。</li>
+<li>避免重复执行完全相同的失败命令。</li>
+<li>打断只探索、不实现的循环。</li>
+<li>工具错误后优先恢复 Verifier 所需文件。</li>
+</ul>
+<p>GLM-5：</p>
+<ul>
+<li>让 PATH 和已安装工具跨 shell session 持久化。</li>
+<li>约束大型外部下载或计算。</li>
+<li>更快从探索转向实现、测试和产物检查。</li>
+</ul>
+<p>三者的共同主题是提高任务要求产物的可靠交付，但具体干预方式不同。</p>
+<h3 id="11-与-STOP、MCE-的区别"><a href="#11-与-STOP、MCE-的区别" class="headerlink" title="11. 与 STOP、MCE 的区别"></a>11. 与 STOP、MCE 的区别</h3><ul>
+<li>STOP：用 Meta-Utility 评价候选 Improver，让 Improver 的代码跨轮改写自身。</li>
+<li>MCE：外层进化 Context Engineering Skill，内层根据 Skill 优化 Context function。</li>
+<li>Self-Harness：固定同一个目标模型，从自己的失败轨迹中提出对 declared harness surfaces 的修改，再通过回归测试决定是否晋升。</li>
+</ul>
+<p>Self-Harness 的突出特点不是搜索范围更大，而是修改有证据、范围受限、结果可审计并有非退化门禁。</p>
+<h3 id="12-论文能支持的结论"><a href="#12-论文能支持的结论" class="headerlink" title="12. 论文能支持的结论"></a>12. 论文能支持的结论</h3><p>论文支持的是：</p>
+<blockquote>
+<p>在固定 Verifier、有限任务集和有界 Harness 编辑空间内，同一个模型可以根据自身失败证据，参与搜索更适合自己的执行协议。</p>
+</blockquote>
+<p>论文没有证明：</p>
+<ul>
+<li>模型可以开放式、无限地改进自身。</li>
+<li>模型能力或参数发生了改进。</li>
+<li>Self-Harness 能泛化到所有 Agent 环境。</li>
+<li>每一个 accepted edit 都具有跨 Benchmark 的普适性。</li>
+</ul>
+<h3 id="13-值得继续追问的问题"><a href="#13-值得继续追问的问题" class="headerlink" title="13. 值得继续追问的问题"></a>13. 值得继续追问的问题</h3><ol>
+<li>Held-out split 每轮都参与 promotion gate，因此更接近验证集；论文没有第三个完全不参与选择的最终测试集。</li>
+<li>Weakness Mining 中的因果归因和 failure signature 具体怎样实现，是否自身也依赖较强的判断能力？</li>
+<li>Algorithm 1 只显式验证各个候选，再把 compatible edits 合并；合并后的组合没有同轮回归门，而且 compatible 没有形式化定义，交互效应如何控制？</li>
+<li>为什么使用通过任务数，而不是置信区间或显著性检验？每个候选两次重复是否足够？</li>
+<li>没有与人工优化、Meta-Harness、随机搜索等优化器直接比较，收益中有多少来自 Self-Harness 特有设计？</li>
+<li>Failure clustering、并行提案、最小修改约束和 held-out gate 各自贡献多少？论文缺少组件消融。</li>
+<li>64 个 Terminal-Bench 任务上学到的规则，会不会把 Benchmark 特有模式写进 Harness？</li>
+<li>v1 没有披露 proposal width $K$、明确的轮数 $T$ 配置、split 的任务数与清单、随机种子、置信区间以及完整搜索成本。</li>
+<li>Proposal 的 diverse/minimal 只是文字约束，没有候选距离或 edit-size 指标；该约束如何稳定执行？</li>
+<li>arXiv v1 和论文正文没有反链代码；团队公开投稿文章将 <code>qzzqzzb/Self-Harness</code> 列为项目地址，但仓库本身没有声明 official，且缺少依赖锁文件和完整复现说明。</li>
+</ol>
+<h2 id="阅读问答"><a href="#阅读问答" class="headerlink" title="阅读问答"></a>阅读问答</h2><h3 id="Q1：先怎么理解整篇论文？"><a href="#Q1：先怎么理解整篇论文？" class="headerlink" title="Q1：先怎么理解整篇论文？"></a>Q1：先怎么理解整篇论文？</h3><p>先抓住三个层次：</p>
+<ol>
+<li>优化对象是 Harness $h$，不是模型 $M$。</li>
+<li>优化信号来自聚类后的失败轨迹，而不是 proposer 对修改的主观判断。</li>
+<li>修改只有同时满足“至少一个 split 变好、另一个不退化”的回归门禁才进入下一版 Harness。</li>
+</ol>
+<p>后续问题继续追加在本节。</p>
+<h3 id="Q2：Harness-是什么？是否可以理解成包含-Memory、Skill-和规约的-Agent-构建方式？"><a href="#Q2：Harness-是什么？是否可以理解成包含-Memory、Skill-和规约的-Agent-构建方式？" class="headerlink" title="Q2：Harness 是什么？是否可以理解成包含 Memory、Skill 和规约的 Agent 构建方式？"></a>Q2：Harness 是什么？是否可以理解成包含 Memory、Skill 和规约的 Agent 构建方式？</h3><p>这个理解基本正确。更精确地说，Harness 是固定模型外部、负责把模型组织成可运行 Agent 的非参数执行脚手架：</p>
+<p>$$<br>\text{Agent system}<br>=<br>\text{Model }M<br>+<br>\text{Harness }h<br>+<br>\text{Environment}<br>$$</p>
+<p>对于任务 $x$：</p>
+<p>$$<br>(\tau,y)=\operatorname{Run}(M,h,x)<br>$$</p>
+<p>Harness $h$ 决定模型怎样从任务产生整条轨迹 $\tau$ 和结果 $y$，包括：</p>
+<ul>
+<li>模型每次调用前收到哪些 system prompt、规约和动态 Context。</li>
+<li>暴露哪些工具、API、Skill、Subagent 以及权限。</li>
+<li>Memory 如何保存、检索、加载和压缩。</li>
+<li>多轮调用如何编排，何时重试、分解、停止或切换策略。</li>
+<li>工具错误、超时和缺失产物怎样恢复。</li>
+<li>结果如何验证，结束前必须执行哪些检查。</li>
+<li>Token、工具调用次数和运行时间等预算如何控制。</li>
+</ul>
+<p>因此 Memory、Skill 和规约通常都是 Harness 的组成部分，但 Harness 比它们更大：它还包括把这些组件组合起来并在运行时执行的代码、配置和控制逻辑。</p>
+<p>需要区分：</p>
+<ul>
+<li>Model：参数化的预测能力，权重属于模型，不属于 Harness。</li>
+<li>Context：某一次模型调用实际看到的内容，是 Harness 运行后产生的输入之一。</li>
+<li>Skill：可按需加载的能力说明、知识和操作流程，是 Harness 可以管理的一类组件。</li>
+<li>Memory：跨步骤或跨任务保存与取回信息的机制，也是 Harness 的一个子系统。</li>
+<li>Harness：管理上述组件并控制整条 Agent 执行轨迹的运行层。</li>
+<li>Agent architecture：更宽泛的设计概念；Harness 是其中真正落地并驱动模型运行的可执行部分。</li>
+</ul>
+<p>论文 Figure 3 的初始 Harness 具体声明了 system prompt、memory sources、subagents、skills、bootstrap/execution/verification/failure-recovery instructions 和 runtime-control policy。Self-Harness 修改的正是这些声明好的表面，而不是模型权重。</p>
+<h3 id="Q3：对于单个-Agent，也存在-Harness-吗？"><a href="#Q3：对于单个-Agent，也存在-Harness-吗？" class="headerlink" title="Q3：对于单个 Agent，也存在 Harness 吗？"></a>Q3：对于单个 Agent，也存在 Harness 吗？</h3><p>存在。Harness 不以多 Agent 为前提。对于一个最小的工具型 Agent，仍然需要运行代码完成：</p>
+<p>$$<br>\text{任务输入}<br>\rightarrow<br>\text{构造模型 Context}<br>\rightarrow<br>\text{调用模型}<br>\rightarrow<br>\text{解析 Tool Call}<br>\rightarrow<br>\text{执行工具并回填观察}<br>\rightarrow<br>\text{继续或停止}<br>$$</p>
+<p>负责上述循环的代码、Prompt、工具 schema、历史管理、错误处理和停止条件，就是该单 Agent 的 Harness。Subagent 或多 Agent orchestration 只是 Harness 可选的扩展能力。</p>
+<p>需要区分：</p>
+<ul>
+<li>只有一次输入输出的裸模型调用，可以不称为 Agent，其外围驱动也可能非常薄。</li>
+<li>一旦系统让模型持续观察、调用工具、更新状态并决定下一步，就已经存在某种 Harness，即使它只有几十行代码。</li>
+<li>多 Agent 系统是在 Harness 中进一步加入 Agent 创建、任务分配、通信和结果聚合机制。</li>
+</ul>
+<p>论文使用的初始 DeepAgent 就是单 Agent Harness：它只有短 system prompt、默认文件和 shell 工具，<code>subagents=[]</code>、<code>skills=[]</code>，但仍然具有 Agent 执行循环。因而“没有 Subagent”不等于“没有 Harness”。</p>
+<p>在工程实现中，Harness 经常被封装在名为 <code>Agent</code> 的类或框架内部，所以代码表面上看不见独立的 Harness 对象；这是实现封装，不代表概念上的运行层不存在。</p>
+<h3 id="Q4：Agent-是否就是-Model、Harness-和-Environment-在某个模块上的子集？"><a href="#Q4：Agent-是否就是-Model、Harness-和-Environment-在某个模块上的子集？" class="headerlink" title="Q4：Agent 是否就是 Model、Harness 和 Environment 在某个模块上的子集？"></a>Q4：Agent 是否就是 Model、Harness 和 Environment 在某个模块上的子集？</h3><p>接近，但更严格的边界是：</p>
+<p>$$<br>\text{Agent }A=\operatorname{Instantiate}(M,h)<br>$$</p>
+<p>$$<br>\text{Agent–Environment System}=A+\operatorname{Environment}<br>$$</p>
+<p>Environment 通常不是 Agent 本体的一部分，而是 Agent 观察和作用的外部对象。交互循环是：</p>
+<p>$$<br>o_t<br>\xrightarrow{A=(M,h)}<br>a_t<br>\xrightarrow{\operatorname{Environment}}<br>(s_{t+1},o_{t+1})<br>$$</p>
+<ul>
+<li>Model $M$ 提供推理与生成能力。</li>
+<li>Harness $h$ 把历史和观察组织成模型输入，把模型输出翻译成 Action，并控制工具循环、状态、验证和停止。</li>
+<li>Environment 保存外部状态，接收 Action，并返回新的 Observation。</li>
+</ul>
+<p>工具需要按边界拆开理解：工具的 schema、调用策略、权限和 adapter 通常属于 Harness；Shell、文件系统、数据库或远程服务的真实状态通常属于 Environment。</p>
+<p>如果讨论特定业务模块或任务域 $d$，可以写成：</p>
+<p>$$<br>A_d<br>=<br>\operatorname{Instantiate}<br>\left(M,h_d,\operatorname{toolScope}_d,\operatorname{permissionScope}_d\right)<br>$$</p>
+<p>$A_d$ 更适合称为通用 Agent 系统在领域 $d$ 中的配置实例或运行切片，而不是集合论意义上的“子集”。它复用同一个模型，但具有该领域自己的 Prompt、Memory、Skill、工具范围和权限。</p>
+<p>在 Self-Harness 论文中，可以理解为：</p>
+<p>$$<br>A_t=(M,h_t)<br>$$</p>
+<p>Terminal-Bench 容器是 Environment。每轮保持 $M$、Environment、Evaluator 和任务协议不变，只把 $h_t$ 更新为 $h_{t+1}$；因此模型没变，但 Agent 的运行行为发生了变化。</p>
+<p>为避免歧义，前文“Agent system = Model + Harness + Environment”应理解为完整的 Agent–Environment 运行系统，而不是严格的 Agent 本体定义。</p>
+<h3 id="Q5：是否可以把除-Model-以外的所有部分都理解为-Harness？"><a href="#Q5：是否可以把除-Model-以外的所有部分都理解为-Harness？" class="headerlink" title="Q5：是否可以把除 Model 以外的所有部分都理解为 Harness？"></a>Q5：是否可以把除 Model 以外的所有部分都理解为 Harness？</h3><p>可以作为第一层近似：</p>
+<p>$$<br>\text{Agent}\approx\text{Model}+\text{Harness}<br>$$</p>
+<p>但不能把完整系统里所有非模型组件都归入 Harness。更准确的判定标准是：</p>
+<blockquote>
+<p>某个非参数组件如果负责控制固定模型怎样观察、记忆、行动、验证、恢复或停止，它通常属于 Harness；如果它是 Agent 操作的外部对象、任务来源或裁判，则不属于 Harness。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>是否通常属于 Harness</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>System prompt、规约</td>
+<td>是</td>
+<td>控制模型行为</td>
+</tr>
+<tr>
+<td>Context 构造与历史压缩</td>
+<td>是</td>
+<td>决定模型看到什么</td>
+</tr>
+<tr>
+<td>Memory 检索与写入机制</td>
+<td>是</td>
+<td>控制信息怎样跨步骤保存</td>
+</tr>
+<tr>
+<td>Skill loader</td>
+<td>是</td>
+<td>决定何时加载能力说明</td>
+</tr>
+<tr>
+<td>Tool schema、adapter、调用策略</td>
+<td>是</td>
+<td>决定模型可执行哪些 Action</td>
+</tr>
+<tr>
+<td>重试、超时、预算、停止规则</td>
+<td>是</td>
+<td>控制执行循环</td>
+</tr>
+<tr>
+<td>Verification 与失败恢复逻辑</td>
+<td>是</td>
+<td>控制 Agent 怎样自检和纠错</td>
+</tr>
+<tr>
+<td>文件系统、数据库、外部 API 的真实状态</td>
+<td>否</td>
+<td>属于 Environment</td>
+</tr>
+<tr>
+<td>用户给出的任务实例</td>
+<td>否</td>
+<td>属于 Task input</td>
+</tr>
+<tr>
+<td>Benchmark Verifier / Evaluator</td>
+<td>通常否</td>
+<td>是外部裁判</td>
+</tr>
+<tr>
+<td>模型权重与网络结构</td>
+<td>否</td>
+<td>属于 Model</td>
+</tr>
+</tbody></table>
+<p>Tool 需要拆成两部分：工具的 schema、权限和调用 glue code 属于 Harness；工具实际操作的服务和状态属于 Environment。</p>
+<p>Self-Harness 论文的优化对象还更窄：它不是修改所有非模型代码，而只修改 Harness 中预先声明的 editable surfaces。Environment、Evaluator、任务划分、模型参数以及 Benchmark 协议都固定。</p>
+<h3 id="Q6：Trajectory-一般怎样记录？"><a href="#Q6：Trajectory-一般怎样记录？" class="headerlink" title="Q6：Trajectory 一般怎样记录？"></a>Q6：Trajectory 一般怎样记录？</h3><p>Trajectory 是一次 Agent episode 中按因果和时间顺序发生的可观察事件序列：</p>
+<p>$$<br>\tau<br>=<br>(o_0,a_0,o_1,a_1,\ldots,o_T,y)<br>$$</p>
+<ul>
+<li>$o_t$：Agent 在第 $t$ 步得到的 Observation。</li>
+<li>$a_t$：Agent 在第 $t$ 步执行的 Action，例如文本回复或 Tool Call。</li>
+<li>$y$：最终输出。</li>
+</ul>
+<p>LLM Agent 中通常需要记录：</p>
+<ol>
+<li>Task start：任务 ID、输入、环境版本和 Harness 版本。</li>
+<li>Model request：模型名称、可见 messages、工具 schema 和采样参数。</li>
+<li>Model response：可见文本、Tool Call、token usage 和 finish reason。</li>
+<li>Tool execution：tool name、call ID、参数、开始/结束时间和权限信息。</li>
+<li>Tool result：stdout/stderr、exit code、返回值、耗时、超时或截断状态。</li>
+<li>State event：Memory 读写、Context 压缩、Skill 加载和 Subagent 创建。</li>
+<li>Error/recovery：异常、重试、策略切换和预算变化。</li>
+<li>Finalization：最终答案、产生的 artifacts 和停止原因。</li>
+<li>Evaluation：Verifier 结果、score 和失败原因。</li>
+</ol>
+<p>工程上通常使用 JSONL 或 tracing span 记录，每个事件具有统一 envelope，例如：</p>
+<pre><code class="json">{
+  &quot;trace_id&quot;: &quot;tr-42&quot;,
+  &quot;span_id&quot;: &quot;sp-7&quot;,
+  &quot;parent_span_id&quot;: &quot;sp-3&quot;,
+  &quot;seq&quot;: 12,
+  &quot;timestamp&quot;: &quot;2026-07-23T15:20:00Z&quot;,
+  &quot;event_type&quot;: &quot;tool.result&quot;,
+  &quot;actor&quot;: &quot;agent&quot;,
+  &quot;payload&quot;: {
+    &quot;call_id&quot;: &quot;call-9&quot;,
+    &quot;tool&quot;: &quot;shell&quot;,
+    &quot;exit_code&quot;: 0,
+    &quot;duration_ms&quot;: 184
+  }
+}
+</code></pre>
+<p><code>trace_id</code> 关联整次任务，<code>span_id</code> 和 <code>parent_span_id</code> 表示调用关系，<code>seq</code> 保留逻辑顺序。单 Agent 串行运行时可以看成列表；存在并行工具或 Subagent 时，整体更接近一棵树或 DAG。</p>
+<p>通常不会把所有大文件或超长工具输出直接塞入 trace，而是记录 artifact URI、摘要、hash 和截断标记。还应记录模型、Prompt、Harness 和 Environment 版本，才能复现同一运行。</p>
+<p>安全上需要对 API key、Token、Cookie、个人信息和业务敏感字段进行脱敏。Trajectory 记录的是系统可观察事件，不应假设能够取得或保存模型隐藏的内部 Chain-of-Thought。</p>
+<p>Self-Harness 中一次运行记录为：</p>
+<p>$$<br>r_i=(x_i,\tau_i,y_i,z_i)<br>$$</p>
+<p>其中 $x_i$ 是任务，$\tau_i$ 记录 messages、Tool Calls 和 Verifier evidence，$y_i$ 是最终输出，$z_i$ 是 pass/fail。论文随后从失败记录中提取 failure signature，用于 Weakness Mining。</p>
+<h3 id="Q7：论文是否有-GitHub？本地能否运行？"><a href="#Q7：论文是否有-GitHub？本地能否运行？" class="headerlink" title="Q7：论文是否有 GitHub？本地能否运行？"></a>Q7：论文是否有 GitHub？本地能否运行？</h3><p>找到高可信论文项目仓库：</p>
+<pre><code class="text">https://github.com/qzzqzzb/Self-Harness
+</code></pre>
+<p>本地以 Git submodule 固定到：</p>
+<pre><code class="text">prjs/Self-Harness
+commit 2720dbb3f52283684f4b85a1065d642df1779dd8
+</code></pre>
+<p>官方性需要保守表述：仓库标题、arXiv ID、论文图片、实验结果和目录结构均与论文一致，论文团队的公开投稿文章也把它列为项目地址；但 arXiv v1、论文正文与作者主页没有反向链接，仓库 README 也没有使用 official 字样。</p>
+<p>2026-07-24 使用 Python 3.12.13 完成最小运行验证：</p>
+<ul>
+<li>5,823 行 Python 源码全部通过 <code>compileall</code>。</li>
+<li>Acceptance、Proposer、Materializer、Harbor Eval、Workflow 五个 CLI 均能正常解析 <code>--help</code>。</li>
+<li>用两条相同 failure signature 的合成失败记录执行 Weakness Mining，正确聚成一个大小为 2 的 cluster。</li>
+<li>构造两个 Proposal route，成功生成 3,064 字符的 proposer prompt。</li>
+<li>用合成结果执行 Acceptance Gate：train pass rate 增加 <code>0.25</code>，held-out 不变，结果为 <code>accepted: improved train with no split drops</code>。</li>
+</ul>
+<p>完整 Terminal-Bench-2.0 实验尚不能按仓库直接复现，原因是：</p>
+<ul>
+<li>仓库没有 <code>requirements.txt</code>、<code>pyproject.toml</code>、lockfile 或版本化安装说明。</li>
+<li>当前环境缺少 <code>deepagents</code> 和 <code>harbor</code>。</li>
+<li>示例配置依赖仓库外部的 eval project、Docker/Harbor 任务环境和模型服务。</li>
+<li>论文中的本地 Qwen3.5-35B-A3B 配置使用四张 NVIDIA H200。</li>
+</ul>
+<p>因此当前结论是：仓库核心的 diagnosis、proposal construction 和 acceptance 逻辑能够本地执行；论文的完整 64-case 模型实验需要额外重建环境，不能把 smoke test 等同于论文结果复现。</p>
+
+      </div>
+      
+      
+      
+    </div>
+  <ul class="breadcrumb">
+            <li><a href="/papers/">PAPERS</a></li>
+            <li><a href="/papers/notes/">NOTES</a></li>
+            <li>2606.09498-SELF-HARNESS-HARNESSES-THAT-IMPROVE-THEMSELVES</li>
+          
+  </ul>
+
+    
+    
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

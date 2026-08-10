@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=victor+mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xychen5.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"width":300},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"changyan":{"text":"Load Disqus","order":-2},"gitalk":{"order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"zoomIn","post_header":"zoomIn","post_body":"zoomIn","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="Self-Taught Optimizer (STOP) 原文：本地 PDF 在线版本：arXiv 官方代码：microsoft&#x2F;stop 阅读状态：阅读中  一句话理解STOP 先写一个会借助固定语言模型改进任意程序的初始 Improver，然后把这个 Improver 自己的源代码当成待改进程序，让它改写自己；改写后的 Improver 再进入下一轮。 STOP 改进的是调用语言模型的脚手架程">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Self-Taught Optimizer (STOP): Recursively Self-Improving Code Generation">
+<meta property="og:url" content="https://xychen5.github.io/papers/notes/2310.02304-self-taught-optimizer.html">
+<meta property="og:site_name" content="LuftBallon">
+<meta property="og:description" content="Self-Taught Optimizer (STOP) 原文：本地 PDF 在线版本：arXiv 官方代码：microsoft&#x2F;stop 阅读状态：阅读中  一句话理解STOP 先写一个会借助固定语言模型改进任意程序的初始 Improver，然后把这个 Improver 自己的源代码当成待改进程序，让它改写自己；改写后的 Improver 再进入下一轮。 STOP 改进的是调用语言模型的脚手架程">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-07-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-20T16:00:00.000Z">
+<meta property="article:author" content="xychen5">
+<meta property="article:tag" content="code-generation">
+<meta property="article:tag" content="scaffolding">
+<meta property="article:tag" content="self-improvement">
+<meta property="article:tag" content="recursive-self-improvement">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xychen5.github.io/papers/notes/2310.02304-self-taught-optimizer">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"en","comments":"","permalink":"","path":"papers/notes/2310.02304-self-taught-optimizer.html","title":"Self-Taught Optimizer (STOP): Recursively Self-Improving Code Generation"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Self-Taught Optimizer (STOP): Recursively Self-Improving Code Generation | LuftBallon
+</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LuftBallon</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-arrow-right fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-papers"><a href="/papers/" rel="section"><i class="fa fa-book-open fa-fw"></i>papers</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Self-Taught-Optimizer-STOP"><span class="nav-number">1.</span> <span class="nav-text">Self-Taught Optimizer (STOP)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E7%90%86%E8%A7%A3"><span class="nav-number">1.1.</span> <span class="nav-text">一句话理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.2.</span> <span class="nav-text">论文中的对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.1.</span> <span class="nav-text">语言模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Utility"><span class="nav-number">1.2.2.</span> <span class="nav-text">Utility</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E6%B8%B8%E4%BB%BB%E5%8A%A1"><span class="nav-number">1.2.3.</span> <span class="nav-text">下游任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Improver"><span class="nav-number">1.2.4.</span> <span class="nav-text">Improver</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Seed-Improver-I-0"><span class="nav-number">1.3.</span> <span class="nav-text">Seed Improver $I_0$</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%AF%84%E4%BB%B7%E4%B8%80%E4%B8%AA-Improver"><span class="nav-number">1.4.</span> <span class="nav-text">如何评价一个 Improver</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#STOP-%E7%9A%84%E6%A0%B8%E5%BF%83%E6%9B%B4%E6%96%B0%E5%BC%8F"><span class="nav-number">1.5.</span> <span class="nav-text">STOP 的核心更新式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Algorithm-1-%E9%80%90%E8%A1%8C%E8%A7%A3%E9%87%8A"><span class="nav-number">1.6.</span> <span class="nav-text">Algorithm 1 逐行解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E4%B8%A4%E8%BD%AE%E7%9A%84%E5%85%B7%E4%BD%93%E5%B1%95%E5%BC%80"><span class="nav-number">1.7.</span> <span class="nav-text">前两轮的具体展开</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%AE%B9%E6%98%93%E5%BF%BD%E7%95%A5%E7%9A%84%E5%B5%8C%E5%A5%97"><span class="nav-number">1.8.</span> <span class="nav-text">最容易忽略的嵌套</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%80%9CRecursive%E2%80%9D-%E5%BA%94%E5%BD%93%E6%80%8E%E6%A0%B7%E7%90%86%E8%A7%A3"><span class="nav-number">1.9.</span> <span class="nav-text">“Recursive” 应当怎样理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%AE%83%E5%8F%AF%E8%83%BD%E6%9C%89%E6%95%88"><span class="nav-number">1.10.</span> <span class="nav-text">为什么它可能有效</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E7%BB%93%E6%9E%9C%E4%B8%8E%E9%99%90%E5%88%B6"><span class="nav-number">1.11.</span> <span class="nav-text">论文结果与限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%93%E5%89%8D%E7%BB%93%E8%AE%BA"><span class="nav-number">1.12.</span> <span class="nav-text">当前结论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%85%E8%AF%BB%E9%97%AE%E7%AD%94"><span class="nav-number">1.13.</span> <span class="nav-text">阅读问答</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Q1%EF%BC%9A%E6%80%8E%E4%B9%88%E7%90%86%E8%A7%A3-STOP-%E7%AE%97%E6%B3%95%EF%BC%9F"><span class="nav-number">1.13.1.</span> <span class="nav-text">Q1：怎么理解 STOP 算法？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q2%EF%BC%9A-hat-u-I-frac-1-D-sum-u-s-in-D-u-I-u-s-L-%E4%B8%AD%E6%AF%8F%E4%B8%AA%E7%AC%A6%E5%8F%B7%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.13.2.</span> <span class="nav-text">Q2：$\hat u(I)&#x3D;\frac{1}{|D|}\sum_{(u,s)\in D}u(I(u,s,L))$ 中每个符号是什么？</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xychen5"
+      src="/assets/media/site/avatar.jpg">
+  <p class="site-author-name" itemprop="name">xychen5</p>
+  <div class="site-description" itemprop="description">Freiheit Weht</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xychen5?tab=repositories" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xychen5?tab&#x3D;repositories" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cxynash5@gmail.com" title="E-Mail → mailto:cxynash5@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="Back to top">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner page posts-expand">
+
+
+    
+    
+    
+    <div class="post-block" lang="en"><header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">Self-Taught Optimizer (STOP): Recursively Self-Improving Code Generation
+</h1>
+
+<div class="post-meta-container">
+  <ul class="breadcrumb">
+            <li><a href="/papers/">PAPERS</a></li>
+            <li><a href="/papers/notes/">NOTES</a></li>
+            <li>2310.02304-SELF-TAUGHT-OPTIMIZER</li>
+          
+  </ul>
+</div>
+
+</header>
+
+      
+      
+      <div class="post-body">
+          <h1 id="Self-Taught-Optimizer-STOP"><a href="#Self-Taught-Optimizer-STOP" class="headerlink" title="Self-Taught Optimizer (STOP)"></a>Self-Taught Optimizer (STOP)</h1><ul>
+<li>原文：<a href="../originals/2310.02304-self-taught-optimizer.pdf">本地 PDF</a></li>
+<li>在线版本：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.02304">arXiv</a></li>
+<li>官方代码：<a target="_blank" rel="noopener" href="https://github.com/microsoft/stop">microsoft/stop</a></li>
+<li>阅读状态：阅读中</li>
+</ul>
+<h2 id="一句话理解"><a href="#一句话理解" class="headerlink" title="一句话理解"></a>一句话理解</h2><p>STOP 先写一个会借助固定语言模型改进任意程序的初始 Improver，然后把这个 Improver 自己的源代码当成待改进程序，让它改写自己；改写后的 Improver 再进入下一轮。</p>
+<p>STOP 改进的是调用语言模型的脚手架程序，而不是语言模型参数。</p>
+<h2 id="论文中的对象"><a href="#论文中的对象" class="headerlink" title="论文中的对象"></a>论文中的对象</h2><h3 id="语言模型"><a href="#语言模型" class="headerlink" title="语言模型"></a>语言模型</h3><p>论文把语言模型记为：</p>
+<p>$$<br>L:\Sigma^<em>\rightarrow\Sigma^</em><br>$$</p>
+<ul>
+<li>$\Sigma^*$：所有有限字符串的集合。</li>
+<li>$L$：固定的、随机性的黑盒语言模型。</li>
+<li>输入和输出都是字符串。</li>
+</ul>
+<h3 id="Utility"><a href="#Utility" class="headerlink" title="Utility"></a>Utility</h3><p>论文把一个 Utility 写成：</p>
+<p>$$<br>u=(u_{\mathrm{func}},u_{\mathrm{str}})<br>$$</p>
+<ul>
+<li>$u_{\mathrm{func}}:\Sigma^*\rightarrow\mathbb R$：真正执行的评分函数。</li>
+<li>$u_{\mathrm{str}}$：给语言模型阅读的自然语言或代码形式的评分说明。</li>
+<li>论文简写为 $u(s)$，表示程序 $s$ 的得分。</li>
+</ul>
+<h3 id="下游任务"><a href="#下游任务" class="headerlink" title="下游任务"></a>下游任务</h3><p>一个下游任务是：</p>
+<p>$$<br>\tau=(u,s)<br>$$</p>
+<ul>
+<li>$u$：任务的评分标准。</li>
+<li>$s$：该任务当前已有的初始程序。</li>
+</ul>
+<p>例如，$s$ 可以是一个解背包问题的程序，$u(s)$ 是该程序在测试实例上的平均表现。</p>
+<h3 id="Improver"><a href="#Improver" class="headerlink" title="Improver"></a>Improver</h3><p>Improver $I$ 本身也是一个程序：</p>
+<p>$$<br>s’=I(u,s,L)<br>$$</p>
+<p>它接收评分标准 $u$、待改进程序 $s$ 和语言模型 $L$，输出一个新程序 $s’$。希望满足：</p>
+<p>$$<br>u(s’)&gt;u(s)<br>$$</p>
+<h2 id="Seed-Improver-I-0"><a href="#Seed-Improver-I-0" class="headerlink" title="Seed Improver $I_0$"></a>Seed Improver $I_0$</h2><p>论文先由人提供一个简单的初始 Improver $I_0$。其基本行为是：</p>
+<ol>
+<li>把评分目标和当前程序放入 prompt。</li>
+<li>多次调用语言模型 $L$，生成多个候选程序。</li>
+<li>从回复中提取候选代码。</li>
+<li>用 $u$ 实际运行并评分每个候选。</li>
+<li>返回得分最高的候选。</li>
+</ol>
+<p>因此 $I_0$ 已经能够改进普通下游程序，但它采用的搜索策略很简单。</p>
+<h2 id="如何评价一个-Improver"><a href="#如何评价一个-Improver" class="headerlink" title="如何评价一个 Improver"></a>如何评价一个 Improver</h2><p>设下游任务来自分布 $\mathcal D$，理想目标是评价 Improver 在该分布上的期望表现：</p>
+<p>$$<br>\bar u(I)<br>=<br>\mathbb E_{(u,s)\sim\mathcal D}<br>\left[u\left(I(u,s,L)\right)\right]<br>$$</p>
+<p>真实任务分布无法穷举，所以论文取训练任务集：</p>
+<p>$$<br>D={(u_i,s_i)}_{i=1}^{n}<br>$$</p>
+<p>并定义经验 Meta-Utility：</p>
+<p>$$<br>\hat u(I)<br>=<br>\frac{1}{|D|}<br>\sum_{(u,s)\in D}<br>u\left(I(u,s,L)\right)<br>$$</p>
+<p>计算 $\hat u(I)$ 的顺序是：</p>
+<ol>
+<li>对每个训练任务 $(u,s)$，让 $I$ 生成改进程序 $s’=I(u,s,L)$。</li>
+<li>用该任务自己的 $u$ 评价 $s’$。</li>
+<li>对所有任务得分取平均。</li>
+</ol>
+<p>所以 $u$ 评价一个下游程序，$\hat u$ 评价一个 Improver。</p>
+<blockquote>
+<p>记号说明：Algorithm 1 的辅助函数标题排成了 $\tilde u(I)$，但算法更新行和正文公式 (2) 使用 $\hat u(I)$。根据两处函数定义，它们都表示上述下游训练任务平均分，并不是两个不同目标。</p>
+</blockquote>
+<h2 id="STOP-的核心更新式"><a href="#STOP-的核心更新式" class="headerlink" title="STOP 的核心更新式"></a>STOP 的核心更新式</h2><p>论文的核心定义是：</p>
+<p>$$<br>I_t<br>:=<br>I_{t-1}(\hat u,I_{t-1},L)<br>$$</p>
+<p>这三个实参分别对应 Improver 原本的三个输入：</p>
+<table>
+<thead>
+<tr>
+<th>形参</th>
+<th>本轮传入的实参</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Utility $u$</td>
+<td>Meta-Utility $\hat u$</td>
+<td>新程序按照“作为 Improver 的能力”评分</td>
+</tr>
+<tr>
+<td>待改进程序 $s$</td>
+<td>$I_{t-1}$ 的源代码</td>
+<td>当前 Improver 自己成为修改对象</td>
+</tr>
+<tr>
+<td>语言模型</td>
+<td>固定的 $L$</td>
+<td>继续负责提出代码修改</td>
+</tr>
+</tbody></table>
+<p>这里能够自我应用，关键在于类型对齐：$I_{t-1}$ 原本能改进任何以 Utility 衡量的程序，而它自己也恰好是程序；$\hat u$ 又恰好能评价 Improver。</p>
+<h2 id="Algorithm-1-逐行解释"><a href="#Algorithm-1-逐行解释" class="headerlink" title="Algorithm 1 逐行解释"></a>Algorithm 1 逐行解释</h2><p>输入：</p>
+<ul>
+<li>Seed Improver $I_0$。</li>
+<li>固定语言模型 $L$。</li>
+<li>迭代轮数 $T$。</li>
+<li>下游训练任务集 $D$。</li>
+</ul>
+<p>循环第 $t$ 轮：</p>
+<p>$$<br>I_t\leftarrow I_{t-1}(\hat u,I_{t-1},L)<br>$$</p>
+<p>展开后发生的是：</p>
+<ol>
+<li>当前 Improver $I_{t-1}$ 阅读自己的源代码。</li>
+<li>它调用 $L$ 产生若干个候选 Improver。</li>
+<li>对候选 Improver $J$，调用 $\hat u(J)$。</li>
+<li>$\hat u(J)$ 又让 $J$ 在所有训练任务上改进程序并计算平均得分。</li>
+<li>当前 Improver 返回其中得分最高的候选，成为 $I_t$。</li>
+</ol>
+<p>循环完成后返回 $I_T$。</p>
+<h2 id="前两轮的具体展开"><a href="#前两轮的具体展开" class="headerlink" title="前两轮的具体展开"></a>前两轮的具体展开</h2><p>第一轮：</p>
+<p>$$<br>I_1=I_0(\hat u,I_0,L)<br>$$</p>
+<p>$I_0$ 不再修改普通任务程序，而是修改 $I_0$ 的源代码。候选代码只有在下游训练任务上能取得更高平均分，才会被 $\hat u$ 认为更好。</p>
+<p>第二轮：</p>
+<p>$$<br>I_2=I_1(\hat u,I_1,L)<br>$$</p>
+<p>此时由第一轮产生的 $I_1$ 改写自己的源代码。例如，$I_1$ 可能已经学会维护候选池、分轮搜索或接受较差解来增加探索；这些能力会参与第二轮自我改写。</p>
+<p>一般地：</p>
+<p>$$<br>I_0\rightarrow I_1\rightarrow I_2\rightarrow\cdots\rightarrow I_T<br>$$</p>
+<h2 id="最容易忽略的嵌套"><a href="#最容易忽略的嵌套" class="headerlink" title="最容易忽略的嵌套"></a>最容易忽略的嵌套</h2><p>外层正在寻找更好的 Improver，但每次评价一个候选 Improver，都要运行一次完整的下游优化过程：</p>
+<p>$$<br>\text{候选 Improver }J<br>\longrightarrow<br>\left{<br>J(u_i,s_i,L)<br>\right}<em>{i=1}^{|D|}<br>\longrightarrow<br>\left{<br>u_i(J(u_i,s_i,L))<br>\right}</em>{i=1}^{|D|}<br>\longrightarrow<br>\hat u(J)<br>$$</p>
+<p>而 $J$ 在改进每个下游程序时还会多次调用 $L$。因此 STOP 的计算代价来自“候选 Improver 数量 × 下游任务数量 × 每个 Improver 的 LM 调用数”。</p>
+<h2 id="“Recursive”-应当怎样理解"><a href="#“Recursive”-应当怎样理解" class="headerlink" title="“Recursive” 应当怎样理解"></a>“Recursive” 应当怎样理解</h2><p>这里的 Recursive 主要指反复自我应用：</p>
+<p>$$<br>I_{t}=I_{t-1}(\hat u,I_{t-1},L)<br>$$</p>
+<p>它不一定是程序运行时函数调用栈意义上的递归。更准确地说，是“上一轮得到的新 Improver，下一轮继续改写自己”。</p>
+<p>它也不是完整的 Recursive Self-Improvement：</p>
+<ul>
+<li>语言模型 $L$ 的权重没有更新。</li>
+<li>$I_0$、$\hat u$、训练任务集 $D$、预算和沙箱由人设定。</li>
+<li>改进范围主要是 LM 调用、候选搜索、筛选和执行策略组成的脚手架代码。</li>
+</ul>
+<p>STOP 也没有划分出 MCE 那样的 Meta Agent 与 Base Agent。当前 Improver 在普通调用时改进下游程序；把自身源码作为输入时，同一个 Improver 又改进自己。外层循环、Meta-Utility、预算和执行沙箱仍是人工固定的 harness。</p>
+<h2 id="为什么它可能有效"><a href="#为什么它可能有效" class="headerlink" title="为什么它可能有效"></a>为什么它可能有效</h2><p>初始 $I_0$ 只会多次采样并选最好候选。语言模型在改写这个搜索程序时，可以提出更复杂的优化策略，例如：</p>
+<ul>
+<li>Beam search 或树搜索。</li>
+<li>维护 top-$k$ 候选的种群搜索。</li>
+<li>遗传算法式的变异和组合。</li>
+<li>模拟退火式的探索。</li>
+<li>任务分解以及探索/利用调度。</li>
+</ul>
+<p>关键不是语言模型突然获得了新参数，而是相同模型被新的控制程序以更有效的方式调用。</p>
+<h2 id="论文结果与限制"><a href="#论文结果与限制" class="headerlink" title="论文结果与限制"></a>论文结果与限制</h2><ul>
+<li>论文报告 GPT-4 驱动的 STOP 在其实验设置中能逐轮提高平均下游表现，并让得到的 Improver 迁移到未参与自我改进的新任务。</li>
+<li>较弱模型并不稳定；GPT-3.5 和 Mixtral 在论文的平均结果中可能退化。</li>
+<li>单轮更新没有单调改进保证。一个 Improver 擅长下游优化，并不必然擅长改写自己，语言模型采样和程序运行也具有随机性。</li>
+<li>评分只覆盖有限训练任务，候选 Improver 可能过拟合 $\hat u$。</li>
+<li>自动生成并执行代码带来安全风险，因此论文专门在沙箱中测试越界行为。</li>
+</ul>
+<h2 id="当前结论"><a href="#当前结论" class="headerlink" title="当前结论"></a>当前结论</h2><p>STOP 的真正核心不是“模型训练自己”，而是下面这个类型闭环：</p>
+<p>$$<br>\underbrace{I:(u,s,L)\mapsto s’}<em>{\text{能够改进程序}}<br>\quad+<br>\underbrace{I\text{ 自己也是程序}}</em>{\text{可以作为 }s}<br>\quad+<br>\underbrace{\hat u\text{ 能评价 Improver}}_{\text{可以作为 }u}<br>$$</p>
+<p>因此同一个改进接口可以作用到自身：</p>
+<p>$$<br>(\hat u,I_{t-1},L)\xrightarrow{I_{t-1}}I_t<br>$$</p>
+<p>这就是 Algorithm 1 最核心的数学和程序设计结构。</p>
+<h2 id="阅读问答"><a href="#阅读问答" class="headerlink" title="阅读问答"></a>阅读问答</h2><h3 id="Q1：怎么理解-STOP-算法？"><a href="#Q1：怎么理解-STOP-算法？" class="headerlink" title="Q1：怎么理解 STOP 算法？"></a>Q1：怎么理解 STOP 算法？</h3><p>STOP 先用简单的 Seed Improver 改进普通程序，再把 Meta-Utility $\hat u$ 当成目标函数、把 Improver 自身源代码当成待改进程序，让当前 Improver 生成并筛选下一代 Improver。重复 $T$ 轮后，返回 $I_T$。</p>
+<p>每一轮真正优化的对象都是 Improver 的代码；训练任务集的作用是判断这段新代码是否更会改进其他程序。</p>
+<h3 id="Q2：-hat-u-I-frac-1-D-sum-u-s-in-D-u-I-u-s-L-中每个符号是什么？"><a href="#Q2：-hat-u-I-frac-1-D-sum-u-s-in-D-u-I-u-s-L-中每个符号是什么？" class="headerlink" title="Q2：$\hat u(I)=\frac{1}{|D|}\sum_{(u,s)\in D}u(I(u,s,L))$ 中每个符号是什么？"></a>Q2：$\hat u(I)=\frac{1}{|D|}\sum_{(u,s)\in D}u(I(u,s,L))$ 中每个符号是什么？</h3><p>这一定义的类型是：</p>
+<p>$$<br>\hat u:\mathcal I\rightarrow\mathbb R<br>$$</p>
+<p>即 $\hat u$ 接收一个候选 Improver $I$，返回一个实数分数。</p>
+<ul>
+<li>$I$：待评价的 Improver 程序，而不是某个下游任务的最终答案。</li>
+<li>$D$：有限的下游训练任务集合。</li>
+<li>$(u,s)\in D$：遍历 $D$ 中的每个任务；每项由该任务的评分函数 $u$ 和初始解程序 $s$ 组成。</li>
+<li>$|D|$：训练任务数量。</li>
+<li>$L$：固定的黑盒语言模型。</li>
+<li>$I(u,s,L)$：让 Improver 利用 $L$，按照 $u$ 改进初始程序 $s$；结果是新程序 $s’$。</li>
+<li>$u(I(u,s,L))$：用当前任务自己的 $u$ 给新程序 $s’$ 评分，得到一个实数。</li>
+<li>$\sum_{(u,s)\in D}$：把候选 $I$ 在所有训练任务上的得分相加。</li>
+<li>$1/|D|$：除以任务数，得到平均分。</li>
+<li>$\hat u$：经验 Meta-Utility；帽子表示它是用有限训练集 $D$ 对真实任务分布上的期望表现 $\bar u(I)$ 所作的经验估计。</li>
+</ul>
+<p>计算顺序可写成：</p>
+<p>$$<br>s_i’=I(u_i,s_i,L)<br>$$</p>
+<p>$$<br>r_i=u_i(s_i’)<br>$$</p>
+<p>$$<br>\hat u(I)=\frac{1}{n}\sum_{i=1}^{n}r_i<br>$$</p>
+<p>如果：</p>
+<p>$$<br>D={(u_1,s_1),(u_2,s_2),(u_3,s_3)}<br>$$</p>
+<p>那么原式就是：</p>
+<p>$$<br>\hat u(I)<br>=<br>\frac{1}{3}<br>\left[<br>u_1(I(u_1,s_1,L))<br>+u_2(I(u_2,s_2,L))<br>+u_3(I(u_3,s_3,L))<br>\right]<br>$$</p>
+<p>需要区分两个层次：每个 $u_i$ 评价一个下游程序；$\hat u$ 汇总这些分数，评价 Improver $I$ 本身。原公式平均的是改进后程序的最终得分，并没有显式计算 $u(s’)-u(s)$。</p>
+
+      </div>
+      
+      
+      
+    </div>
+  <ul class="breadcrumb">
+            <li><a href="/papers/">PAPERS</a></li>
+            <li><a href="/papers/notes/">NOTES</a></li>
+            <li>2310.02304-SELF-TAUGHT-OPTIMIZER</li>
+          
+  </ul>
+
+    
+    
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xychen5</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
